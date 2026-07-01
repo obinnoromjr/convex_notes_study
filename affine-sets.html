@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affine Sets · B&amp;V §2.1.2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- KaTeX for typeset mathematics -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#F6F4EE;
+  --paper-2:#FBFAF6;
+  --ink:#14161A;
+  --graphite:#5C616B;
+  --hair:#DCD8CD;
+  --hair-2:#E8E4DA;
+  /* content-meaningful accents: indigo = subspace V / the line; amber = the offset x0 */
+  --indigo:#2F36A6;
+  --indigo-soft:#5159d4;
+  --amber:#C07818;
+  --amber-soft:#F0E2C8;
+  --trap:#A6312F;
+  --trap-soft:#F4E2DF;
+  --maxw:920px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Spectral",Georgia,serif;
+  font-size:18px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  /* faint engineering-paper grid */
+  background-image:
+    linear-gradient(to right, rgba(47,54,166,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(47,54,166,0.035) 1px, transparent 1px);
+  background-size:28px 28px;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+/* ---------- type ---------- */
+.mono{font-family:"IBM Plex Mono",monospace}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--graphite);
+}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;font-weight:600;line-height:1.08;letter-spacing:-.015em}
+h1{font-size:clamp(2.7rem,7vw,4.6rem);margin:.1em 0 .2em}
+h2{font-size:clamp(1.5rem,3.4vw,2.05rem);margin:0}
+h3{font-size:1.12rem;margin:0 0 .4em;letter-spacing:0}
+p{margin:0 0 1.05em}
+a{color:var(--indigo)}
+strong{font-weight:600}
+em{color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 30px;border-bottom:1px solid var(--hair)}
+.hero .eyebrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--amber)}
+.lede{
+  font-size:clamp(1.18rem,2.5vw,1.5rem);
+  line-height:1.45;
+  max-width:30ch;
+  margin:.2em 0 1.1em;
+  color:var(--ink);
+}
+.lede b{color:var(--indigo);font-weight:600}
+.mastery{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:"IBM Plex Mono",monospace;font-size:13px;
+  border:1px solid var(--hair);background:var(--paper-2);
+  padding:7px 13px;border-radius:2px;color:var(--graphite);
+}
+.mastery b{color:var(--ink);font-weight:600}
+
+/* ---------- interactive figure ---------- */
+.fig{
+  margin:36px 0 8px;
+  background:var(--paper-2);
+  border:1px solid var(--hair);
+  border-radius:4px;
+  overflow:hidden;
+}
+.fig-head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:16px 20px 10px;flex-wrap:wrap;
+}
+.fig-head .t{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1rem}
+.fig-head .eq{font-size:1.02rem}
+svg{display:block;width:100%;height:auto}
+.fig-controls{
+  display:flex;align-items:center;gap:16px;
+  padding:8px 20px 18px;flex-wrap:wrap;
+}
+.fig-controls label{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--graphite)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;flex:1;min-width:160px;height:3px;
+  background:var(--hair);border-radius:3px;outline-offset:4px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--amber);border:3px solid var(--paper-2);box-shadow:0 0 0 1px var(--amber);cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;background:var(--amber);
+  border:3px solid var(--paper-2);box-shadow:0 0 0 1px var(--amber);cursor:pointer;
+}
+.verdict{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.4;
+  padding:0 20px 20px;color:var(--graphite);
+}
+.verdict .tag{font-weight:600}
+.verdict.inside .tag{color:var(--indigo)}
+.verdict.outside .tag{color:var(--amber)}
+
+/* ---------- sections ---------- */
+section.lesson{padding:46px 0;border-bottom:1px solid var(--hair)}
+.sec-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:1.1em}
+.sec-num{
+  font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:14px;
+  color:var(--indigo);border:1px solid var(--indigo);border-radius:2px;
+  padding:4px 8px;flex:none;margin-top:4px;line-height:1;
+}
+.sec-head .meta{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--graphite);margin-top:.5em}
+
+/* callouts */
+.note{
+  border-left:3px solid var(--hair);
+  padding:2px 0 2px 20px;margin:1.2em 0;color:var(--graphite);
+  font-size:.97em;
+}
+.proof{
+  background:var(--paper-2);border:1px solid var(--hair);border-radius:4px;
+  padding:20px 22px;margin:1.4em 0;
+}
+.proof .lbl{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--indigo);margin-bottom:.6em;
+}
+.trap{
+  background:var(--trap-soft);border:1px solid #e8c9c7;border-radius:4px;
+  padding:18px 22px;margin:1.4em 0;
+}
+.trap .lbl{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--trap);margin-bottom:.5em;
+  display:flex;align-items:center;gap:8px;
+}
+.trap p:last-child{margin-bottom:0}
+.fwd{
+  background:var(--amber-soft);border:1px dashed #d9b878;border-radius:4px;
+  padding:14px 20px;margin:1.4em 0;font-size:.95em;color:#6b4a13;
+}
+.fwd .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:.3em}
+.fwd p:last-child{margin-bottom:0}
+
+/* facts table */
+.facts{width:100%;border-collapse:collapse;margin:1.3em 0;font-size:.96em}
+.facts td{border-top:1px solid var(--hair);padding:12px 4px;vertical-align:top}
+.facts td:first-child{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--indigo);
+  white-space:nowrap;padding-right:20px;width:1%;
+}
+
+/* where-we-are map */
+.map{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:.6em 0 0;border:1px solid var(--hair);border-radius:4px;overflow:hidden}
+.map .step{flex:1;min-width:150px;padding:16px 18px;background:var(--paper-2)}
+.map .step + .step{border-left:1px solid var(--hair)}
+.map .step.here{background:#ececf7}
+.map .step .n{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--graphite);letter-spacing:.1em}
+.map .step.here .n{color:var(--indigo)}
+.map .step .d{font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:.95rem;margin-top:4px}
+
+/* summary */
+.summary{background:var(--ink);color:#EDEBE4;border:none}
+.summary .wrap{padding-top:46px;padding-bottom:54px}
+.summary h2{color:#fff}
+.summary .eyebrow{color:#9b9fa9}
+.summary ul{list-style:none;margin:1.4em 0 0;padding:0}
+.summary li{
+  position:relative;padding:14px 0 14px 30px;border-top:1px solid #2c2f36;
+  font-size:1.02rem;line-height:1.5;
+}
+.summary li::before{
+  content:attr(data-k);position:absolute;left:0;top:15px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--amber);
+}
+.summary li b{color:#fff;font-weight:600}
+.summary .katex{color:#EDEBE4}
+.summary-foot{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:#9b9fa9;
+  margin-top:26px;letter-spacing:.06em;
+}
+
+/* katex sizing */
+.katex{font-size:1.04em}
+.katex-display{margin:.9em 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+
+footer{padding:34px 0 60px;color:var(--graphite);font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+
+::selection{background:var(--amber-soft);color:var(--ink)}
+:focus-visible{outline:2px solid var(--indigo);outline-offset:3px}
+
+@media (max-width:560px){
+  body{font-size:17px}
+  .sec-head{gap:12px}
+  .hero{padding:44px 0 24px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span>Boyd &amp; Vandenberghe · §2.1.2</span><span class="dot"></span>
+      <span>Convex Optimization</span><span class="dot"></span>
+      <span>p. 21–23</span>
+    </div>
+    <h1>Affine&nbsp;sets</h1>
+    <p class="lede">A set is affine when it is closed under the <b>whole line</b> through any two of its points — not just the segment between them.</p>
+    <span class="mastery">MASTERY TARGET&nbsp; <b>diagnose</b></span>
+
+    <!-- SIGNATURE: the "whole line" is the affine set. Drag theta past the endpoints. -->
+    <figure class="fig">
+      <div class="fig-head">
+        <span class="t">The line through two points</span>
+        <span class="eq mono" id="eq">P = θ·x₁ + (1−θ)·x₂</span>
+      </div>
+      <svg viewBox="0 0 720 340" role="img" aria-labelledby="figdesc">
+        <title id="figdesc">A point P slides along the infinite line through x1 and x2. Inside the segment theta is between 0 and 1; outside, P stays on the affine set.</title>
+        <defs>
+          <clipPath id="plane"><rect x="0" y="0" width="720" height="340"/></clipPath>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0H0V40" fill="none" stroke="#e7e3d8" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="720" height="340" fill="url(#grid)"/>
+        <g clip-path="url(#plane)">
+          <!-- infinite affine line (dashed = the part beyond the segment: this is what makes it affine, not convex) -->
+          <line id="lineFull" x1="0" y1="0" x2="0" y2="0" stroke="var(--indigo)" stroke-width="1.5" stroke-dasharray="3 5" opacity="0.55"/>
+          <!-- the segment x1..x2 (what convex sets keep) -->
+          <line id="segment" x1="0" y1="0" x2="0" y2="0" stroke="var(--indigo)" stroke-width="3"/>
+          <!-- anchor points -->
+          <g id="x1pt"><circle r="6.5" fill="var(--ink)"/></g>
+          <g id="x2pt"><circle r="6.5" fill="var(--ink)"/></g>
+          <text id="x1lab" font-family="IBM Plex Mono" font-size="15" fill="var(--ink)">x₁</text>
+          <text id="x2lab" font-family="IBM Plex Mono" font-size="15" fill="var(--ink)">x₂</text>
+          <!-- moving point P (the offset/probe) -->
+          <circle id="P" r="9" fill="var(--amber)" stroke="#fff" stroke-width="2"/>
+        </g>
+      </svg>
+      <div class="fig-controls">
+        <label for="theta">θ =&nbsp;<span id="tval" class="mono" style="color:var(--ink)">0.50</span></label>
+        <input id="theta" type="range" min="-1" max="2" step="0.01" value="0.5" aria-describedby="verdict">
+      </div>
+      <div class="verdict inside" id="verdict">
+        <span class="tag">θ ∈ [0,1] — on the segment.</span> Convex sets keep only this slice; affine sets keep everything.
+      </div>
+    </figure>
+    <p class="note" style="margin-top:1.4em">Drag θ past <span class="mono">0</span> or <span class="mono">1</span>. P leaves the segment but never leaves the line — and the line is the affine set. That single fact generates everything below.</p>
+  </div>
+</header>
+
+<!-- ============ 0. WHERE WE ARE ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">0</span>
+      <div><h2>Where we are</h2></div>
+    </div>
+    <p>§2.1.1 gave us the line through two points. §2.1.2 promotes that line into a property of a <em>set</em>: a set is affine when it contains the entire line through any two of its members. From this one closure property flows the whole structure — algebra, shape, dimension, the canonical example, and the closure operator.</p>
+    <div class="map">
+      <div class="step"><div class="n">§2.1.1</div><div class="d">The line through two points</div></div>
+      <div class="step here"><div class="n">§2.1.2 · you are here</div><div class="d">Affine sets</div></div>
+      <div class="step"><div class="n">§2.1.3 →</div><div class="d">Next: builds on this</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1. DEFINITION ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <div><h2>Definition</h2><div class="meta">L1173–1176</div></div>
+    </div>
+    <p>A set \(C \subseteq \mathbb{R}^n\) is <strong>affine</strong> if the line through any two distinct points of \(C\) lies in \(C\):</p>
+    <p style="text-align:center">\[ x_1, x_2 \in C,\ \ \theta \in \mathbb{R} \quad\Longrightarrow\quad \theta x_1 + (1-\theta)x_2 \in C. \]</p>
+    <p>Two load-bearing facts hide in that line. First, \(\theta\) ranges over <em>all</em> of \(\mathbb{R}\) — the whole line, not the segment. Second, the coefficients \(\theta\) and \(1-\theta\) <em>sum to 1</em>. Hold onto both; the rest of the section is consequences of them.</p>
+    <div class="fwd">
+      <div class="lbl">Forward pointer · not used here</div>
+      <p>Keep only the segment — restrict \(\theta \in [0,1]\) — and you get <strong>convex sets</strong> (§2.1.4). The hero figure above is exactly this distinction made draggable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. AFFINE COMBINATIONS ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <div><h2>Affine combinations</h2><div class="meta">L1177–1203</div></div>
+    </div>
+    <p>An <strong>affine combination</strong> is any weighted sum whose weights sum to one — signs unrestricted:</p>
+    <p style="text-align:center">\[ \theta_1 x_1 + \cdots + \theta_k x_k, \qquad \theta_1 + \cdots + \theta_k = 1. \]</p>
+    <p>By induction, an affine set contains <em>every</em> affine combination of its points, not just two-point ones.</p>
+    <div class="note">
+      <strong>Caveat for the induction.</strong> To nest a \(k\)-point combination into two-point combinations, peel off a point whose coefficient \(\neq 1\), so the remaining weights have nonzero sum and can be rescaled back to one.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. SUBSPACE + OFFSET ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">3</span>
+      <div><h2>Subspace + offset — the structural heart</h2><div class="meta">L1204–1216</div></div>
+    </div>
+    <p>If \(C\) is affine and \(x_0 \in C\), then \(V = C - x_0\) is a <strong>subspace</strong>. This is the result everything else leans on, so the proof is worth holding — the trick recurs.</p>
+    <div class="proof">
+      <div class="lbl">Proof — pad the coefficients to sum to 1</div>
+      <p style="margin-bottom:.4em">For \(v_1, v_2 \in V\) and scalars \(\alpha, \beta\):</p>
+      <p style="text-align:center;margin:.2em 0">\[ \alpha v_1 + \beta v_2 + x_0 = \alpha(v_1+x_0) + \beta(v_2+x_0) + (1-\alpha-\beta)x_0 \ \in C \]</p>
+      <p style="margin-bottom:0">because the three points lie in \(C\) and \(\alpha + \beta + (1-\alpha-\beta) = 1\) — an affine combination. Hence \(\alpha v_1 + \beta v_2 \in V\). <strong>The move:</strong> to use affineness, pad the coefficients so they sum to one.</p>
+    </div>
+    <p>Consequences cascade: \(C = V + x_0\) (a subspace plus an offset); \(V\) is independent of which \(x_0 \in C\) you pick; and we <em>define</em> \(\dim C := \dim V\).</p>
+    <div class="trap">
+      <div class="lbl">Precision point</div>
+      <p>An affine set is a <em>translated subspace</em>, so it is <strong>not generally unbounded</strong>. If \(V = \{0\}\), then \(C\) is a single point — bounded, dimension 0. <strong>"Affine" means flat, not big.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. EXAMPLE 2.1 ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">4</span>
+      <div><h2>Example 2.1 — the solution set of <span class="mono">Ax = b</span></h2><div class="meta">L1218–1227</div></div>
+    </div>
+    <p>The solution set \(C = \{x : Ax = b\}\) is affine, because for \(x_1, x_2 \in C\):</p>
+    <p style="text-align:center">\[ A\big(\theta x_1 + (1-\theta)x_2\big) = \theta b + (1-\theta)b = b. \]</p>
+    <table class="facts">
+      <tr><td>subspace</td><td>The associated subspace is \(\mathcal{N}(A)\), the nullspace of \(A\).</td></tr>
+      <tr><td>dimension</td><td>\(\dim C = n - \operatorname{rank} A\), by rank–nullity.</td></tr>
+      <tr><td>converse</td><td><em>Every</em> affine set is the solution set of some linear system. So affine \(\iff Ax = b\), both directions.</td></tr>
+    </table>
+    <div class="trap">
+      <div class="lbl">Don't conflate — the §2.1.2 diagnostic trap</div>
+      <p>Passing through the origin (being a subspace) and being <em>feasible</em> are different conditions.</p>
+      <p><strong>Subspace</strong> \(\iff b = 0\): since \(0 \in C \iff A\cdot 0 = b \iff b = 0\).<br>
+      <strong>Feasible</strong> \(\iff b \in \operatorname{range}(A)\).</p>
+      <p style="margin-bottom:0">So \(b = 0 \Rightarrow\) subspace; \(b \neq 0\) but feasible \(\Rightarrow\) affine yet <em>not</em> a subspace.</p>
+    </div>
+    <div class="note">
+      <strong>Tie-back to §1.2.1.</strong> When \(A^{\top}A\) is singular, the least-squares minimizers \(\{x : A^{\top}A\,x = A^{\top}b\}\) form an affine set — a translate of \(\mathcal{N}(A)\) — not a single point.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. AFFINE HULL ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">5</span>
+      <div><h2>Affine hull</h2><div class="meta">L1231–1237</div></div>
+    </div>
+    <p>The <strong>affine hull</strong> \(\operatorname{aff} C\) is the set of all affine combinations of points of \(C\) — equivalently, the <em>smallest</em> affine set containing \(C\):</p>
+    <p style="text-align:center">\[ \operatorname{aff} C = \bigcap\,\{\, S : S \text{ affine},\ C \subseteq S \,\}. \]</p>
+    <p>If \(S\) is affine and \(C \subseteq S\), then \(\operatorname{aff} C \subseteq S\). Two distinct points hull to a line; three non-collinear points hull to a plane.</p>
+  </div>
+</section>
+
+<!-- ============ 6. EXPERT LENS ============ -->
+<section class="lesson">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">6</span>
+      <div><h2>Expert lens</h2></div>
+    </div>
+    <p>Four things a diagnostician keeps in the front pocket:</p>
+    <table class="facts">
+      <tr><td>whole line</td><td>Affine = closed under the <em>whole</em> line: affine combinations, weights summing to 1, any sign. Don't substitute \(\theta \in [0,1]\).</td></tr>
+      <tr><td>sum to 1</td><td>"To use affineness, make the coefficients sum to 1." Both proofs in this section hinge on exactly this.</td></tr>
+      <tr><td>structure</td><td>\(C = V + x_0\); \(\dim C = \dim V\); subspace \(\iff b = 0\). Feasibility (\(b \in \operatorname{range} A\)) is <em>not</em> origin-membership (\(b = 0\)).</td></tr>
+      <tr><td>equivalence</td><td>Affine \(\iff\) solution set of linear equations — both directions.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SUMMARY ============ -->
+<section class="lesson summary">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:.6em">
+      <div>
+        <div class="eyebrow" style="margin-bottom:.5em">Quick review</div>
+        <h2>Main points</h2>
+      </div>
+    </div>
+    <ul>
+      <li data-k="01"><b>Affine set:</b> closed under the whole line \(\theta x_1 + (1-\theta)x_2,\ \theta \in \mathbb{R}\) (coeffs sum to 1) — not just the segment.</li>
+      <li data-k="02"><b>Affine combination:</b> \(\sum \theta_i x_i\) with \(\sum \theta_i = 1\) (any sign); affine sets contain all of them.</li>
+      <li data-k="03"><b>Structure:</b> \(C = V + x_0\), where \(V = C - x_0\) is a subspace (pad with \((1-\alpha-\beta)\) so coeffs sum to 1); \(V\) independent of \(x_0\); \(\dim C := \dim V\). A point is affine (dim 0) — affine ≠ unbounded.</li>
+      <li data-k="04"><b>Example 2.1:</b> \(\{x : Ax = b\}\) is affine; \(V = \mathcal{N}(A)\), \(\dim = n - \operatorname{rank} A\); converse: every affine set is some \(Ax = b\).</li>
+      <li data-k="05"><b>Subspace \(\iff b = 0\)</b> (through origin); <b>feasible \(\iff b \in \operatorname{range}(A)\)</b> — different conditions, don't conflate.</li>
+      <li data-k="06"><b>Affine hull:</b> all affine combinations = smallest affine set containing \(C\).</li>
+    </ul>
+    <div class="summary-foot">2026-06-19 · bv.2.1.2 · Affine sets (B&amp;V §2.1.2)</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Study sheet · Boyd &amp; Vandenberghe, <em>Convex Optimization</em> §2.1.2 · mastery target: diagnose</div>
+</footer>
+
+<script>
+// ---------- interactive "whole line" figure ----------
+(function(){
+  const x1 = {x:235, y:232};   // theta = 1
+  const x2 = {x:495, y:118};   // theta = 0
+  const dx = x1.x - x2.x, dy = x1.y - x2.y;   // direction toward x1
+  // P(theta) = theta*x1 + (1-theta)*x2 = x2 + theta*(x1 - x2)
+  const P = t => ({x: x2.x + t*dx, y: x2.y + t*dy});
+
+  const $ = id => document.getElementById(id);
+  const slider = $('theta'), tval = $('tval'), Pel = $('P'),
+        verdict = $('verdict'), eq = $('eq');
+
+  // place static anchors
+  $('x1pt').setAttribute('transform', `translate(${x1.x},${x1.y})`);
+  $('x2pt').setAttribute('transform', `translate(${x2.x},${x2.y})`);
+  $('x1lab').setAttribute('x', x1.x + 12); $('x1lab').setAttribute('y', x1.y + 22);
+  $('x2lab').setAttribute('x', x2.x + 12); $('x2lab').setAttribute('y', x2.y - 12);
+
+  // full infinite line (extend well past the box on both sides)
+  const A = P(-3), B = P(4);
+  const full = $('lineFull');
+  full.setAttribute('x1', A.x); full.setAttribute('y1', A.y);
+  full.setAttribute('x2', B.x); full.setAttribute('y2', B.y);
+  // the segment
+  const seg = $('segment');
+  seg.setAttribute('x1', x1.x); seg.setAttribute('y1', x1.y);
+  seg.setAttribute('x2', x2.x); seg.setAttribute('y2', x2.y);
+
+  function render(t){
+    const p = P(t);
+    Pel.setAttribute('cx', p.x); Pel.setAttribute('cy', p.y);
+    tval.textContent = t.toFixed(2);
+    eq.textContent = `P = ${t.toFixed(2)}·x₁ + ${(1-t).toFixed(2)}·x₂`;
+    const inside = t >= 0 && t <= 1;
+    verdict.className = 'verdict ' + (inside ? 'inside' : 'outside');
+    verdict.innerHTML = inside
+      ? '<span class="tag">θ ∈ [0,1] — on the segment.</span> Convex sets keep only this slice; affine sets keep everything.'
+      : '<span class="tag">θ ∉ [0,1] — beyond the segment.</span> P has left the segment but is still in the affine set. This is the whole point.';
+  }
+  slider.addEventListener('input', e => render(parseFloat(e.target.value)));
+  render(0.5);
+})();
+
+// ---------- typeset math ----------
+window.addEventListener('DOMContentLoaded', function(){
+  function run(){
+    if(window.renderMathInElement){
+      renderMathInElement(document.body,{
+        delimiters:[
+          {left:'\\[',right:'\\]',display:true},
+          {left:'\\(',right:'\\)',display:false}
+        ],
+        throwOnError:false
+      });
+    } else { setTimeout(run, 60); }
+  }
+  run();
+});
+</script>
+</body>
+</html>

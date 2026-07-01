@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>§2.1.3 — Affine dimension & relative interior</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+<style>
+:root{
+  --paper:#eef2f6;
+  --paper-2:#e6ecf2;
+  --panel:#ffffff;
+  --ink:#16202e;
+  --ink-soft:#33414f;
+  --muted:#647585;
+  --grid:#d6dee6;
+  --hull:#2d6cb5;      /* aff C — the flat */
+  --hull-fill:#2d6cb521;
+  --relint:#159b73;    /* relative interior */
+  --relint-fill:#159b7322;
+  --rim:#e0533d;       /* relative boundary */
+  --empty:#9aa7b4;     /* empty ordinary interior */
+  --amber:#e8a31c;
+  --shadow:0 1px 2px rgba(22,32,46,.05),0 8px 30px rgba(22,32,46,.07);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    linear-gradient(var(--grid) 1px,transparent 1px) 0 0/26px 26px,
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/26px 26px,
+    var(--paper);
+  color:var(--ink);
+  font-family:"Spectral",Georgia,serif;
+  font-size:18px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 120px}
+
+/* ---------- Type ---------- */
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--hull);font-weight:500;
+}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.12;letter-spacing:-.01em;font-weight:600;color:var(--ink)}
+h1{font-size:clamp(34px,6vw,58px);font-weight:700;margin:.1em 0 .25em}
+h2{font-size:clamp(24px,4vw,34px);margin:0}
+h3{font-size:20px;margin:0 0 .2em}
+p{margin:0 0 1.05em}
+strong{font-weight:600;color:var(--ink)}
+em{color:var(--ink-soft)}
+a{color:var(--hull)}
+
+/* ---------- Hero ---------- */
+.hero{padding:72px 0 28px}
+.hero .lead{font-size:21px;color:var(--ink-soft);max-width:62ch}
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;
+  padding:5px 11px;border-radius:999px;border:1px solid var(--grid);
+  background:var(--panel);color:var(--muted);
+}
+.tag b{color:var(--ink);font-weight:500}
+
+/* ---------- Section scaffolding ---------- */
+section{margin-top:64px;scroll-margin-top:20px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);padding-bottom:14px}
+.sec-num{
+  font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;
+  color:var(--panel);background:var(--ink);padding:4px 9px;border-radius:6px;
+  align-self:center;white-space:nowrap;
+}
+
+/* ---------- Cards ---------- */
+.card{background:var(--panel);border:1px solid var(--grid);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:26px 28px;margin:22px 0}
+.fig{background:var(--panel);border:1px solid var(--grid);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin:26px 0}
+.fig svg{display:block;width:100%;height:auto;background:
+  linear-gradient(#f4f7fa 1px,transparent 1px) 0 0/22px 22px,
+  linear-gradient(90deg,#f4f7fa 1px,transparent 1px) 0 0/22px 22px,#fff}
+.cap{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);
+  padding:13px 20px;border-top:1px solid var(--grid);line-height:1.55}
+.cap b{color:var(--ink);font-weight:500}
+
+/* ---------- Definition block ---------- */
+.def{border-left:4px solid var(--hull);background:#f6f9fc;border-radius:0 12px 12px 0;
+  padding:18px 22px;margin:22px 0}
+.def .label{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--hull);margin-bottom:6px}
+
+/* ---------- Callout ---------- */
+.note{border-left:4px solid var(--amber);background:#fef9ec;border-radius:0 12px 12px 0;
+  padding:16px 20px;margin:22px 0;font-size:16.5px}
+.note .label{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:#b07c08;margin-bottom:4px}
+.warn{border-left-color:var(--rim);background:#fdf1ef}
+.warn .label{color:var(--rim)}
+
+/* ---------- Legend (signature) ---------- */
+.legend{position:sticky;top:0;z-index:30;background:rgba(238,242,246,.86);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--grid);
+  margin:0 -24px;padding:10px 24px}
+.legend-inner{max-width:880px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.legend .key{display:flex;align-items:center;gap:7px;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+.swatch{width:16px;height:16px;border-radius:4px;flex:none}
+.sw-hull{background:var(--hull-fill);border:1.5px solid var(--hull)}
+.sw-relint{background:var(--relint-fill);border:1.5px solid var(--relint)}
+.sw-rim{background:transparent;border:2px dashed var(--rim)}
+.sw-empty{background:repeating-linear-gradient(45deg,#e7ebef,#e7ebef 3px,#fff 3px,#fff 6px);border:1.5px solid var(--empty)}
+
+/* ---------- Comparison table ---------- */
+table{width:100%;border-collapse:collapse;font-size:15.5px;margin:6px 0}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--grid)}
+th{font-family:"Space Grotesk",sans-serif;font-size:13px;letter-spacing:.02em;color:var(--muted);font-weight:600}
+td:first-child{font-family:"JetBrains Mono",monospace;font-size:13.5px}
+tr:last-child td{border-bottom:none}
+.pill{font-family:"JetBrains Mono",monospace;font-size:12px;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.pill-hull{background:var(--hull-fill);color:var(--hull)}
+.pill-relint{background:var(--relint-fill);color:var(--relint)}
+.pill-rim{background:#fdeceA;color:var(--rim)}
+
+/* ---------- Summary checklist ---------- */
+.summary{background:var(--ink);color:#dfe7ef;border-radius:var(--radius);padding:30px 32px;margin-top:30px}
+.summary h2{color:#fff}
+.summary .eyebrow{color:var(--amber)}
+.summary ul{list-style:none;padding:0;margin:18px 0 0}
+.summary li{position:relative;padding:11px 0 11px 32px;border-top:1px solid #2a3a4c;font-size:16px}
+.summary li:first-child{border-top:none}
+.summary li::before{content:"";position:absolute;left:4px;top:18px;width:9px;height:9px;
+  border-right:2px solid var(--amber);border-bottom:2px solid var(--amber);transform:rotate(45deg)}
+.summary code{font-family:"JetBrains Mono",monospace;font-size:13.5px;background:#22303f;padding:1px 6px;border-radius:5px;color:#cfe6ff}
+.katex{color:inherit}
+.summary .katex{color:#eef4fa}
+
+.footnote{font-size:13.5px;color:var(--muted);font-family:"JetBrains Mono",monospace;text-align:center;margin-top:60px}
+
+@media (max-width:560px){
+  body{font-size:16.5px}
+  .card,.fig .cap{padding-left:18px;padding-right:18px}
+  .legend .key{font-size:10.5px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.4s ease forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- sticky color grammar -->
+<div class="legend" aria-label="Color legend used in all figures">
+  <div class="legend-inner">
+    <span class="key" style="color:var(--ink);font-weight:500">FIGURE KEY</span>
+    <span class="key"><span class="swatch sw-hull"></span>aff C — the flat</span>
+    <span class="key"><span class="swatch sw-relint"></span>relint C</span>
+    <span class="key"><span class="swatch sw-rim"></span>relative boundary</span>
+    <span class="key"><span class="swatch sw-empty"></span>int C = ∅</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="eyebrow">B&amp;V §2.1.3 · p.23 · mastery target: diagnose</div>
+  <h1>Affine dimension<br>&amp; relative interior</h1>
+  <p class="lead">How big is the flat a set lives in — and where is its “inside” once you stop measuring against all of <span class="m">\mathbb{R}^n</span> and start measuring inside that flat?</p>
+  <div class="tagrow">
+    <span class="tag">builds on <b>§2.1.2 · aff C, dim</b></span>
+    <span class="tag"><b>affine dim</b> C := dim(aff C)</span>
+    <span class="tag"><b>relint</b> = interior inside aff C</span>
+  </div>
+</header>
+
+<!-- ================= §0 ================= -->
+<section id="s0">
+  <div class="sec-head"><span class="sec-num">§0</span><h2>Where we are</h2></div>
+  <p>§2.1.2 handed us two tools: the <strong>affine hull</strong> <span class="m">\operatorname{aff} C</span> (the smallest flat containing <span class="m">C</span>) and the <strong>dimension of an affine set</strong>. This section spends both at once.</p>
+  <p>It defines the <strong>affine dimension</strong> of <em>any</em> set, and then its <strong>relative interior</strong> — the interior computed <em>inside the flat the set lives on</em>, not inside all of <span class="m">\mathbb{R}^n</span>. That second idea is load-bearing: it is the fix for the embarrassing fact that lower-dimensional sets have empty ordinary interior.</p>
+</section>
+
+<!-- ================= §1 ================= -->
+<section id="s1">
+  <div class="sec-head"><span class="sec-num">§1</span><h2>Affine dimension</h2></div>
+  <p>The definition is a one-liner that just composes the two pieces from §2.1.2:</p>
+
+  <div class="def">
+    <div class="label">Definition · affine dimension</div>
+    <div class="m" style="font-size:19px">\operatorname{affine\,dim} C \;:=\; \dim(\operatorname{aff} C)</div>
+    <p style="margin:10px 0 0;font-size:16px;color:var(--ink-soft)">The dimension of the <em>carrying flat</em> — the smallest affine set <span class="m">C</span> sits inside.</p>
+  </div>
+
+  <p>B&amp;V attach a warning: this “is <strong>not always consistent</strong> with other definitions of dimension.” The example to memorize is the unit circle.</p>
+
+  <!-- FIG A: circle -->
+  <div class="fig">
+    <svg viewBox="0 0 760 380" role="img" aria-label="Unit circle with three non-collinear points whose affine hull fills the entire plane.">
+      <!-- plane tint = aff hull -->
+      <rect x="40" y="30" width="680" height="320" fill="var(--hull-fill)"/>
+      <rect x="40" y="30" width="680" height="320" fill="none" stroke="var(--hull)" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="56" y="52" font-family="JetBrains Mono" font-size="13" fill="var(--hull)">aff C = ℝ²  (the whole plane)</text>
+
+      <!-- axes -->
+      <line x1="220" y1="190" x2="540" y2="190" stroke="#b9c4cf" stroke-width="1.5"/>
+      <line x1="380" y1="60"  x2="380" y2="320" stroke="#b9c4cf" stroke-width="1.5"/>
+
+      <!-- circle = C -->
+      <circle cx="380" cy="190" r="105" fill="none" stroke="var(--ink)" stroke-width="3"
+              class="draw" style="--len:660"/>
+
+      <!-- triangle through 3 points (their aff hull spans the plane) -->
+      <polygon points="380,85 471.5,242.5 288.5,242.5" fill="none" stroke="var(--relint)" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>
+
+      <!-- 3 non-collinear points -->
+      <g>
+        <circle cx="380" cy="85"   r="6" fill="var(--rim)"/>
+        <circle cx="471.5" cy="242.5" r="6" fill="var(--rim)"/>
+        <circle cx="288.5" cy="242.5" r="6" fill="var(--rim)"/>
+        <text x="388" y="80"  font-family="JetBrains Mono" font-size="13" fill="var(--rim)">p₁</text>
+        <text x="481" y="248" font-family="JetBrains Mono" font-size="13" fill="var(--rim)">p₂</text>
+        <text x="258" y="248" font-family="JetBrains Mono" font-size="13" fill="var(--rim)">p₃</text>
+      </g>
+
+      <text x="380" y="320" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="var(--ink-soft)">C = { x : x₁² + x₂² = 1 }</text>
+
+      <!-- dimension callouts -->
+      <g font-family="Space Grotesk" font-size="15">
+        <rect x="556" y="120" width="172" height="62" rx="9" fill="#fff" stroke="var(--grid)"/>
+        <text x="566" y="143" fill="var(--muted)" font-size="12">topological dim</text>
+        <text x="566" y="168" fill="var(--ink)" font-weight="700" font-size="20">1</text>
+        <text x="588" y="168" fill="var(--ink-soft)" font-size="13">— it’s a curve</text>
+
+        <rect x="556" y="196" width="172" height="62" rx="9" fill="#fff" stroke="var(--hull)"/>
+        <text x="566" y="219" fill="var(--hull)" font-size="12">affine dim</text>
+        <text x="566" y="244" fill="var(--hull)" font-weight="700" font-size="20">2</text>
+        <text x="588" y="244" fill="var(--ink-soft)" font-size="13">— fills the plane</text>
+      </g>
+    </svg>
+    <div class="cap"><b>Why aff = ℝ².</b> The circle contains three non-collinear points (red); by §2.1.2 their affine hull is the entire plane. So <b>affine dim = 2</b>, even though the curve is topologically 1-dimensional. Affine dimension measures the smallest flat <b>C</b> sits in — it cannot see how <b>C</b> curves <em>within</em> that flat.</div>
+  </div>
+</section>
+
+<!-- ================= §2 ================= -->
+<section id="s2">
+  <div class="sec-head"><span class="sec-num">§2</span><h2>Relative interior</h2></div>
+
+  <p><strong>The motivation.</strong> If <span class="m">\operatorname{affine\,dim} C &lt; n</span>, then <span class="m">C</span> lives in <span class="m">\operatorname{aff} C \neq \mathbb{R}^n</span>. Every <span class="m">\mathbb{R}^n</span>-ball drawn around a point of <span class="m">C</span> immediately pokes <em>off</em> the flat — so it can never fit inside <span class="m">C</span>. A segment has no 2-D interior; a flat square has no 3-D interior. Ordinary interior is empty, and that is useless.</p>
+
+  <p>The fix: measure the interior <strong>relative to the flat</strong>. Keep only the slice of the ball that lies in <span class="m">\operatorname{aff} C</span>.</p>
+
+  <div class="def">
+    <div class="label">Definition · relative interior</div>
+    <div class="m" style="font-size:18px">\operatorname{relint} C \;=\; \{\, x \in C \;:\; B(x,r)\cap \operatorname{aff} C \subseteq C \ \text{ for some } r&gt;0 \,\}</div>
+    <p style="margin:10px 0 0;font-size:16px;color:var(--ink-soft)">where <span class="m">B(x,r)</span> is the ball in any norm. The whole point is the <strong>∩ aff C</strong>: require only the in-flat slice of the ball to stay in <span class="m">C</span> — not the full <span class="m">\mathbb{R}^n</span>-ball (that would be ordinary interior, which is empty here).</p>
+  </div>
+
+  <!-- FIG B: ordinary vs relative -->
+  <div class="fig">
+    <svg viewBox="0 0 760 360" role="img" aria-label="Side by side: a 2D ball around a point on a segment fails the ordinary-interior test, but the ball intersected with the line passes the relative-interior test.">
+      <!-- divider -->
+      <line x1="380" y1="30" x2="380" y2="330" stroke="var(--grid)" stroke-width="1.5" stroke-dasharray="4 5"/>
+
+      <!-- ===== LEFT: ordinary interior ===== -->
+      <text x="40" y="52" font-family="Space Grotesk" font-size="16" font-weight="600" fill="var(--ink)">Ordinary interior in ℝ²</text>
+      <text x="40" y="74" font-family="JetBrains Mono" font-size="12.5" fill="var(--muted)">test:  B(x,r) ⊆ C ?</text>
+
+      <!-- the segment C (line) -->
+      <line x1="60" y1="200" x2="340" y2="200" stroke="var(--ink)" stroke-width="3"/>
+      <text x="300" y="222" font-family="JetBrains Mono" font-size="12.5" fill="var(--ink-soft)">C</text>
+
+      <!-- ball pokes off line: hatched = fails -->
+      <circle cx="200" cy="200" r="46" fill="url(#hatch)" stroke="var(--empty)" stroke-width="2"/>
+      <circle cx="200" cy="200" r="5" fill="var(--ink)"/>
+      <text x="208" y="195" font-family="JetBrains Mono" font-size="12.5" fill="var(--ink)">x</text>
+      <text x="118" y="280" font-family="JetBrains Mono" font-size="12.5" fill="var(--empty)">ball leaves C above &amp; below</text>
+      <g transform="translate(200,148)">
+        <text text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--rim)" font-weight="700">✕</text>
+      </g>
+      <text x="40" y="320" font-family="JetBrains Mono" font-size="13.5" fill="var(--rim)">⇒ int C = ∅   (always fails)</text>
+
+      <!-- ===== RIGHT: relative interior ===== -->
+      <text x="412" y="52" font-family="Space Grotesk" font-size="16" font-weight="600" fill="var(--ink)">Relative interior</text>
+      <text x="412" y="74" font-family="JetBrains Mono" font-size="12.5" fill="var(--muted)">test:  (B(x,r) ∩ aff C) ⊆ C ?</text>
+
+      <!-- aff C = the infinite line -->
+      <line x1="412" y1="200" x2="720" y2="200" stroke="var(--hull)" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="640" y="192" font-family="JetBrains Mono" font-size="12" fill="var(--hull)">aff C (line)</text>
+      <!-- segment C on top -->
+      <line x1="432" y1="200" x2="700" y2="200" stroke="var(--ink)" stroke-width="3"/>
+
+      <!-- ball outline (faint) -->
+      <circle cx="566" cy="200" r="46" fill="none" stroke="var(--empty)" stroke-width="1.5" stroke-dasharray="3 4"/>
+      <!-- slice = chord on line, green = passes -->
+      <line x1="520" y1="200" x2="612" y2="200" stroke="var(--relint)" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="566" cy="200" r="5" fill="var(--ink)"/>
+      <text x="574" y="195" font-family="JetBrains Mono" font-size="12.5" fill="var(--ink)">x</text>
+      <text x="470" y="280" font-family="JetBrains Mono" font-size="12.5" fill="var(--relint)">in-flat slice stays inside C</text>
+      <g transform="translate(566,148)">
+        <text text-anchor="middle" font-family="Space Grotesk" font-size="22" fill="var(--relint)" font-weight="700">✓</text>
+      </g>
+      <text x="412" y="320" font-family="JetBrains Mono" font-size="13.5" fill="var(--relint)">⇒ x ∈ relint C</text>
+
+      <defs>
+        <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="7" height="7" fill="#eef2f6"/>
+          <line x1="0" y1="0" x2="0" y2="7" stroke="var(--empty)" stroke-width="2"/>
+        </pattern>
+      </defs>
+    </svg>
+    <div class="cap"><b>Same point, same ball — two questions.</b> On the left the full 2-D ball must fit in the 1-D segment: impossible, so <b>int C = ∅</b>. On the right we keep only <b>B(x,r) ∩ aff C</b> (the green chord on the line). It stays inside C, so <b>x ∈ relint C</b>. The ∩ aff C does not merely shrink the radius — it drops the off-flat directions entirely.</div>
+  </div>
+
+  <div class="def" style="border-left-color:var(--rim);background:#fdf3f1">
+    <div class="label" style="color:var(--rim)">Definition · relative boundary</div>
+    <div class="m" style="font-size:18px">\operatorname{relbd} C \;=\; \operatorname{cl} C \,\setminus\, \operatorname{relint} C</div>
+    <p style="margin:10px 0 0;font-size:16px;color:var(--ink-soft)">Closure minus relative interior — the exact analogue of “boundary = closure − interior,” but with relint in place of int.</p>
+  </div>
+
+  <div class="note warn">
+    <div class="label">Don’t over-read</div>
+    relint is <strong>not</strong> automatically nonempty. It is nonempty only when <span class="m">C</span> is “solid” within <span class="m">\operatorname{aff} C</span> — true for the segment and the square, <strong>false for the circle</strong>, whose aff hull is the full plane, so <span class="m">\operatorname{relint} C = \varnothing</span>.
+  </div>
+</section>
+
+<!-- ================= §3 ================= -->
+<section id="s3">
+  <div class="sec-head"><span class="sec-num">§3</span><h2>Example 2.2 — the flat square in ℝ³</h2></div>
+
+  <div class="card" style="text-align:center">
+    <div class="m" style="font-size:18px">C = \{\, x \in \mathbb{R}^3 \;:\; -1 \le x_1 \le 1,\; -1 \le x_2 \le 1,\; x_3 = 0 \,\}</div>
+  </div>
+
+  <!-- FIG C: flat square in R3 -->
+  <div class="fig">
+    <svg viewBox="0 0 760 420" role="img" aria-label="An isometric flat square lying in the x3 equals 0 plane. The plane is the affine hull, the open square is the relative interior, the four edges are the relative boundary, and a 3D ball pokes out of the plane to show the ordinary interior is empty.">
+      <!-- aff C : the x1x2 plane (large parallelogram) -->
+      <polygon points="120,250 470,170 700,250 350,330" fill="var(--hull-fill)" stroke="var(--hull)" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="610" y="232" font-family="JetBrains Mono" font-size="13" fill="var(--hull)">aff C = { x₃ = 0 }</text>
+
+      <!-- the square (smaller parallelogram on the plane) : relint fill -->
+      <polygon points="270,255 410,223 545,255 405,287" fill="var(--relint-fill)" stroke="none"/>
+      <!-- relative boundary : the four edges (wireframe) -->
+      <polygon points="270,255 410,223 545,255 405,287" fill="none" stroke="var(--rim)" stroke-width="3.5"/>
+      <text x="402" y="272" text-anchor="middle" font-family="JetBrains Mono" font-size="12.5" fill="var(--relint)">relint C</text>
+
+      <!-- 3D ball poking out of the plane -->
+      <ellipse cx="200" cy="200" rx="40" ry="40" fill="none" stroke="var(--empty)" stroke-width="1.8" stroke-dasharray="3 4"/>
+      <!-- slice of ball lying in plane -->
+      <ellipse cx="200" cy="226" rx="40" ry="11" fill="none" stroke="var(--empty)" stroke-width="1.2"/>
+      <circle cx="200" cy="222" r="4.5" fill="var(--ink)"/>
+      <text x="150" y="150" font-family="JetBrains Mono" font-size="12" fill="var(--empty)">any 3-D ball has</text>
+      <text x="150" y="166" font-family="JetBrains Mono" font-size="12" fill="var(--empty)">points x₃ ≠ 0 ∉ C</text>
+      <line x1="200" y1="172" x2="200" y2="284" stroke="var(--empty)" stroke-width="1" stroke-dasharray="2 3"/>
+
+      <!-- axis triad -->
+      <g transform="translate(95,360)" font-family="JetBrains Mono" font-size="13">
+        <line x1="0" y1="0" x2="42" y2="-13" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="46" y="-13" fill="var(--ink-soft)">x₁</text>
+        <line x1="0" y1="0" x2="40" y2="14" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="44" y="20" fill="var(--ink-soft)">x₂</text>
+        <line x1="0" y1="0" x2="0" y2="-40" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="-18" y="-42" fill="var(--ink-soft)">x₃</text>
+      </g>
+      <defs>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-soft)"/>
+        </marker>
+      </defs>
+    </svg>
+    <div class="cap"><b>One picture, four answers.</b> The blue sheet is <b>aff C = {x₃ = 0}</b> (affine dim 2). The grey ball shows why <b>int C = ∅</b> in ℝ³ — it always catches points with x₃ ≠ 0. The green fill is <b>relint C</b>, the open square. The coral wireframe is the <b>relative boundary</b>.</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Quantity</th><th>Result for the flat square</th></tr></thead>
+    <tbody>
+      <tr><td>aff C</td><td><span class="pill pill-hull">{ x₃ = 0 }</span> &nbsp;the x₁x₂-plane · affine dim 2</td></tr>
+      <tr><td>int C (in ℝ³)</td><td><span class="pill" style="background:#eef2f6;color:var(--empty)">∅</span> &nbsp;any 3-D ball has points x₃ ≠ 0 ∉ C</td></tr>
+      <tr><td>relint C</td><td><span class="pill pill-relint">−1 &lt; x₁ &lt; 1, −1 &lt; x₂ &lt; 1, x₃ = 0</span> &nbsp;the open square</td></tr>
+      <tr><td>ℝ³ boundary</td><td>cl C − int C = cl C = C &nbsp;<em>(degenerate — the whole square, since C is closed)</em></td></tr>
+      <tr><td>relative boundary</td><td><span class="pill pill-rim">max{|x₁|,|x₂|} = 1, x₃ = 0</span> &nbsp;the wireframe (four edges)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- FIG D: relbd decomposition -->
+  <div class="fig">
+    <svg viewBox="0 0 760 230" role="img" aria-label="The closure of the square decomposes into its relative interior (the open square fill) plus its relative boundary (the rim).">
+      <!-- cl C -->
+      <g transform="translate(70,40)">
+        <rect x="0" y="0" width="140" height="140" fill="var(--relint-fill)" stroke="var(--rim)" stroke-width="3.5"/>
+        <text x="70" y="170" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="var(--ink)">cl C</text>
+      </g>
+      <text x="240" y="115" font-family="Space Grotesk" font-size="30" fill="var(--ink-soft)">=</text>
+
+      <!-- relint -->
+      <g transform="translate(300,40)">
+        <rect x="0" y="0" width="140" height="140" fill="var(--relint-fill)" stroke="var(--relint)" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="70" y="78" text-anchor="middle" font-family="JetBrains Mono" font-size="12.5" fill="var(--relint)">open</text>
+        <text x="70" y="170" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="var(--relint)">relint C</text>
+      </g>
+      <text x="470" y="115" font-family="Space Grotesk" font-size="30" fill="var(--ink-soft)">⊕</text>
+
+      <!-- relbd -->
+      <g transform="translate(530,40)">
+        <rect x="0" y="0" width="140" height="140" fill="none" stroke="var(--rim)" stroke-width="3.5"/>
+        <text x="70" y="170" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="var(--rim)">relbd C</text>
+      </g>
+    </svg>
+    <div class="cap"><b>relbd C = cl C − relint C.</b> The closed square splits cleanly into the open square (relint) and the rim (relative boundary). Note this uses <b>relint</b>, not int — the ordinary boundary here would be the whole square, which tells you nothing.</div>
+  </div>
+</section>
+
+<!-- ================= §4 ================= -->
+<section id="s4">
+  <div class="sec-head"><span class="sec-num">§4</span><h2>Expert lens — how to diagnose</h2></div>
+
+  <p>Four traps separate “recognize” from “diagnose”:</p>
+
+  <div class="card">
+    <h3>Three “dimensions” that disagree</h3>
+    <table>
+      <thead><tr><th>Notion</th><th>What it measures</th><th>Circle</th></tr></thead>
+      <tbody>
+        <tr><td>ambient</td><td>the space C sits in</td><td>2</td></tr>
+        <tr><td>affine dim</td><td>dim(aff C) — smallest flat</td><td><span class="pill pill-hull">2</span></tr>
+        <tr><td>topological</td><td>local manifold dimension</td><td>1</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:14px 0 0;font-size:16px;color:var(--ink-soft)">Affine dim is none of the other two by default. The circle pins all three apart.</p>
+  </div>
+
+  <div class="note">
+    <div class="label">The two everyone gets wrong</div>
+    <p style="margin:.2em 0"><strong>1.</strong> relint uses <span class="m">\cap \operatorname{aff} C</span> — it <em>restricts the ball to the flat</em>, it does not merely shrink the radius. And relint may still be empty (the circle).</p>
+    <p style="margin:.4em 0 0"><strong>2.</strong> Relative boundary is <span class="m">\operatorname{cl} C \setminus \operatorname{relint} C</span> — <em>minus relint, not minus int</em>. For flat sets these differ: the ordinary boundary is degenerate (= cl C), while the relative boundary is the genuine rim.</p>
+  </div>
+
+  <h3 style="margin-top:30px">The procedure: compute from the definition</h3>
+  <!-- FIG E: procedure flow -->
+  <div class="fig">
+    <svg viewBox="0 0 760 200" role="img" aria-label="Four-step procedure: find aff C, then test ball intersect aff C inside C to get relint, then relative boundary equals closure minus relint.">
+      <defs>
+        <marker id="flow" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--ink-soft)"/>
+        </marker>
+      </defs>
+      <g font-family="Space Grotesk">
+        <!-- step 1 -->
+        <rect x="20" y="70" width="160" height="62" rx="10" fill="#fff" stroke="var(--hull)" stroke-width="1.8"/>
+        <text x="100" y="95" text-anchor="middle" font-size="13" fill="var(--muted)">step 1</text>
+        <text x="100" y="116" text-anchor="middle" font-size="15" fill="var(--hull)" font-weight="600">find aff C</text>
+        <line x1="184" y1="101" x2="212" y2="101" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#flow)"/>
+        <!-- step 2 -->
+        <rect x="216" y="62" width="180" height="78" rx="10" fill="#fff" stroke="var(--relint)" stroke-width="1.8"/>
+        <text x="306" y="86" text-anchor="middle" font-size="13" fill="var(--muted)">step 2</text>
+        <text x="306" y="107" text-anchor="middle" font-family="JetBrains Mono" font-size="12.5" fill="var(--relint)">B(x,r) ∩ aff C ⊆ C</text>
+        <text x="306" y="126" text-anchor="middle" font-size="13.5" fill="var(--relint)" font-weight="600">⇒ relint C</text>
+        <line x1="400" y1="101" x2="428" y2="101" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#flow)"/>
+        <!-- step 3 -->
+        <rect x="432" y="62" width="200" height="78" rx="10" fill="#fff" stroke="var(--rim)" stroke-width="1.8"/>
+        <text x="532" y="86" text-anchor="middle" font-size="13" fill="var(--muted)">step 3</text>
+        <text x="532" y="107" text-anchor="middle" font-family="JetBrains Mono" font-size="12.5" fill="var(--rim)">cl C \ relint C</text>
+        <text x="532" y="126" text-anchor="middle" font-size="13.5" fill="var(--rim)" font-weight="600">⇒ relative boundary</text>
+        <!-- shortcut note -->
+        <text x="648" y="98" font-family="JetBrains Mono" font-size="11.5" fill="var(--amber)">tidy box?</text>
+        <text x="648" y="114" font-family="JetBrains Mono" font-size="11.5" fill="var(--amber)">strict ineqs</text>
+        <text x="648" y="130" font-family="JetBrains Mono" font-size="11.5" fill="var(--amber)">shortcut ✓</text>
+      </g>
+    </svg>
+    <div class="cap"><b>Always derive, don’t pattern-match.</b> Find aff C; get relint from <b>B(x,r) ∩ aff C ⊆ C</b>; then relbd = cl C − relint. The “take the strict inequalities / open version” shortcut works for tidy closed-box sets like the segment and square — but that is a feature of those examples, <em>not</em> a general rule.</div>
+  </div>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary">
+  <div class="summary">
+    <div class="eyebrow">2026-06-20 · bv.2.1.3</div>
+    <h2>Quick review</h2>
+    <ul>
+      <li><strong>Affine dimension</strong> = <span class="m">\dim(\operatorname{aff} C)</span> — the smallest flat containing C. Can exceed topological dim: unit circle → affine 2, topological 1.</li>
+      <li><strong>relint C</strong> = <span class="m">\{x\in C : B(x,r)\cap \operatorname{aff} C \subseteq C\}</span>. The <code>∩ aff C</code> is the whole point — not a smaller ℝⁿ ball.</li>
+      <li><strong>Why relint exists:</strong> a set of affine dim &lt; n has empty ordinary interior in ℝⁿ. relint repairs it — when C is solid in its flat. It can still be <span class="m">\varnothing</span> (the circle).</li>
+      <li><strong>Relative boundary</strong> = <span class="m">\operatorname{cl} C \setminus \operatorname{relint} C</span> &nbsp;(minus relint, <em>not</em> int).</li>
+      <li><strong>Example 2.2 (flat square):</strong> aff = {x₃ = 0}, int = ∅, relint = open square, relbd = wireframe.</li>
+      <li><strong>Compute from the definition</strong>; the strict-inequality shortcut is only for tidy closed-box sets.</li>
+    </ul>
+  </div>
+  <p class="footnote">Boyd &amp; Vandenberghe · Convex Optimization · §2.1.3, p.23</p>
+</section>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  // render every .m span and any inline $...$ as math
+  document.querySelectorAll(".m").forEach(function(el){
+    try{ katex.render(el.textContent, el, {throwOnError:false, displayMode:false}); }catch(e){}
+  });
+  renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],
+    throwOnError:false
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Convex Sets — B&V §2.1.4</title>
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$', '$$']] },
+  svg: { fontCache: 'global' },
+  startup: {
+    ready: () => { MathJax.startup.defaultReady(); document.documentElement.classList.add('mj-ready'); }
+  }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  /* ---- chalkboard palette ---- */
+  --board-deep:#13201b;     /* deepest slate-green */
+  --board:#1a2a23;          /* board surface */
+  --board-panel:#21342b;    /* raised panel */
+  --board-line:#33473d;     /* faint rule */
+  --chalk:#eef1e6;          /* warm chalk white */
+  --chalk-soft:#cdd6c8;
+  --chalk-dim:#8ea096;      /* muted */
+  --yellow:#f0cf6c;         /* primary accent / key idea */
+  --coral:#e8836b;          /* the new requirement / refute */
+  --cyan:#7ec8c1;           /* convex region / "good" */
+  --violet:#b6a4e0;         /* affine / whole line */
+  --green:#9ec57f;          /* subspace */
+
+  --maxw:1080px;
+  --r:14px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 700px at 78% -8%, #243a30 0%, rgba(36,58,48,0) 60%),
+    radial-gradient(900px 600px at 8% 12%, #1f3128 0%, rgba(31,49,40,0) 55%),
+    var(--board-deep);
+  color:var(--chalk);
+  font-family:"Newsreader",Georgia,serif;
+  font-size:18px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* faint chalk dust / board grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode:screen;
+}
+
+.wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 26px}
+
+/* ---------- type ---------- */
+.hand{font-family:"Caveat",cursive;font-weight:600;line-height:1}
+.mono{font-family:"Space Mono",monospace}
+
+h2{
+  font-family:"Newsreader",serif;font-weight:600;font-size:clamp(1.5rem,3vw,2.05rem);
+  letter-spacing:.2px;margin:0 0 .2em;color:var(--chalk);
+}
+h3{font-weight:600;font-size:1.18rem;margin:1.6em 0 .35em;color:var(--chalk)}
+p{margin:.7em 0;color:var(--chalk-soft)}
+strong{color:var(--chalk);font-weight:600}
+em{color:var(--yellow);font-style:italic}
+a{color:var(--cyan)}
+
+/* MathJax sizing — keep equations from looming */
+mjx-container{color:var(--chalk)!important}
+mjx-container[display="true"]{margin:.5em 0!important}
+
+/* ---------- hero ---------- */
+.hero{padding:74px 0 38px;text-align:center;position:relative}
+.eyebrow{
+  font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:18px;
+}
+.hero h1{
+  margin:0;font-family:"Caveat",cursive;font-weight:700;
+  font-size:clamp(3.4rem,10vw,6.6rem);line-height:.92;color:var(--chalk);
+  text-shadow:0 1px 0 rgba(0,0,0,.3);
+}
+.hero h1 .acc{color:var(--yellow)}
+.hero .sub{
+  max-width:640px;margin:14px auto 0;color:var(--chalk-dim);
+  font-size:1.12rem;font-style:italic;
+}
+.tagrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+.tag{
+  font-family:"Space Mono",monospace;font-size:.7rem;letter-spacing:.08em;
+  color:var(--chalk-dim);border:1px solid var(--board-line);
+  padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.015);
+}
+
+/* the one-idea banner — the page's thesis & signature */
+.thesis{
+  margin:30px auto 0;max-width:760px;border:1px dashed var(--coral);
+  border-radius:var(--r);padding:18px 22px;background:rgba(232,131,107,.06);
+  display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;
+}
+.thesis .hand{font-size:1.7rem;color:var(--coral)}
+.thesis .txt{color:var(--chalk-soft);font-size:1rem}
+.thesis .txt b{color:var(--chalk)}
+
+/* ---------- section frame ---------- */
+section{padding:46px 0;border-top:1px solid var(--board-line);position:relative}
+.sec-no{
+  font-family:"Space Mono",monospace;font-size:.74rem;letter-spacing:.2em;
+  color:var(--cyan);text-transform:uppercase;display:block;margin-bottom:6px;
+}
+.lead{font-size:1.06rem;color:var(--chalk-soft)}
+.cite{font-family:"Space Mono",monospace;font-size:.7rem;color:var(--chalk-dim);letter-spacing:.05em}
+
+/* panels & figures */
+.panel{
+  background:linear-gradient(180deg,var(--board-panel),var(--board));
+  border:1px solid var(--board-line);border-radius:var(--r);
+  padding:20px 22px;margin:18px 0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.fig{margin:22px 0}
+.fig svg{width:100%;height:auto;display:block;border-radius:var(--r);
+  background:rgba(0,0,0,.16);border:1px solid var(--board-line)}
+.cap{
+  font-family:"Space Mono",monospace;font-size:.74rem;color:var(--chalk-dim);
+  margin-top:10px;text-align:center;letter-spacing:.02em;line-height:1.5;
+}
+.cap b{color:var(--cyan)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* chalk callout */
+.callout{
+  border-left:3px solid var(--yellow);padding:4px 0 4px 18px;margin:18px 0;
+  color:var(--chalk-soft);
+}
+.callout.coral{border-color:var(--coral)}
+.callout .lbl{
+  font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--yellow);display:block;margin-bottom:3px;
+}
+.callout.coral .lbl{color:var(--coral)}
+
+/* the = vs <= comparison block */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--board-line);
+  border-radius:var(--r);overflow:hidden;margin:18px 0;font-family:"Space Mono",monospace}
+.cmp>div{padding:18px 20px}
+.cmp .L{background:rgba(182,164,224,.06);border-right:1px solid var(--board-line)}
+.cmp .R{background:rgba(126,200,193,.07)}
+.cmp .h{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.cmp .L .h{color:var(--violet)}.cmp .R .h{color:var(--cyan)}
+.cmp .eq{font-size:1rem;color:var(--chalk);margin:6px 0}
+.cmp .nb{font-size:.82rem;color:var(--chalk-dim);margin-top:8px}
+.cmp .nb b{color:var(--coral)}
+@media(max-width:620px){.cmp{grid-template-columns:1fr}.cmp .L{border-right:none;border-bottom:1px solid var(--board-line)}}
+
+/* interactive controls */
+.controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.controls label{font-family:"Space Mono",monospace;font-size:.78rem;color:var(--chalk-dim)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;height:3px;border-radius:3px;
+  background:var(--board-line);outline:none;width:220px;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--yellow);border:2px solid var(--board-deep);cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;background:var(--yellow);
+  border:2px solid var(--board-deep);cursor:pointer;
+}
+.readout{font-family:"Space Mono",monospace;font-size:.82rem;color:var(--yellow)}
+.btn{
+  font-family:"Space Mono",monospace;font-size:.74rem;letter-spacing:.05em;
+  color:var(--chalk);background:transparent;border:1px solid var(--chalk-dim);
+  border-radius:999px;padding:7px 15px;cursor:pointer;transition:.18s;
+}
+.btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.btn[aria-pressed=true]{background:var(--yellow);color:var(--board-deep);border-color:var(--yellow)}
+.toggle-extend{margin-left:auto}
+
+/* hierarchy ladder */
+.ladder{display:grid;gap:0;margin:18px 0}
+.rung{
+  display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:center;
+  padding:18px 20px;border:1px solid var(--board-line);
+}
+.rung:first-child{border-radius:var(--r) var(--r) 0 0}
+.rung:last-child{border-radius:0 0 var(--r) var(--r)}
+.rung+.rung{border-top:none}
+.rung .name{font-family:"Caveat",cursive;font-size:1.7rem}
+.rung .name.s{color:var(--green)}
+.rung .name.a{color:var(--violet)}
+.rung .name.c{color:var(--cyan)}
+.rung .desc{color:var(--chalk-dim);font-size:.95rem}
+.rung .desc b{color:var(--chalk)}
+.relax{font-family:"Space Mono",monospace;font-size:.68rem;color:var(--coral);
+  letter-spacing:.1em;display:block;margin-top:4px}
+
+/* summary cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+.card{
+  background:var(--board-panel);border:1px solid var(--board-line);
+  border-radius:var(--r);padding:18px 20px;
+}
+.card h4{margin:0 0 6px;font-family:"Space Mono",monospace;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--yellow)}
+.card p{margin:0;font-size:.96rem;color:var(--chalk-soft)}
+
+/* expert lens checklist */
+.lens{list-style:none;padding:0;margin:16px 0}
+.lens li{
+  position:relative;padding:12px 12px 12px 40px;border-bottom:1px solid var(--board-line);
+  color:var(--chalk-soft);font-size:1rem;
+}
+.lens li:last-child{border-bottom:none}
+.lens li::before{
+  content:"✓";position:absolute;left:12px;top:12px;color:var(--cyan);
+  font-family:"Space Mono",monospace;font-weight:700;
+}
+.lens li b{color:var(--chalk)}
+
+footer{padding:50px 0 70px;text-align:center;color:var(--chalk-dim);
+  font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.06em}
+
+::selection{background:var(--yellow);color:var(--board-deep)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- ====================== HERO ====================== -->
+<header class="hero wrap">
+  <div class="eyebrow">Boyd &amp; Vandenberghe · §2.1.4 · pp. 23–25</div>
+  <h1>Convex <span class="acc">Sets</span></h1>
+  <p class="sub">The destination of §2.1. We keep everything about an affine set — and change exactly one thing.</p>
+  <div class="tagrow">
+    <span class="tag">segment, not line</span>
+    <span class="tag">θ ≥ 0</span>
+    <span class="tag">mastery: design</span>
+    <span class="tag">construct &amp; verify</span>
+  </div>
+
+  <div class="thesis reveal">
+    <span class="hand">the whole idea →</span>
+    <span class="txt">An affine set is closed under the whole <b>line</b>. A convex set is closed only under the <b>segment</b>. The single new rule that does this: the weights must be <b>nonnegative</b>.</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ====================== 0. WHERE WE ARE ====================== -->
+<section class="reveal">
+  <span class="sec-no">00 — orientation</span>
+  <h2>Where we are</h2>
+  <p class="lead">§2.1.2 defined the <em>affine set</em>: closed under the whole line through any two of its points. §2.1.4 relaxes one thing — keep only the <strong>segment</strong>, not the whole line. Equivalently: require the weights to be nonnegative <em>as well as</em> summing to one. That relaxation is the entire content of the word “convex.”</p>
+  <div class="callout">
+    <span class="lbl">the = vs ≤ flag, in geometry</span>
+    Affine lived under “any scalars, weights sum to 1.” Convex adds <strong>θ ≥ 0</strong>. Same algebra as linear (<span class="mono">=</span>, any scalars) vs convex (<span class="mono">≤</span>, convex combination) back in §1.1.
+  </div>
+</section>
+
+<!-- ====================== 1. DEFINITION ====================== -->
+<section class="reveal">
+  <span class="sec-no">01 — definition</span>
+  <h2>The segment, drawn</h2>
+  <p class="lead"><strong>\(C\) is convex</strong> if the line segment between any two of its points lies in \(C\): for any \(x_1,x_2\in C\) and any \(\theta\) with \(0\le\theta\le1\),</p>
+  $$\theta x_1 + (1-\theta)x_2 \in C.$$
+
+  <div class="fig">
+    <svg id="segSvg" viewBox="0 0 720 300" role="img" aria-label="A point sliding along the segment between two points; toggle to show the whole affine line.">
+      <defs>
+        <filter id="chalk"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter>
+      </defs>
+      <!-- convex blob C -->
+      <path id="blob" d="M120,150 C120,70 250,40 360,55 C480,72 600,70 615,150 C628,222 500,262 360,255 C220,248 120,232 120,150 Z"
+            fill="rgba(126,200,193,0.10)" stroke="var(--cyan)" stroke-width="2" filter="url(#chalk)"/>
+      <text x="150" y="105" class="svg-lbl" fill="var(--cyan)" font-family="Caveat" font-size="30">C</text>
+      <!-- affine line (hidden by default) -->
+      <line id="affLine" x1="-200" y1="0" x2="0" y2="0" stroke="var(--violet)" stroke-width="1.6" stroke-dasharray="7 7" opacity="0"/>
+      <!-- the segment -->
+      <line id="segLine" x1="0" y1="0" x2="0" y2="0" stroke="var(--yellow)" stroke-width="3"/>
+      <!-- endpoints -->
+      <circle id="p1" r="6" fill="var(--chalk)"/>
+      <circle id="p2" r="6" fill="var(--chalk)"/>
+      <text id="t1" font-family="Space Mono" font-size="15" fill="var(--chalk)">x₁</text>
+      <text id="t2" font-family="Space Mono" font-size="15" fill="var(--chalk)">x₂</text>
+      <!-- moving point -->
+      <circle id="pm" r="8" fill="var(--yellow)" stroke="var(--board-deep)" stroke-width="2"/>
+      <text id="tm" font-family="Space Mono" font-size="13" fill="var(--yellow)"></text>
+    </svg>
+    <div class="controls">
+      <label for="theta">θ</label>
+      <input id="theta" type="range" min="0" max="1" step="0.01" value="0.62">
+      <span class="readout" id="thetaOut">θ = 0.62 · point = 0.62·x₁ + 0.38·x₂</span>
+      <button class="btn toggle-extend" id="extendBtn" aria-pressed="false">show whole line (affine)</button>
+    </div>
+    <p class="cap">Drag θ across <b>[0,1]</b> and the yellow point stays inside <b>C</b>. Press the button to let θ run over all of ℝ — the dashed <span style="color:var(--violet)">violet</span> line shoots past the endpoints. That extra reach is exactly what convexity drops.</p>
+  </div>
+
+  <div class="cmp">
+    <div class="L">
+      <div class="h">affine — the whole line</div>
+      <div class="eq">θx₁ + (1−θ)x₂ ∈ C</div>
+      <div class="eq" style="color:var(--violet)">for ALL θ ∈ ℝ</div>
+      <div class="nb">weights sum to 1, any sign</div>
+    </div>
+    <div class="R">
+      <div class="h">convex — only the segment</div>
+      <div class="eq">θx₁ + (1−θ)x₂ ∈ C</div>
+      <div class="eq" style="color:var(--cyan)">for 0 ≤ θ ≤ 1</div>
+      <div class="nb">weights sum to 1 <b>AND θ ≥ 0</b> ← the lone new requirement</div>
+    </div>
+  </div>
+  <p>The weights still sum to one in both columns. The <em>only</em> difference is nonnegativity of \(\theta\) (and therefore of \(1-\theta\)).</p>
+</section>
+
+<!-- ====================== 2. INTUITION + HIERARCHY ====================== -->
+<section class="reveal">
+  <span class="sec-no">02 — intuition &amp; hierarchy</span>
+  <h2>“Every point can see every other point”</h2>
+  <p class="lead">A set is convex when every point can be seen by every other point along an unobstructed straight path that stays in the set. Convex sets have no notches, no holes, no dents to hide behind.</p>
+
+  <div class="grid3">
+    <div class="fig">
+      <svg viewBox="0 0 220 200" aria-label="A disk: convex. An interior chord stays inside.">
+        <circle cx="110" cy="100" r="78" fill="rgba(126,200,193,0.10)" stroke="var(--cyan)" stroke-width="2"/>
+        <line x1="55" y1="70" x2="160" y2="135" stroke="var(--yellow)" stroke-width="2.5"/>
+        <circle cx="55" cy="70" r="4" fill="var(--chalk)"/><circle cx="160" cy="135" r="4" fill="var(--chalk)"/>
+        <text x="92" y="100" font-family="Caveat" font-size="24" fill="var(--cyan)">convex</text>
+      </svg>
+      <p class="cap">Disk — every chord <b>inside</b>. ✓</p>
+    </div>
+    <div class="fig">
+      <svg viewBox="0 0 220 200" aria-label="A crescent: not convex. A chord leaves the set.">
+        <path d="M70,22 A82,82 0 1 0 70,178 A60,82 0 1 1 70,22 Z" fill="rgba(232,131,107,0.10)" stroke="var(--coral)" stroke-width="2"/>
+        <line x1="78" y1="40" x2="78" y2="160" stroke="var(--coral)" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <circle cx="78" cy="40" r="4" fill="var(--chalk)"/><circle cx="78" cy="160" r="4" fill="var(--chalk)"/>
+        <text x="96" y="105" font-family="Caveat" font-size="22" fill="var(--coral)">✗ leaks out</text>
+      </svg>
+      <p class="cap">Crescent — chord exits. <b style="color:var(--coral)">refuted</b></p>
+    </div>
+    <div class="fig">
+      <svg viewBox="0 0 220 200" aria-label="A star: not convex. A chord between two points crosses outside.">
+        <polygon points="110,20 132,82 198,82 145,122 165,185 110,148 55,185 75,122 22,82 88,82"
+                 fill="rgba(232,131,107,0.10)" stroke="var(--coral)" stroke-width="2"/>
+        <line x1="132" y1="82" x2="88" y2="82" stroke="var(--coral)" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <circle cx="132" cy="82" r="4" fill="var(--chalk)"/><circle cx="88" cy="82" r="4" fill="var(--chalk)"/>
+        <text x="70" y="70" font-family="Caveat" font-size="20" fill="var(--coral)">✗ cuts across</text>
+      </svg>
+      <p class="cap">Star — chord crosses the notch. <b style="color:var(--coral)">refuted</b></p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="callout">
+      <span class="lbl">to prove convex</span>
+      Take <em>arbitrary</em> \(x_1,x_2\in C\) and <em>arbitrary</em> \(\theta\in[0,1]\); show \(\theta x_1+(1-\theta)x_2\in C\). It must hold for every pair.
+    </div>
+    <div class="callout coral">
+      <span class="lbl">to refute convex</span>
+      Exhibit <strong>one</strong> bad segment — a single pair whose connector leaves \(C\). One counterexample is enough.
+    </div>
+  </div>
+
+  <h3>The hierarchy: each step relaxes what the set must contain</h3>
+  <p>Every affine set is convex — it holds the whole line, so it certainly holds the segment. The converse fails. <strong>Careful:</strong> a convex set is <em>not</em> “an affine set” — it is a weaker, larger object.</p>
+  <div class="ladder">
+    <div class="rung">
+      <span class="name s">subspace</span>
+      <span class="desc">all linear combinations — <b>any weights, no sum constraint</b>, must contain the origin.</span>
+    </div>
+    <div class="rung">
+      <span class="name a">affine set</span>
+      <span class="desc">\(\sum\theta_i=1\), any sign — the whole line through any two points.
+        <span class="relax">↑ relax: drop “contains 0” / free the sum</span></span>
+    </div>
+    <div class="rung">
+      <span class="name c">convex set</span>
+      <span class="desc">\(\sum\theta_i=1\) <b>AND</b> \(\theta_i\ge0\) — only the segment.
+        <span class="relax">↑ relax further: add θ ≥ 0, keep only the segment</span></span>
+    </div>
+  </div>
+  <p class="mono" style="text-align:center;color:var(--chalk-dim);font-size:.9rem">subspace ⊆ affine set ⊆ convex set</p>
+</section>
+
+<!-- ====================== 3. CONVEX COMBINATIONS ====================== -->
+<section class="reveal">
+  <span class="sec-no">03 — convex combinations</span>
+  <h2>From a segment to a mixture</h2>
+  <p class="lead">A <strong>convex combination</strong> of \(x_1,\dots,x_k\) is</p>
+  $$\theta_1 x_1 + \cdots + \theta_k x_k, \qquad \theta_1+\cdots+\theta_k = 1,\quad \theta_i \ge 0.$$
+  <p>That is: an affine combination <em>plus</em> nonnegativity. (This is a statement about the <strong>combination</strong>, not about a set.) Two ways to read it:</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3 style="margin-top:0">Geometric reading</h3>
+      <p>The combination lands in the <em>filled</em> region the points span: a <strong>segment</strong> (2 points), a <strong>triangle</strong> (3), a <strong>polytope</strong> (more).</p>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">Probabilistic reading</h3>
+      <p>A <strong>mixture / weighted average</strong>: \(\theta_i\) is the fraction of \(x_i\). The weights are a probability distribution over the points.</p>
+    </div>
+  </div>
+
+  <div class="fig">
+    <svg id="triSvg" viewBox="0 0 720 320" aria-label="A filled triangle with a draggable interior point shown as a convex combination of the three vertices, with weight bars.">
+      <!-- filled triangle -->
+      <polygon id="tri" points="120,260 360,60 600,250" fill="rgba(126,200,193,0.10)" stroke="var(--cyan)" stroke-width="2"/>
+      <!-- vertices -->
+      <circle cx="120" cy="260" r="6" fill="var(--chalk)"/><text x="92" y="278" font-family="Space Mono" font-size="14" fill="var(--chalk)">x₁</text>
+      <circle cx="360" cy="60"  r="6" fill="var(--chalk)"/><text x="350" y="48" font-family="Space Mono" font-size="14" fill="var(--chalk)">x₂</text>
+      <circle cx="600" cy="250" r="6" fill="var(--chalk)"/><text x="612" y="266" font-family="Space Mono" font-size="14" fill="var(--chalk)">x₃</text>
+      <!-- spokes -->
+      <g id="spokes" stroke="var(--board-line)" stroke-width="1"></g>
+      <!-- moving point -->
+      <circle id="tp" cx="350" cy="200" r="9" fill="var(--yellow)" stroke="var(--board-deep)" stroke-width="2" style="cursor:grab"/>
+      <!-- weight bars -->
+      <g font-family="Space Mono" font-size="13" fill="var(--chalk-dim)">
+        <text x="640" y="70">θ₁</text><rect x="664" y="58" height="12" rx="3" fill="var(--green)" id="b1"/>
+        <text x="640" y="98">θ₂</text><rect x="664" y="86" height="12" rx="3" fill="var(--cyan)" id="b2"/>
+        <text x="640" y="126">θ₃</text><rect x="664" y="114" height="12" rx="3" fill="var(--violet)" id="b3"/>
+      </g>
+    </svg>
+    <div class="controls">
+      <span class="readout" id="triOut">θ = (0.33, 0.34, 0.33) · Σ = 1.00</span>
+      <span class="cap" style="margin:0">drag the yellow point — the bars always sum to 1, and the point never leaves the triangle</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">the equivalence</span>
+    A set is convex <strong>⟺</strong> it contains <em>every</em> convex combination of its points. The segment definition (\(k=2\)) already implies the general case.
+  </div>
+</section>
+
+<!-- ====================== 4. CONVEX HULL ====================== -->
+<section class="reveal">
+  <span class="sec-no">04 — convex hull</span>
+  <h2>The smallest convex set around a cloud</h2>
+  <p class="lead">The <strong>convex hull</strong> \(\operatorname{conv}C\) is the set of all convex combinations of points of \(C\):</p>
+  $$\operatorname{conv}C = \{\,\theta_1x_1+\cdots+\theta_kx_k \mid x_i\in C,\ \theta_i\ge0,\ \textstyle\sum_i\theta_i=1\,\}.$$
+
+  <div class="fig">
+    <svg id="hullSvg" viewBox="0 0 720 300" aria-label="A scattered cloud of points; press the button to stretch the convex hull around them like a rubber band.">
+      <g id="hullPolyG">
+        <polygon id="hullPoly" points="" fill="rgba(240,207,108,0.08)" stroke="var(--yellow)" stroke-width="2.5" stroke-dasharray="1300" stroke-dashoffset="1300"/>
+      </g>
+      <g id="dots"></g>
+    </svg>
+    <div class="controls">
+      <button class="btn" id="wrapBtn" aria-pressed="false">stretch the rubber band</button>
+      <span class="cap" style="margin:0">the hull snaps to the <b>outermost</b> points; everything else sits inside the filled region</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">minimality flag</span>
+    \(\operatorname{conv}C\) is always convex, and it is the <strong>smallest</strong> convex set containing \(C\): if \(B\) is any convex set with \(C\subseteq B\), then \(\operatorname{conv}C\subseteq B\). It sits inside <em>every</em> convex superset.
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3 style="margin-top:0">Hull vs hull</h3>
+      <p><strong>conv</strong> of 2 points = the <em>segment</em>. <strong>conv</strong> of 3 non-collinear points = the <em>filled triangle</em>. The hull is the filled-in region.</p>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">Contrast: affine hull</h3>
+      <p><strong>aff</strong> of those same points = the <em>line</em> / the whole <em>plane</em>. Same points — the convex hull fills in, the affine hull is the carrying flat that runs off to infinity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 5. EXPECTATION ====================== -->
+<section class="reveal">
+  <span class="sec-no">05 — generalizing to expectation</span>
+  <h2>Closed under averaging</h2>
+  <p class="lead">Convex combinations extend to infinite sums, to integrals, and — most generally — to <strong>expectation</strong>. If \(C\) is convex and \(x\) is a random vector with \(x\in C\) almost surely (and \(\mathbb{E}x\) exists), then</p>
+  $$\mathbb{E}\,x \in C.$$
+
+  <div class="fig">
+    <svg id="expSvg" viewBox="0 0 720 300" aria-label="A cloud of weighted sample points inside a convex region; their probability-weighted mean lands inside.">
+      <path d="M90,150 C90,70 230,48 360,60 C500,72 640,78 640,150 C640,224 500,252 360,246 C220,240 90,230 90,150 Z"
+            fill="rgba(126,200,193,0.09)" stroke="var(--cyan)" stroke-width="2"/>
+      <text x="120" y="100" font-family="Caveat" font-size="26" fill="var(--cyan)">C (convex)</text>
+      <g id="samples"></g>
+      <circle id="mean" r="10" fill="var(--yellow)" stroke="var(--board-deep)" stroke-width="2.5"/>
+      <text id="meanLbl" font-family="Space Mono" font-size="14" fill="var(--yellow)">E x</text>
+    </svg>
+    <p class="cap">Each grey dot is a possible value of <b>x</b> (size = probability). Every value sits in <b>C</b>, so the weighted mean <span style="color:var(--yellow)">E x</span> — a giant convex combination — is dragged inside too.</p>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">the two-point case is just the segment</span>
+    Let \(x=x_1\) with probability \(\theta\) and \(x=x_2\) with probability \(1-\theta\). Then \(\mathbb{E}x=\theta x_1+(1-\theta)x_2\) — the plain convex combination. The probabilities <em>are</em> the weights; “probabilities \(\ge0\)” <em>is</em> the nonnegativity.
+  </div>
+  <p>A convex set is closed under averaging. This is the fact sitting behind <strong>Jensen’s inequality</strong> (Ch. 3, forward).</p>
+</section>
+
+<!-- ====================== 6. EXPERT LENS ====================== -->
+<section class="reveal">
+  <span class="sec-no">06 — expert lens (design)</span>
+  <h2>How to actually use this</h2>
+  <p class="lead">The mastery target here is <em>design</em>: you’re asked to construct and verify, not just recognize. Four moves carry that:</p>
+  <ul class="lens">
+    <li><b>Prove convex</b> via the segment test (arbitrary pair, arbitrary θ); <b>refute</b> with one bad segment.</li>
+    <li><b>Certify a point lies in a convex set</b> by exhibiting it as a convex combination of known members — weights \(\ge0\), summing to 1. This is the design move.</li>
+    <li><b>\(\operatorname{conv}C\) is the smallest convex set containing \(C\)</b> — it sits inside every convex superset.</li>
+    <li>A convex combination is an affine combination + nonnegativity — at the <b>combination</b> level. A convex <em>set</em> is not an affine set.</li>
+  </ul>
+</section>
+
+<!-- ====================== QUICK REVIEW ====================== -->
+<section class="reveal">
+  <span class="sec-no">summary — main points</span>
+  <h2>Quick review</h2>
+  <p class="cite">2026-06-20 · bv.2.1.4 · the payoff of §2.1</p>
+  <div class="cards">
+    <div class="card"><h4>Convex set</h4><p>Closed under the segment \(\theta x_1+(1-\theta)x_2,\ 0\le\theta\le1\). The only difference from affine: nonnegativity of the weights — segment, not whole line.</p></div>
+    <div class="card"><h4>Test &amp; hierarchy</h4><p>Segment test proves or refutes convexity. Every affine set is convex. subspace ⊆ affine ⊆ convex.</p></div>
+    <div class="card"><h4>Convex combination</h4><p>\(\sum\theta_i=1\) AND \(\theta_i\ge0\) — a mixture / weighted average. Convex ⟺ contains every convex combination.</p></div>
+    <div class="card"><h4>Convex hull</h4><p>\(\operatorname{conv}C\) = all convex combinations = smallest convex set containing \(C\). conv of 2 = segment; of 3 non-collinear = filled triangle.</p></div>
+    <div class="card" style="grid-column:1/-1"><h4>Expectation form</h4><p>\(C\) convex, \(x\in C\) a.s. \(\Rightarrow \mathbb{E}x\in C\). Probabilities are the weights; \(\ge0\) is the nonnegativity. The most general case — and the fact behind Jensen.</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Built from B&amp;V §2.1.4 (pp. 23–25) · the one idea: <span style="color:var(--coral)">θ ≥ 0</span> · keep the segment, drop the line
+</footer>
+
+<script>
+(function(){
+  const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- scroll reveal ---- */
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=> rm ? el.classList.add('in') : io.observe(el));
+
+  /* =========== 1. segment / theta slider =========== */
+  const x1={x:175,y:115}, x2={x:545,y:200};
+  const p1=document.getElementById('p1'), p2=document.getElementById('p2');
+  const t1=document.getElementById('t1'), t2=document.getElementById('t2');
+  const segLine=document.getElementById('segLine'), affLine=document.getElementById('affLine');
+  const pm=document.getElementById('pm'), tm=document.getElementById('tm');
+  const theta=document.getElementById('theta'), thetaOut=document.getElementById('thetaOut');
+  const extendBtn=document.getElementById('extendBtn');
+  let extended=false;
+  p1.setAttribute('cx',x1.x);p1.setAttribute('cy',x1.y);t1.setAttribute('x',x1.x-22);t1.setAttribute('y',x1.y-8);
+  p2.setAttribute('cx',x2.x);p2.setAttribute('cy',x2.y);t2.setAttribute('x',x2.x+10);t2.setAttribute('y',x2.y+6);
+  segLine.setAttribute('x1',x1.x);segLine.setAttribute('y1',x1.y);segLine.setAttribute('x2',x2.x);segLine.setAttribute('y2',x2.y);
+  function drawSeg(){
+    const th=parseFloat(theta.value);
+    const px=th*x1.x+(1-th)*x2.x, py=th*x1.y+(1-th)*x2.y;
+    pm.setAttribute('cx',px);pm.setAttribute('cy',py);
+    tm.setAttribute('x',px+12);tm.setAttribute('y',py-10);
+    tm.textContent='θ='+th.toFixed(2);
+    thetaOut.textContent='θ = '+th.toFixed(2)+' · point = '+th.toFixed(2)+'·x₁ + '+(1-th).toFixed(2)+'·x₂';
+    if(extended){
+      const dx=x1.x-x2.x, dy=x1.y-x2.y;
+      affLine.setAttribute('x1',x2.x-dx*1.6);affLine.setAttribute('y1',x2.y-dy*1.6);
+      affLine.setAttribute('x2',x1.x+dx*1.6);affLine.setAttribute('y2',x1.y+dy*1.6);
+    }
+  }
+  theta.addEventListener('input',drawSeg); drawSeg();
+  extendBtn.addEventListener('click',()=>{
+    extended=!extended; extendBtn.setAttribute('aria-pressed',extended);
+    affLine.style.opacity=extended?1:0;
+    extendBtn.textContent=extended?'hide the line (back to segment)':'show whole line (affine)';
+    if(extended){ theta.min=-0.7; theta.max=1.7; } else { theta.min=0; theta.max=1; if(parseFloat(theta.value)>1)theta.value=1; if(parseFloat(theta.value)<0)theta.value=0; }
+    drawSeg();
+  });
+
+  /* =========== 3. barycentric triangle =========== */
+  const V=[{x:120,y:260},{x:360,y:60},{x:600,y:250}];
+  const tp=document.getElementById('tp'), triOut=document.getElementById('triOut');
+  const spokes=document.getElementById('spokes');
+  const bars=[document.getElementById('b1'),document.getElementById('b2'),document.getElementById('b3')];
+  const triSvg=document.getElementById('triSvg');
+  function bary(P){
+    const [a,b,c]=V;
+    const det=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
+    let l1=((b.y-c.y)*(P.x-c.x)+(c.x-b.x)*(P.y-c.y))/det;
+    let l2=((c.y-a.y)*(P.x-c.x)+(a.x-c.x)*(P.y-c.y))/det;
+    let l3=1-l1-l2;
+    return [l1,l2,l3];
+  }
+  function clampInside(P){
+    let w=bary(P);
+    if(w[0]>=0&&w[1]>=0&&w[2]>=0) return {P,w};
+    // clamp negatives to 0, renormalize, recompute position
+    w=w.map(v=>Math.max(0,v)); const s=w[0]+w[1]+w[2]; w=w.map(v=>v/s);
+    const np={x:w[0]*V[0].x+w[1]*V[1].x+w[2]*V[2].x, y:w[0]*V[0].y+w[1]*V[1].y+w[2]*V[2].y};
+    return {P:np,w};
+  }
+  function setTri(P){
+    const {P:Q,w}=clampInside(P);
+    tp.setAttribute('cx',Q.x);tp.setAttribute('cy',Q.y);
+    spokes.innerHTML=V.map(v=>`<line x1="${Q.x}" y1="${Q.y}" x2="${v.x}" y2="${v.y}"/>`).join('');
+    triOut.textContent='θ = ('+w[0].toFixed(2)+', '+w[1].toFixed(2)+', '+w[2].toFixed(2)+') · Σ = '+(w[0]+w[1]+w[2]).toFixed(2);
+    const maxW=150;
+    bars.forEach((b,i)=>{ b.setAttribute('width',(w[i]*maxW).toFixed(1)); });
+  }
+  setTri({x:360,y:195});
+  let dragT=false;
+  function svgPt(svg,evt){
+    const r=svg.getBoundingClientRect();
+    const vb=svg.viewBox.baseVal;
+    const cx=(evt.touches?evt.touches[0].clientX:evt.clientX)-r.left;
+    const cy=(evt.touches?evt.touches[0].clientY:evt.clientY)-r.top;
+    return {x:cx/r.width*vb.width, y:cy/r.height*vb.height};
+  }
+  function startT(e){dragT=true;tp.style.cursor='grabbing';e.preventDefault();}
+  function moveT(e){ if(dragT) setTri(svgPt(triSvg,e)); }
+  function endT(){dragT=false;tp.style.cursor='grab';}
+  tp.addEventListener('mousedown',startT); tp.addEventListener('touchstart',startT,{passive:false});
+  window.addEventListener('mousemove',moveT); window.addEventListener('touchmove',moveT,{passive:false});
+  window.addEventListener('mouseup',endT); window.addEventListener('touchend',endT);
+  triSvg.addEventListener('mousedown',e=>{ if(e.target!==tp){ setTri(svgPt(triSvg,e)); startT(e);} });
+
+  /* =========== 4. convex hull rubber band =========== */
+  const pts=[[150,210],[110,120],[230,70],[360,140],[300,210],[470,90],[560,180],[620,110],[420,230],[250,160],[510,250],[180,260]];
+  const dotsG=document.getElementById('dots');
+  dotsG.innerHTML=pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--chalk-soft)"/>`).join('');
+  function hull(points){
+    const ps=points.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+    const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+    const lo=[]; for(const p of ps){ while(lo.length>=2&&cross(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop(); lo.push(p);}
+    const up=[]; for(let i=ps.length-1;i>=0;i--){const p=ps[i]; while(up.length>=2&&cross(up[up.length-2],up[up.length-1],p)<=0)up.pop(); up.push(p);}
+    up.pop();lo.pop(); return lo.concat(up);
+  }
+  const hp=hull(pts);
+  const hullPoly=document.getElementById('hullPoly');
+  hullPoly.setAttribute('points',hp.map(p=>p.join(',')).join(' '));
+  // mark hull vertices
+  hp.forEach(p=>{ const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('r',6);
+    c.setAttribute('fill','var(--yellow)');c.setAttribute('opacity','0');c.classList.add('hv');dotsG.appendChild(c);});
+  const wrapBtn=document.getElementById('wrapBtn');
+  let wrapped=false, hullTimer=null;
+  if(rm){ hullPoly.setAttribute('stroke-dasharray','none'); hullPoly.setAttribute('stroke-dashoffset',0); }
+  wrapBtn.addEventListener('click',()=>{
+    wrapped=!wrapped; wrapBtn.setAttribute('aria-pressed',wrapped);
+    clearTimeout(hullTimer);
+    if(wrapped){
+      // reset to the hidden, dashed state, then "draw on"
+      hullPoly.style.transition='none';
+      hullPoly.setAttribute('stroke-dasharray','1300');
+      hullPoly.setAttribute('stroke-dashoffset','1300');
+      hullPoly.getBBox(); // force reflow so the reset takes before animating
+      hullPoly.style.transition=rm?'none':'stroke-dashoffset 1.1s ease, fill .9s ease';
+      hullPoly.setAttribute('stroke-dashoffset','0');
+      // once fully drawn, make the outline solid so no dash seam remains
+      hullTimer=setTimeout(()=>{ hullPoly.setAttribute('stroke-dasharray','none'); }, rm?0:1150);
+    } else {
+      hullPoly.style.transition=rm?'none':'stroke-dashoffset .5s ease, fill .6s ease';
+      hullPoly.setAttribute('stroke-dasharray','1300');
+      hullPoly.setAttribute('stroke-dashoffset','1300');
+    }
+    document.querySelectorAll('.hv').forEach(c=>c.setAttribute('opacity',wrapped?1:0));
+    wrapBtn.textContent=wrapped?'release':'stretch the rubber band';
+  });
+
+  /* =========== 5. expectation cloud =========== */
+  const samples=[{x:180,y:120,p:.10},{x:260,y:200,p:.18},{x:330,y:110,p:.22},{x:430,y:185,p:.16},
+                 {x:500,y:120,p:.14},{x:560,y:190,p:.08},{x:300,y:165,p:.07},{x:600,y:150,p:.05}];
+  const sg=document.getElementById('samples');
+  let mx=0,my=0,tot=0;
+  sg.innerHTML=samples.map(s=>{ mx+=s.p*s.x; my+=s.p*s.y; tot+=s.p;
+    return `<circle cx="${s.x}" cy="${s.y}" r="${4+s.p*30}" fill="rgba(205,214,200,0.20)" stroke="var(--chalk-dim)" stroke-width="1"/>`;
+  }).join('');
+  mx/=tot;my/=tot;
+  const mean=document.getElementById('mean'), meanLbl=document.getElementById('meanLbl');
+  mean.setAttribute('cx',mx);mean.setAttribute('cy',my);
+  meanLbl.setAttribute('x',mx+14);meanLbl.setAttribute('y',my+5);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>§2.1.5 — Cones · B&amp;V</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+<style>
+  :root{
+    --paper:#F4F6F9;
+    --panel:#FFFFFF;
+    --ink:#16223A;
+    --ink-soft:#4A586F;
+    --line:#D5DCE6;
+    --grid:#E4E9F1;
+    --affine:#5B57C7;   /* affine: sum-to-1, any sign */
+    --convex:#149A8E;   /* convex: sum-to-1 + nonneg */
+    --conic:#E07B2E;    /* conic: nonneg only (the hero) */
+    --conic-deep:#B85E16;
+    --warn:#C8413B;
+    --shadow:0 1px 2px rgba(22,34,58,.06),0 8px 28px rgba(22,34,58,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header / hero ---------- */
+  header{
+    position:relative;overflow:hidden;
+    border-bottom:1px solid var(--line);
+    background:
+      linear-gradient(180deg,#FBFCFE 0%,var(--paper) 100%);
+  }
+  .grid-bg{
+    position:absolute;inset:0;opacity:.6;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:30px 30px;
+    -webkit-mask-image:radial-gradient(120% 90% at 70% 0%,#000 30%,transparent 80%);
+            mask-image:radial-gradient(120% 90% at 70% 0%,#000 30%,transparent 80%);
+  }
+  .hero{position:relative;padding:54px 0 40px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:center}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--conic-deep);font-weight:600;margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--conic);display:inline-block}
+  h1{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(36px,6vw,58px);line-height:1.02;letter-spacing:-.02em;margin:0 0 16px;
+  }
+  h1 .tw{color:var(--conic)}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:46ch;margin:0 0 22px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;
+    padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel);
+    color:var(--ink-soft);
+  }
+  .tag.target{border-color:var(--conic);color:var(--conic-deep);background:#FDF3EA;font-weight:600}
+  .hero-fig{justify-self:end}
+
+  /* ---------- section scaffolding ---------- */
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .s-head{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
+  .s-num{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;
+    color:var(--conic);border:1.5px solid var(--conic);border-radius:8px;
+    padding:3px 9px;flex:none;background:#FDF3EA;
+  }
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(23px,3.6vw,30px);letter-spacing:-.01em;margin:0;line-height:1.15}
+  .s-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin:2px 0 0 0}
+  p{margin:14px 0}
+  .lead-p{font-size:17px}
+  strong{font-weight:600}
+
+  /* concept figure panel */
+  figure{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .fig-pad{padding:22px 22px 6px}
+  figcaption{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);
+    padding:0 22px 18px;line-height:1.5;
+  }
+  figcaption b{color:var(--ink);font-weight:600}
+  .fig-pad svg,.hero-fig svg,.play svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  /* keep MathJax inline formulas flowing inside text, not centered blocks */
+  mjx-container[display="false"]{display:inline-block!important;margin:0!important}
+  mjx-container[display="false"] svg{display:inline-block!important;margin:0!important;vertical-align:-0.18em}
+
+  /* callouts */
+  .note{
+    border-left:3px solid var(--conic);background:#FDF6EF;border-radius:0 12px 12px 0;
+    padding:14px 18px;margin:20px 0;font-size:15.5px;
+  }
+  .note.warn{border-left-color:var(--warn);background:#FCF1F0}
+  .note .lab{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--conic-deep);font-weight:600;display:block;margin-bottom:3px}
+  .note.warn .lab{color:var(--warn)}
+
+  /* the constraint table */
+  .tbl{width:100%;border-collapse:collapse;margin:24px 0;font-size:14.5px;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .tbl th,.tbl td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  .tbl thead th{background:#EEF1F6;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;
+    letter-spacing:.01em;color:var(--ink)}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl code,.mono{font-family:'IBM Plex Mono',monospace;font-size:13px}
+  .tbl .nm{font-weight:600}
+  .rule-pos{color:var(--convex);font-weight:600}
+  .rule-neg{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--warn);text-decoration-thickness:1.5px}
+  .row-affine .nm{color:var(--affine)}
+  .row-convex .nm{color:var(--convex)}
+  .row-conic{background:#FDF6EF}
+  .row-conic .nm{color:var(--conic-deep)}
+
+  /* weight-rule chips */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:13px;border-radius:10px;padding:9px 13px;
+    border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:2px;min-width:150px}
+  .chip .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .chip.affine{border-color:var(--affine)}
+  .chip.affine .k{color:var(--affine)}
+  .chip.convex{border-color:var(--convex)}
+  .chip.convex .k{color:var(--convex)}
+  .chip.conic{border-color:var(--conic);background:#FDF6EF}
+  .chip.conic .k{color:var(--conic-deep)}
+
+  /* interactive playground */
+  .play{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    margin:26px 0;overflow:hidden}
+  .play-grid{display:grid;grid-template-columns:1fr 250px;gap:0}
+  .play-ctrl{padding:22px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:18px}
+  .play-ctrl h3{font-family:'Space Grotesk',sans-serif;font-size:16px;margin:0 0 2px}
+  .play-ctrl .hint{font-size:13px;color:var(--ink-soft);margin:0}
+  .ctl label{font-family:'IBM Plex Mono',monospace;font-size:13px;display:flex;justify-content:space-between;margin-bottom:6px}
+  .ctl label .val{font-weight:600}
+  .ctl.t1 .val{color:var(--affine)}
+  .ctl.t2 .val{color:var(--convex)}
+  input[type=range]{width:100%;accent-color:var(--conic);height:22px}
+  .readout{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:#F3F1FB;border-radius:10px;padding:11px 13px;line-height:1.7;color:var(--ink)}
+  .readout .badge{display:inline-block;font-weight:600;color:#fff;background:var(--convex);border-radius:6px;padding:1px 8px;font-size:11px}
+  .play-cap{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);padding:0 22px 18px}
+
+  /* diagnose checklist */
+  .diag{display:grid;gap:12px;margin:22px 0}
+  .diag-item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 18px;
+    display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:start}
+  .diag-item .ic{width:30px;height:30px;flex:none}
+  .diag-item h4{font-family:'Space Grotesk',sans-serif;margin:0 0 3px;font-size:15.5px}
+  .diag-item p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+
+  /* summary */
+  .summary{background:var(--ink);color:#E7ECF5;border-radius:18px;padding:30px 30px 26px;margin:30px 0 6px}
+  .summary .eyebrow{color:var(--conic)}
+  .summary .eyebrow::before{background:var(--conic)}
+  .summary h2{color:#fff}
+  .summary ul{list-style:none;padding:0;margin:18px 0 0}
+  .summary li{padding:13px 0;border-top:1px solid rgba(255,255,255,.12);display:grid;grid-template-columns:130px 1fr;gap:16px;font-size:15px}
+  .summary li .term{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--conic);font-size:13.5px}
+  .summary li span.d{color:#C4CEDE}
+  .summary .mono{color:#fff}
+
+  footer{padding:34px 0 60px;color:var(--ink-soft);font-size:13px;font-family:'IBM Plex Mono',monospace}
+
+  /* svg shared label styles */
+  .lbl{font-family:'IBM Plex Mono',monospace;font-size:13px;fill:var(--ink)}
+  .lbl-s{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--ink-soft)}
+  .axis{stroke:var(--ink-soft);stroke-width:1.2}
+  .gridline{stroke:var(--grid);stroke-width:1}
+
+  @media (max-width:720px){
+    .hero{grid-template-columns:1fr;gap:10px}
+    .hero-fig{justify-self:center}
+    .play-grid{grid-template-columns:1fr}
+    .play-ctrl{border-left:none;border-top:1px solid var(--line)}
+    .summary li{grid-template-columns:1fr;gap:2px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-txt">
+        <div class="eyebrow">B&amp;V §2.1.5 · p.25–27</div>
+        <h1>Cones<span class="tw">.</span></h1>
+        <p class="lede">The third sibling of affine and convex. Keep nonnegativity, drop the sum-to-one — and a flat set folds up into a pie slice with its apex pinned at the origin.</p>
+        <div class="meta-row">
+          <span class="tag target">Mastery · diagnose</span>
+          <span class="tag">closes §2.1</span>
+          <span class="tag">affine · convex · conic</span>
+        </div>
+      </div>
+      <div class="hero-fig">
+        <!-- animated pie-slice cone -->
+        <svg viewBox="0 0 300 280" role="img" aria-label="A convex cone drawn as a shaded wedge with apex at the origin and two edge vectors.">
+          <defs>
+            <radialGradient id="wedge" cx="18%" cy="82%" r="95%">
+              <stop offset="0%" stop-color="#F6B97A"/>
+              <stop offset="100%" stop-color="#E07B2E"/>
+            </radialGradient>
+            <marker id="ah" markerWidth="9" markerHeight="9" refX="6.5" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 Z" fill="var(--ink)"/>
+            </marker>
+            <marker id="ahO" markerWidth="9" markerHeight="9" refX="6.5" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 Z" fill="var(--conic-deep)"/>
+            </marker>
+          </defs>
+          <!-- apex bottom-left at (44,236) -->
+          <!-- wedge fan -->
+          <path d="M44,236 L300,86 L300,8 L150,8 Z" fill="url(#wedge)" opacity=".9">
+            <animate attributeName="opacity" values="0;.9" dur="1s" fill="freeze"/>
+          </path>
+          <!-- faint extra rays inside wedge (conic combos) -->
+          <g stroke="#fff" stroke-width="1" opacity=".55">
+            <line x1="44" y1="236" x2="232" y2="34"/>
+            <line x1="44" y1="236" x2="300" y2="150"/>
+            <line x1="44" y1="236" x2="290" y2="40"/>
+          </g>
+          <!-- edge vectors x1, x2 -->
+          <line x1="44" y1="236" x2="150" y2="40" stroke="var(--conic-deep)" stroke-width="3" marker-end="url(#ahO)"/>
+          <line x1="44" y1="236" x2="276" y2="100" stroke="var(--conic-deep)" stroke-width="3" marker-end="url(#ahO)"/>
+          <!-- apex dot -->
+          <circle cx="44" cy="236" r="5.5" fill="var(--ink)"/>
+          <text x="20" y="256" class="lbl">0</text>
+          <text x="138" y="32" class="lbl">x₁</text>
+          <text x="282" y="98" class="lbl">x₂</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 0 · WHERE WE ARE ============ -->
+<section id="s0">
+  <div class="s-head"><span class="s-num">00</span><div><h2>Where we are</h2><p class="s-sub">three sections, three weight rules</p></div></div>
+  <p class="lead-p">Section 2.1 builds sets out of <strong>combinations of points</strong>. Each subsection keeps the same machinery — a weighted sum \(\theta_1x_1+\dots+\theta_kx_k\) — and changes only the <strong>rule on the weights</strong>.</p>
+  <p>§2.1.2 gave the <strong style="color:var(--affine)">affine</strong> combination (weights sum to 1). §2.1.4 gave the <strong style="color:var(--convex)">convex</strong> combination (sum to 1 <em>and</em> nonnegative). §2.1.5 adds the last variant — the <strong style="color:var(--conic-deep)">conic</strong> combination — by keeping nonnegativity and <strong>dropping the sum-to-one</strong>. The set it generates is the <strong>convex cone</strong>.</p>
+
+  <figure>
+    <div class="fig-pad">
+      <svg viewBox="0 0 760 230" role="img" aria-label="Three side-by-side diagrams: an affine set as a full line through two points, a convex set as the segment between them, and a conic set as a wedge from the origin.">
+        <!-- ===== panel 1: AFFINE = whole line ===== -->
+        <g transform="translate(0,0)">
+          <rect x="8" y="8" width="232" height="214" rx="12" fill="#FBFAFE" stroke="var(--line)"/>
+          <text x="24" y="34" class="lbl" fill="var(--affine)" font-weight="600">affine</text>
+          <text x="24" y="50" class="lbl-s">Σθ = 1 · any sign</text>
+          <line class="axis" x1="24" y1="200" x2="224" y2="200" opacity=".4"/>
+          <!-- full line through two pts -->
+          <line x1="30" y1="178" x2="218" y2="92" stroke="var(--affine)" stroke-width="2.5" stroke-dasharray="0"/>
+          <line x1="20" y1="183" x2="30" y2="178" stroke="var(--affine)" stroke-width="2.5" stroke-dasharray="2 4"/>
+          <line x1="218" y1="92" x2="230" y2="86" stroke="var(--affine)" stroke-width="2.5" stroke-dasharray="2 4"/>
+          <circle cx="80" cy="156" r="5" fill="var(--affine)"/>
+          <circle cx="168" cy="116" r="5" fill="var(--affine)"/>
+          <text x="66" y="148" class="lbl-s">x₁</text>
+          <text x="172" y="110" class="lbl-s">x₂</text>
+          <text x="24" y="216" class="lbl-s">extends forever both ways</text>
+        </g>
+        <!-- ===== panel 2: CONVEX = segment ===== -->
+        <g transform="translate(264,0)">
+          <rect x="8" y="8" width="232" height="214" rx="12" fill="#F8FCFB" stroke="var(--line)"/>
+          <text x="24" y="34" class="lbl" fill="var(--convex)" font-weight="600">convex</text>
+          <text x="24" y="50" class="lbl-s">Σθ = 1 · θ ≥ 0</text>
+          <line class="axis" x1="24" y1="200" x2="224" y2="200" opacity=".4"/>
+          <line x1="80" y1="156" x2="168" y2="116" stroke="var(--convex)" stroke-width="3.5"/>
+          <circle cx="80" cy="156" r="5" fill="var(--convex)"/>
+          <circle cx="168" cy="116" r="5" fill="var(--convex)"/>
+          <text x="66" y="148" class="lbl-s">x₁</text>
+          <text x="172" y="110" class="lbl-s">x₂</text>
+          <text x="24" y="216" class="lbl-s">just the segment between</text>
+        </g>
+        <!-- ===== panel 3: CONIC = wedge from origin ===== -->
+        <g transform="translate(528,0)">
+          <rect x="8" y="8" width="224" height="214" rx="12" fill="#FEF8F2" stroke="var(--line)"/>
+          <text x="24" y="34" class="lbl" fill="var(--conic-deep)" font-weight="600">conic</text>
+          <text x="24" y="50" class="lbl-s">θ ≥ 0 · no Σ=1</text>
+          <!-- apex bottom-left; fill third vertex now matches the lower edge endpoint -->
+          <path d="M40,196 L150,70 L212,120 Z" fill="var(--conic)" opacity=".22"/>
+          <line x1="40" y1="196" x2="150" y2="70" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <line x1="40" y1="196" x2="212" y2="120" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <circle cx="40" cy="196" r="5.5" fill="var(--ink)"/>
+          <circle cx="118" cy="107" r="4.5" fill="var(--conic-deep)"/>
+          <circle cx="160" cy="143" r="4.5" fill="var(--conic-deep)"/>
+          <text x="46" y="194" class="lbl-s">0</text>
+          <text x="104" y="100" class="lbl-s">x₁</text>
+          <text x="166" y="140" class="lbl-s">x₂</text>
+          <text x="24" y="216" class="lbl-s">a wedge anchored at 0</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Same two points, three rules. <b>Drop the sign rule</b> → the segment swells into the whole line. <b>Drop sum-to-one</b> (keep θ ≥ 0) → it opens into a wedge tied to the origin.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 1 · CONE ============ -->
+<section id="s1">
+  <div class="s-head"><span class="s-num">01</span><div><h2>Cone</h2><p class="s-sub">L1360–1361 · nonnegative homogeneous</p></div></div>
+  <p class="lead-p"><em>\(C\) is a <strong>cone</strong> (or nonnegative homogeneous) if for every \(x\in C\) and \(\theta\ge 0\), \(\theta x\in C\).</em></p>
+  <p>A cone is closed under scaling by <strong>any nonnegative factor</strong>. Take a point, stretch it or shrink it toward the origin by any \(\theta\ge 0\), and you never leave the set. Geometrically: if a point is in, the entire <strong>ray from the origin through it</strong> is in.</p>
+
+  <figure>
+    <div class="fig-pad">
+      <svg viewBox="0 0 700 250" role="img" aria-label="A ray from the origin through a point x, with x scaled by several nonnegative factors theta landing on the same ray.">
+        <defs>
+          <marker id="ah2" markerWidth="9" markerHeight="9" refX="6.5" refY="3.2" orient="auto"><path d="M0,0 L7,3.2 L0,6.4 Z" fill="var(--conic-deep)"/></marker>
+        </defs>
+        <!-- axes -->
+        <line class="gridline" x1="60" y1="40" x2="60" y2="210"/>
+        <line class="axis" x1="60" y1="210" x2="660" y2="210"/>
+        <!-- the ray -->
+        <line x1="60" y1="210" x2="640" y2="60" stroke="var(--conic)" stroke-width="2" stroke-dasharray="3 5" opacity=".7"/>
+        <!-- scaled points along ray: origin at (60,210), direction toward (640,60) -->
+        <!-- theta=0.5 -->
+        <circle cx="205" cy="172.5" r="6" fill="#fff" stroke="var(--conic-deep)" stroke-width="2"/>
+        <text x="180" y="196" class="lbl-s">θ=0.5</text>
+        <!-- theta=1  (x itself) -->
+        <line x1="60" y1="210" x2="350" y2="135" stroke="var(--conic-deep)" stroke-width="3" marker-end="url(#ah2)"/>
+        <circle cx="350" cy="135" r="6.5" fill="var(--conic-deep)"/>
+        <text x="338" y="124" class="lbl" font-weight="600">x</text>
+        <!-- theta=0 -> origin -->
+        <circle cx="60" cy="210" r="6.5" fill="var(--ink)"/>
+        <text x="36" y="230" class="lbl">0</text>
+        <text x="20" y="200" class="lbl-s" transform="rotate(-90 20 200)" style="display:none"></text>
+        <!-- theta=1.7  (on the ray: t=0.85 -> y=82.5) -->
+        <circle cx="553" cy="83" r="6" fill="#fff" stroke="var(--conic-deep)" stroke-width="2"/>
+        <text x="540" y="70" class="lbl-s">θ=1.7</text>
+        <!-- theta=0 label -->
+        <text x="78" y="200" class="lbl-s">θ=0</text>
+        <text x="430" y="60" class="lbl" fill="var(--conic-deep)">the whole ray ∈ C</text>
+      </svg>
+    </div>
+    <figcaption>Scaling \(x\) by any \(\theta\ge 0\) keeps you on one ray. <b>θ = 0 lands on the origin</b> — so a nonempty cone always contains 0.</figcaption>
+  </figure>
+
+  <div class="note">
+    <span class="lab">Fast check — read 1</span>
+    A nonempty cone <strong>contains 0</strong> (take \(\theta=0\): \(0\cdot x = 0\)). The origin is the <strong>apex</strong>. So a set that misses the origin <strong>cannot</strong> be a cone.
+  </div>
+
+  <div class="note warn">
+    <span class="lab">Trap — read 2</span>
+    A cone <strong>need not be convex.</strong> “Cone” names only the scaling property. The <strong>union of two rays</strong> is a cone — every point scales along its ray — yet it fails convexity.
+  </div>
+
+  <figure>
+    <div class="fig-pad">
+      <svg viewBox="0 0 560 250" role="img" aria-label="Two rays from the origin forming a cone; a dashed segment between a point on each ray leaves the set, showing the cone is not convex.">
+        <!-- origin center-left -->
+        <!-- two rays -->
+        <line x1="120" y1="180" x2="500" y2="60" stroke="var(--conic-deep)" stroke-width="3"/>
+        <line x1="120" y1="180" x2="470" y2="210" stroke="var(--conic-deep)" stroke-width="3"/>
+        <circle cx="120" cy="180" r="6.5" fill="var(--ink)"/>
+        <text x="96" y="200" class="lbl">0</text>
+        <!-- pts a,b on each ray -->
+        <circle cx="350" cy="106" r="6" fill="var(--conic-deep)"/>
+        <circle cx="360" cy="200" r="6" fill="var(--conic-deep)"/>
+        <text x="356" y="98" class="lbl">a</text>
+        <text x="368" y="218" class="lbl">b</text>
+        <!-- segment between leaves set -->
+        <line x1="350" y1="106" x2="360" y2="200" stroke="var(--warn)" stroke-width="2.5" stroke-dasharray="5 5"/>
+        <circle cx="355" cy="153" r="5.5" fill="#fff" stroke="var(--warn)" stroke-width="2.5"/>
+        <text x="368" y="156" class="lbl" fill="var(--warn)">midpoint ∉ C</text>
+        <text x="150" y="40" class="lbl" fill="var(--conic-deep)" font-weight="600">a cone…</text>
+        <text x="150" y="60" class="lbl-s">each ray scales fine</text>
+        <text x="150" y="232" class="lbl" fill="var(--warn)" font-weight="600">…but not convex</text>
+      </svg>
+    </div>
+    <figcaption>Union of two rays: a valid cone, but the <b>segment from a to b</b> dips out of the set. Cone ≠ convex.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 2 · CONVEX CONE ============ -->
+<section id="s2">
+  <div class="s-head"><span class="s-num">02</span><div><h2>Convex cone</h2><p class="s-sub">L1361–1367 · the pie slice</p></div></div>
+  <p class="lead-p"><em>\(C\) is a <strong>convex cone</strong> if it is convex AND a cone \(\iff\) for any \(x_1,x_2\in C\) and \(\theta_1,\theta_2\ge 0\), \(\theta_1x_1+\theta_2x_2\in C\).</em></p>
+  <p>That single condition <strong>packs both properties</strong>. It is the workhorse test for this section — read it two ways:</p>
+
+  <div class="chips">
+    <div class="chip conic"><span class="k">set x₁ = x₂</span><span class="mono">→ θx ∈ C &nbsp;(cone)</span></div>
+    <div class="chip conic"><span class="k">set θ₁+θ₂ = 1</span><span class="mono">→ segment ∈ C &nbsp;(convex)</span></div>
+  </div>
+
+  <p>Geometrically (B&amp;V Fig 2.4) a convex cone is the <strong>pie slice</strong>: apex at \(0\), two edges running through \(x_1\) and \(x_2\), and every direction between them filled in. The <strong>nonnegative orthant \(\mathbf{R}_+^n\)</strong> is the prototype.</p>
+
+  <figure>
+    <div class="fig-pad">
+      <svg viewBox="0 0 700 280" role="img" aria-label="Left: a pie-slice convex cone with apex at origin built from x1 and x2. Right: the nonnegative orthant shaded as the first quadrant.">
+        <!-- ===== left: pie slice ===== -->
+        <g transform="translate(0,0)">
+          <rect x="6" y="6" width="384" height="268" rx="12" fill="#FEF8F2" stroke="var(--line)"/>
+          <text x="26" y="34" class="lbl" fill="var(--conic-deep)" font-weight="600">the pie slice (Fig 2.4)</text>
+          <!-- apex bottom-left -->
+          <defs>
+            <marker id="ah3" markerWidth="9" markerHeight="9" refX="6.5" refY="3.2" orient="auto"><path d="M0,0 L7,3.2 L0,6.4 Z" fill="var(--conic-deep)"/></marker>
+          </defs>
+          <!-- wedge fill -->
+          <path d="M60,236 L300,56 L360,150 Z" fill="var(--conic)" opacity=".18"/>
+          <!-- interior combo rays -->
+          <g stroke="var(--conic)" stroke-width="1" opacity=".45">
+            <line x1="60" y1="236" x2="330" y2="80"/>
+            <line x1="60" y1="236" x2="350" y2="118"/>
+          </g>
+          <!-- edges x1 x2 -->
+          <line x1="60" y1="236" x2="300" y2="56" stroke="var(--conic-deep)" stroke-width="3" marker-end="url(#ah3)"/>
+          <line x1="60" y1="236" x2="360" y2="150" stroke="var(--conic-deep)" stroke-width="3" marker-end="url(#ah3)"/>
+          <!-- a combo point inside -->
+          <circle cx="250" cy="120" r="6" fill="#fff" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <text x="186" y="118" class="lbl-s" fill="var(--conic-deep)">θ₁x₁+θ₂x₂</text>
+          <circle cx="60" cy="236" r="6.5" fill="var(--ink)"/>
+          <text x="36" y="254" class="lbl">0</text>
+          <text x="296" y="48" class="lbl">x₁</text>
+          <text x="364" y="148" class="lbl">x₂</text>
+          <text x="26" y="262" class="lbl-s">apex 0 · edges through x₁,x₂ · interior filled</text>
+        </g>
+        <!-- ===== right: nonnegative orthant ===== -->
+        <g transform="translate(410,0)">
+          <rect x="6" y="6" width="284" height="268" rx="12" fill="#F8FCFB" stroke="var(--line)"/>
+          <text x="26" y="34" class="lbl" fill="var(--convex)" font-weight="600">R²₊ — prototype</text>
+          <!-- quadrant shaded -->
+          <rect x="70" y="60" width="180" height="160" fill="var(--convex)" opacity=".15"/>
+          <!-- grid arrows -->
+          <line class="axis" x1="70" y1="220" x2="262" y2="220" marker-end="url(#ah3)" stroke="var(--ink-soft)"/>
+          <line class="axis" x1="70" y1="220" x2="70" y2="48" marker-end="url(#ah3)" stroke="var(--ink-soft)"/>
+          <circle cx="70" cy="220" r="6" fill="var(--ink)"/>
+          <text x="48" y="238" class="lbl">0</text>
+          <text x="252" y="244" class="lbl-s">x₁ ≥ 0</text>
+          <text x="20" y="60" class="lbl-s">x₂ ≥ 0</text>
+          <!-- sample points -->
+          <circle cx="130" cy="170" r="4.5" fill="var(--convex)"/>
+          <circle cx="200" cy="100" r="4.5" fill="var(--convex)"/>
+          <text x="40" y="262" class="lbl-s">all coordinates ≥ 0</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>A convex cone is the wedge that stays closed under <b>both</b> scaling and averaging. The <b>nonnegative orthant</b> \(\mathbf{R}_+^n\) is the canonical example.</figcaption>
+  </figure>
+
+  <!-- ===== INTERACTIVE PLAYGROUND ===== -->
+  <p>Drag the weights below. Whatever nonnegative \(\theta_1,\theta_2\) you pick, the combination \(\theta_1x_1+\theta_2x_2\) <strong>stays inside the wedge</strong> — that <em>is</em> the convex-cone property, live.</p>
+
+  <div class="play">
+    <div class="play-grid">
+      <div style="padding:18px">
+        <svg id="pg" viewBox="0 0 360 320" role="img" aria-label="Interactive: two fixed vectors x1 and x2 from the origin and a movable point showing their nonnegative combination.">
+          <!-- faint grid -->
+          <g stroke="var(--grid)" stroke-width="1">
+            <line x1="40" y1="40" x2="40" y2="280"/><line x1="100" y1="40" x2="100" y2="280"/>
+            <line x1="160" y1="40" x2="160" y2="280"/><line x1="220" y1="40" x2="220" y2="280"/>
+            <line x1="280" y1="40" x2="280" y2="280"/><line x1="340" y1="40" x2="340" y2="280"/>
+            <line x1="40" y1="40" x2="340" y2="40"/><line x1="40" y1="100" x2="340" y2="100"/>
+            <line x1="40" y1="160" x2="340" y2="160"/><line x1="40" y1="220" x2="340" y2="220"/>
+            <line x1="40" y1="280" x2="340" y2="280"/>
+          </g>
+          <!-- wedge region (between x1 and x2 directions), drawn large -->
+          <path id="wedgeFill" d="" fill="var(--conic)" opacity=".13"/>
+          <!-- axes through origin (40,280) -->
+          <line class="axis" x1="40" y1="280" x2="350" y2="280"/>
+          <line class="axis" x1="40" y1="280" x2="40" y2="34"/>
+          <!-- x1, x2 vectors -->
+          <line id="vx1" x1="40" y1="280" x2="0" y2="0" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <line id="vx2" x1="40" y1="280" x2="0" y2="0" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <!-- combination vector -->
+          <line id="vc" x1="40" y1="280" x2="40" y2="280" stroke="var(--convex)" stroke-width="3"/>
+          <circle id="pc" cx="40" cy="280" r="7" fill="var(--convex)"/>
+          <circle cx="40" cy="280" r="6" fill="var(--ink)"/>
+          <text x="18" y="298" class="lbl">0</text>
+          <text id="lx1" class="lbl">x₁</text>
+          <text id="lx2" class="lbl">x₂</text>
+        </svg>
+      </div>
+      <div class="play-ctrl">
+        <div>
+          <h3>Conic combination</h3>
+          <p class="hint">θ₁x₁ + θ₂x₂ with θ ≥ 0</p>
+        </div>
+        <div class="ctl t1">
+          <label>θ₁ <span class="val" id="t1v">1.0</span></label>
+          <input type="range" id="t1" min="0" max="1.6" step="0.05" value="1">
+        </div>
+        <div class="ctl t2">
+          <label>θ₂ <span class="val" id="t2v">1.0</span></label>
+          <input type="range" id="t2" min="0" max="1.6" step="0.05" value="1">
+        </div>
+        <div class="readout">
+          θ₁+θ₂ = <span id="sum">2.00</span><br>
+          <span id="status"><span class="badge">inside the cone</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="play-cap">Note the sum is free to be anything ≥ 0 — only the signs are constrained. Set θ₂ = 0 to watch the point slide back down the x₁ ray.</div>
+  </div>
+</section>
+
+<!-- ============ 3 · CONIC COMBINATIONS ============ -->
+<section id="s3">
+  <div class="s-head"><span class="s-num">03</span><div><h2>Conic combinations</h2><p class="s-sub">L1368–1373 · the whole section in one row</p></div></div>
+  <p class="lead-p"><em>\(\theta_1x_1+\dots+\theta_kx_k\) with \(\theta_i\ge 0\) is a <strong>conic combination</strong> (nonnegative linear combination).</em></p>
+  <p>Line up all three rules and the pattern is exact: conic combination = <strong>drop sum-to-one, keep nonnegativity</strong>.</p>
+
+  <table class="tbl">
+    <thead><tr><th>combination</th><th>Σθᵢ = 1 ?</th><th>θᵢ ≥ 0 ?</th><th>net rule</th></tr></thead>
+    <tbody>
+      <tr class="row-affine"><td class="nm">affine</td><td class="rule-pos">required</td><td>—</td><td><code>Σθ = 1 (any sign)</code></td></tr>
+      <tr class="row-convex"><td class="nm">convex</td><td class="rule-pos">required</td><td class="rule-pos">required</td><td><code>Σθ = 1 &amp; θ ≥ 0</code></td></tr>
+      <tr class="row-conic"><td class="nm">conic</td><td class="rule-neg">dropped</td><td class="rule-pos">required</td><td><code>θ ≥ 0 only</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <span class="lab">The defining equivalence</span>
+    \(C\) is a <strong>convex cone</strong> \(\iff\) it contains <strong>every conic combination</strong> of its elements. (Mirror it: convex set ↔ contains every convex combination; subspace ↔ every linear combination.)
+  </div>
+</section>
+
+<!-- ============ 4 · CONIC HULL ============ -->
+<section id="s4">
+  <div class="s-head"><span class="s-num">04</span><div><h2>Conic hull</h2><p class="s-sub">L1374–1378 · the smallest convex cone</p></div></div>
+  <p class="lead-p"><em>The <strong>conic hull</strong> of \(C=\{\theta_1x_1+\dots+\theta_kx_k \mid x_i\in C,\ \theta_i\ge 0\}\) = the smallest convex cone containing \(C\).</em></p>
+  <p>Take any set \(C\), allow every nonnegative weighting of its points, and you sweep out the tightest wedge that wraps it — the conic hull. It is the cone analogue of \(\operatorname{aff} C\) and \(\operatorname{conv} C\).</p>
+
+  <figure>
+    <div class="fig-pad">
+      <svg viewBox="0 0 700 270" role="img" aria-label="A scattered set C on the left and its conic hull on the right, drawn as the smallest wedge from the origin containing every nonnegative combination of points in C.">
+        <!-- left: set C -->
+        <g transform="translate(0,0)">
+          <rect x="6" y="6" width="330" height="258" rx="12" fill="#FBFBFD" stroke="var(--line)"/>
+          <text x="26" y="34" class="lbl" font-weight="600">a set C</text>
+          <circle cx="60" cy="238" r="6" fill="var(--ink)"/><text x="40" y="256" class="lbl-s">0</text>
+          <!-- blob of points -->
+          <path d="M180,90 q40,-20 70,10 q20,40 -20,60 q-50,20 -70,-15 q-15,-35 20,-55 Z" fill="var(--ink-soft)" opacity=".14"/>
+          <g fill="var(--ink)">
+            <circle cx="190" cy="110" r="4"/><circle cx="235" cy="100" r="4"/>
+            <circle cx="250" cy="140" r="4"/><circle cx="205" cy="155" r="4"/>
+            <circle cx="225" cy="128" r="4"/>
+          </g>
+          <text x="200" y="200" class="lbl-s">C</text>
+        </g>
+        <!-- arrow -->
+        <text x="352" y="145" class="lbl" fill="var(--conic-deep)">⟶</text>
+        <text x="346" y="166" class="lbl-s">conic hull</text>
+        <!-- right: conic hull -->
+        <g transform="translate(390,0)">
+          <rect x="6" y="6" width="300" height="258" rx="12" fill="#FEF8F2" stroke="var(--line)"/>
+          <text x="26" y="34" class="lbl" fill="var(--conic-deep)" font-weight="600">smallest convex cone ⊇ C</text>
+          <!-- smallest convex cone: edges run *through* the two extreme points -->
+          <path d="M40,236 L226,40 L300,88 Z" fill="var(--conic)" opacity=".2"/>
+          <line x1="40" y1="236" x2="226" y2="40" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <line x1="40" y1="236" x2="300" y2="88" stroke="var(--conic-deep)" stroke-width="2.5"/>
+          <!-- the original blob sitting inside -->
+          <g fill="var(--ink)">
+            <circle cx="150" cy="120" r="4"/><circle cx="185" cy="112" r="4"/>
+            <circle cx="198" cy="146" r="4"/><circle cx="162" cy="158" r="4"/>
+            <circle cx="178" cy="134" r="4"/>
+          </g>
+          <circle cx="40" cy="236" r="6.5" fill="var(--ink)"/>
+          <text x="20" y="254" class="lbl-s">0</text>
+          <text x="60" y="230" class="lbl-s">every θ ≥ 0 weighting filled in</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>The conic hull fans \(C\) out from the origin: the <b>tightest wedge</b> that still contains every nonnegative combination of \(C\)'s points.</figcaption>
+  </figure>
+
+  <p>Stacked against its siblings, each “smallest set of its kind” is just the previous rule with one constraint flipped:</p>
+
+  <table class="tbl">
+    <thead><tr><th>combination</th><th>weight constraint</th><th>smallest set ⊇ C</th><th>type</th></tr></thead>
+    <tbody>
+      <tr><td class="nm mono">linear</td><td><code>(none)</code></td><td class="mono">span C</td><td>subspace</td></tr>
+      <tr class="row-affine"><td class="nm mono">affine</td><td><code>Σθ = 1</code></td><td class="mono">aff C</td><td>affine set</td></tr>
+      <tr class="row-convex"><td class="nm mono">convex</td><td><code>Σθ = 1, θ ≥ 0</code></td><td class="mono">conv C</td><td>convex set</td></tr>
+      <tr class="row-conic"><td class="nm mono">conic</td><td><code>θ ≥ 0</code></td><td class="mono">conic hull</td><td>convex cone</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <span class="lab">The relationship, compressed</span>
+    <strong>convex = affine + nonnegativity.</strong> &nbsp; <strong>conic = convex with the sum-to-one dropped.</strong> Each hull is the smallest set of its type ( \(\subseteq\) every set of that type containing \(C\) ).
+  </div>
+</section>
+
+<!-- ============ 5 · EXPERT LENS ============ -->
+<section id="s5">
+  <div class="s-head"><span class="s-num">05</span><div><h2>Expert lens</h2><p class="s-sub">mastery target · diagnose</p></div></div>
+  <p class="lead-p">At the <strong>diagnose</strong> level you place an unknown set in the trilogy by reading off <strong>which weight constraints it enforces</strong>, and you prove or refute each property with the right one-line test.</p>
+
+  <div class="diag">
+    <div class="diag-item">
+      <svg class="ic" viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="#FDF3EA" stroke="var(--conic)" stroke-width="1.5"/><path d="M8,22 L22,8" stroke="var(--conic-deep)" stroke-width="2"/><circle cx="8" cy="22" r="2.5" fill="var(--ink)"/></svg>
+      <div><h4>Is it a cone?</h4><p>Test nonnegative homogeneity: \(\theta x\in C\) for all \(\theta\ge0\) — independent of convexity. Quick refute: a nonempty cone must hold \(0\); a set off the origin isn't one.</p></div>
+    </div>
+    <div class="diag-item">
+      <svg class="ic" viewBox="0 0 30 30"><path d="M5,24 L18,4 L25,16 Z" fill="#FDF3EA" stroke="var(--conic)" stroke-width="1.5"/><circle cx="5" cy="24" r="2.5" fill="var(--ink)"/></svg>
+      <div><h4>Is it a convex cone?</h4><p>One test does it: \(\theta_1x_1+\theta_2x_2\in C\) for \(\theta_i\ge0\). Prove with that line; refute convexity-of-a-cone with a bad segment (union of two rays).</p></div>
+    </div>
+    <div class="diag-item">
+      <svg class="ic" viewBox="0 0 30 30"><rect x="4" y="4" width="22" height="22" rx="4" fill="#F3F1FB" stroke="var(--affine)" stroke-width="1.5"/><text x="15" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="var(--affine)" font-weight="600">Σ</text></svg>
+      <div><h4>Place it in the trilogy</h4><p>Sort by enforced constraints: affine (Σ=1) · convex (Σ=1, ≥0) · conic (≥0). A convex cone is guaranteed closed under conic combos — but <em>not</em> under all linear combos. Subspaces are the special case that are.</p></div>
+    </div>
+    <div class="diag-item">
+      <svg class="ic" viewBox="0 0 30 30"><path d="M6,24 L20,6 L26,14 Z" fill="var(--conic)" opacity=".25"/><path d="M6,24 L20,6 M6,24 L26,14" stroke="var(--conic-deep)" stroke-width="1.5"/><circle cx="6" cy="24" r="2.5" fill="var(--ink)"/></svg>
+      <div><h4>Build the smallest one</h4><p>conic hull = smallest convex cone containing \(C\) — the exact mirror of \(\operatorname{aff} C\) and \(\operatorname{conv} C\).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUMMARY ============ -->
+<section id="summary" style="border-bottom:none">
+  <div class="summary">
+    <div class="eyebrow">Quick review · 2026-06-20 · bv.2.1.5</div>
+    <h2>Five things to walk away with</h2>
+    <ul>
+      <li><span class="term">Cone</span><span class="d"><span class="mono">θx ∈ C for all θ ≥ 0</span> (nonnegative homogeneous). Nonempty ⟹ contains 0. Need not be convex.</span></li>
+      <li><span class="term">Convex cone</span><span class="d">convex AND cone <span class="mono">⟺ θ₁x₁+θ₂x₂ ∈ C</span> for θᵢ ≥ 0. The pie slice, apex 0.</span></li>
+      <li><span class="term">Conic combo</span><span class="d"><span class="mono">θᵢ ≥ 0</span>, no sum-to-one (= nonnegative linear combination). Convex cone ⟺ contains all of them.</span></li>
+      <li><span class="term">Conic hull</span><span class="d">the smallest convex cone containing C — mirror of aff C / conv C.</span></li>
+      <li><span class="term">The trilogy</span><span class="d">affine (Σ=1) · convex (Σ=1, ≥0) · conic (≥0). Convex = affine + nonnegativity; conic = convex minus sum-to-one. Hulls: span / aff / conv / conic hull.</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, <em>Convex Optimization</em> §2.1.5, pp. 25–27 · study companion · diagrams are schematic.
+</footer>
+
+</main>
+
+<script>
+(function(){
+  var O = {x:40, y:280};            // origin in svg coords
+  // fixed directions for x1 (steeper) and x2 (shallower), tuned to stay in view
+  var x1 = {x: 95, y:-150};         // vector components (svg: +x right, -y up)
+  var x2 = {x: 170, y:-70};
+  var S  = 0.7;                     // global scale applied to combinations
+  var t1=document.getElementById('t1'), t2=document.getElementById('t2');
+  var t1v=document.getElementById('t1v'), t2v=document.getElementById('t2v');
+  var sumEl=document.getElementById('sum');
+  var vx1=document.getElementById('vx1'), vx2=document.getElementById('vx2');
+  var vc=document.getElementById('vc'), pc=document.getElementById('pc');
+  var lx1=document.getElementById('lx1'), lx2=document.getElementById('lx2');
+  var wedge=document.getElementById('wedgeFill');
+
+  function endpt(v,k){ return {x:O.x+v.x*k, y:O.y+v.y*k}; }
+  // draw the generating directions as long wedge edges
+  var edge1=endpt(x1,1.95), edge2=endpt(x2,1.95);
+  vx1.setAttribute('x2',edge1.x); vx1.setAttribute('y2',edge1.y);
+  vx2.setAttribute('x2',edge2.x); vx2.setAttribute('y2',edge2.y);
+  // labels placed partway along each edge
+  var l1=endpt(x1,1.0), l2=endpt(x2,1.0);
+  lx1.setAttribute('x',l1.x-22); lx1.setAttribute('y',l1.y-6);
+  lx2.setAttribute('x',l2.x+8);  lx2.setAttribute('y',l2.y+2);
+
+  // wedge fill: triangle along both directions (clipped by the viewBox)
+  wedge.setAttribute('d','M'+O.x+','+O.y+' L'+edge1.x+','+edge1.y+' L'+edge2.x+','+edge2.y+' Z');
+
+  function update(){
+    var a=parseFloat(t1.value), b=parseFloat(t2.value);
+    t1v.textContent=a.toFixed(1); t2v.textContent=b.toFixed(1);
+    sumEl.textContent=(a+b).toFixed(2);
+    // combination point  θ₁x₁ + θ₂x₂  (global scale S keeps it in frame)
+    var px=O.x + (x1.x*a + x2.x*b)*S;
+    var py=O.y + (x1.y*a + x2.y*b)*S;
+    vc.setAttribute('x2',px); vc.setAttribute('y2',py);
+    pc.setAttribute('cx',px); pc.setAttribute('cy',py);
+  }
+  t1.addEventListener('input',update);
+  t2.addEventListener('input',update);
+  update();
+})();
+</script>
+</body>
+</html>

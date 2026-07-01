@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§2.4.1 — Proper Cones &amp; Generalized Inequalities</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.toggle{display:flex;align-items:center;gap:9px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-soft)}
+.toggle input{width:16px;height:16px;accent-color:var(--normal)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.cond{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:12px;padding:2px 0}
+.cond .mk{width:16px;height:16px;border-radius:4px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:11px;flex:0 0 auto}
+.cond.ok .mk{background:var(--inside)} .cond.no .mk{background:var(--outside)}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §2.4.1</div>
+    <h1>Proper cones &amp;<br><em>generalized inequalities</em></h1>
+    <p class="sub">A special kind of cone — a <em>proper</em> cone — turns "greater than" into a partial order on <span class="mono">Rⁿ</span>. It unifies two orders you've already used: componentwise <span class="mono">≼</span> (the orthant) and the Löwner <span class="mono">≽</span> (the PSD cone).</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> proper cone K</span>
+      <span><span class="dot" style="background:var(--inside)"></span> x ≼_K y ⟺ y−x ∈ K</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> the up-set x + K</span>
+      <span>p.&nbsp;43–45 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A pointed solid cone induces an order; a point's up-set is a translated cone.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+        <!-- proper cone -->
+        <g transform="translate(150 175)">
+          <path d="M 0,0 L 150,-150 L 40,-165 Z" fill="rgba(215,64,43,0.14)" stroke="#D7402B" stroke-width="2"/>
+          <circle r="4" fill="#17223B"/>
+          <text x="60" y="-70" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">K</text>
+          <text x="-6" y="18" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">tip (pointed)</text>
+        </g>
+        <!-- order: x, up-set x+K, y inside -->
+        <g transform="translate(430 175)">
+          <path d="M 0,0 L 150,-150 L 40,-165 Z" fill="rgba(47,133,90,0.13)" stroke="#2F855A" stroke-width="1.6"/>
+          <circle r="5" fill="#17223B"/><text x="-24" y="6" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12">x</text>
+          <circle cx="78" cy="-95" r="5" fill="#2F855A"/><text x="86" y="-92" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12">y</text>
+          <line x1="0" y1="0" x2="78" y2="-95" stroke="#2F855A" stroke-width="1.6" stroke-dasharray="4 3"/>
+          <text x="6" y="-150" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">x + K</text>
+        </g>
+        <text x="430" y="212" text-anchor="middle" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">y ∈ x+K  ⟺  x ≼_K y</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§2.4 generalizes the scalar order <span class="mono">≤</span> on <span class="mono">R</span> to a partial order on <span class="mono">Rⁿ</span> (or <span class="mono">Sⁿ</span>) induced by a cone. You've already used two instances without naming them: the componentwise <span class="mono">≼</span> of §2.2.4 (the orthant) and the matrix/Löwner <span class="mono">≽</span> of §2.2.5 (the PSD cone). §2.4.1 unifies them — a <strong>proper cone</strong> induces a <strong>generalized inequality</strong> that behaves much like <span class="mono">≤</span>.</p>
+</section>
+
+<!-- 1 proper cones -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">proper cones — all four conditions</span></div>
+    <hr class="rule"/>
+    <div class="bv">A cone \(K\subseteq\mathbf R^n\) is <b>proper</b> if it is convex, closed, solid (nonempty interior), and pointed (contains no line: \(x\in K,\ -x\in K\Rightarrow x=0\)).<span class="src">B&amp;V §2.4.1 · L2208</span></div>
+    <ul class="reads">
+      <li><span class="tag">convex+closed</span><div>Convex, and includes its boundary.</div></li>
+      <li><span class="tag">solid</span><div>Nonempty interior — <em>full-dimensional</em>, not squashed into a lower flat. Makes the strict order nonempty.</div></li>
+      <li><span class="tag">pointed</span><div>A genuine "tip," not opening into opposite directions. Makes the order antisymmetric.</div></li>
+    </ul>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Diagnose the cone — open the tip, watch the four checks</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:rgba(215,64,43,.14);border:1px solid var(--normal)"></i> cone K</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> int K</span>
+            <span><i style="border-color:var(--ink)"></i> edge rays (drag)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag the two <b>edge rays</b> to open or close the cone's angular span. A single ray isn't <b>solid</b>; a half-plane or wider contains a <b>line</b> (not pointed / not convex).</p>
+          <label class="toggle"><input type="checkbox" id="closed1" checked> include the boundary (closed)</label>
+          <div id="conds1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 generalized inequality -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">the generalized inequality</span></div>
+    <hr class="rule"/>
+    <div class="bv">\(x\preceq_K y \iff y-x\in K\), and strictly \(x\prec_K y \iff y-x\in\operatorname{int}K\).<span class="src">B&amp;V §2.4.1 · L2214</span></div>
+    <p>"<span class="mono">x</span> is <span class="mono">≼_K y</span> when the gap <span class="mono">y − x</span> points into the cone." Mind the direction — it's <span class="mono">y − x</span>, not <span class="mono">x − y</span>. The prototype: with <span class="mono">K = R₊</span>, <span class="mono">y − x ∈ R₊</span> means <span class="mono">y − x ≥ 0</span>, i.e. <span class="mono">x ≤ y</span> — the usual scalar order. Equivalently, <span class="mono">x ≼_K y ⟺ y ∈ x + K</span>, the <em>up-set</em> of <span class="mono">x</span>.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>x ≼_K y ⟺ y − x ∈ K — and when the order breaks</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> up-set x + K</span>
+            <span><i style="border-color:var(--normal)"></i> gap y − x</span>
+            <span><i style="border-color:var(--ink)"></i> x, y (drag)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>which cone K?</h5>
+          <div class="chips" id="cones2">
+            <span class="chip on" data-c="orthant">orthant R²₊</span>
+            <span class="chip" data-c="tilted">tilted proper</span>
+            <span class="chip" data-c="half">half-plane (improper)</span>
+          </div>
+          <p class="hint">Drag <b>x</b> and <b>y</b>. If <b>y</b> is in the shaded up-set <b>x+K</b>, then <b>x ≼_K y</b>. The gap <b>y−x</b> (drawn from origin) is in <b>K</b> exactly then.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note warn"><div class="ic">⚠</div><p>The half-plane is <em>not pointed</em> (it contains a whole line), so it's not a proper cone — and you can watch <strong>antisymmetry fail</strong>: distinct <span class="mono">x, y</span> on the same horizontal have both <span class="mono">x ≼_K y</span> and <span class="mono">y ≼_K x</span>. A proper cone never allows that.</p></div>
+  </div>
+</section>
+
+<!-- 3 examples -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">the three worked orders</span></div>
+    <hr class="rule"/>
+    <ul class="reads">
+      <li><span class="tag">2.14</span><div><strong>Orthant → componentwise.</strong> <span class="mono">K = Rⁿ₊</span>: <span class="mono">x ≼_K y ⟺ xᵢ ≤ yᵢ for all i</span>. Strict: <span class="mono">xᵢ &lt; yᵢ</span> for all i. (The <span class="mono">≼</span> of §2.2.4.)</div></li>
+      <li><span class="tag">2.15</span><div><strong>PSD cone → Löwner.</strong> <span class="mono">K = Sⁿ₊</span>: <span class="mono">X ≼_K Y ⟺ Y − X is PSD</span>; strict <span class="mono">⟺ Y − X is PD</span>. This IS the order of §2.2.5 — <em>not</em> an entrywise comparison.</div></li>
+      <li><span class="tag">2.16</span><div><strong>Polynomials ≥ 0 on [0,1].</strong> <span class="mono">K = {c | c₁ + c₂t + ··· + cₙtⁿ⁻¹ ≥ 0 ∀ t ∈ [0,1]}</span>: <span class="mono">c ≼_K d ⟺ poly_c(t) ≤ poly_d(t) for all t ∈ [0,1]</span>.</div></li>
+    </ul>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Example 2.16 — the order between polynomials on [0,1]</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--halfspace)"></i> poly_c</span>
+            <span><i style="border-color:var(--normal)"></i> poly_d</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> [0,1] window</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>c = (c₁,c₂,c₃) · poly_c = c₁+c₂t+c₃t²</h5>
+          <div class="ctrl"><label>c₁ <span></span><span class="val" id="c1v">0.30</span></label><input type="range" id="cc1" min="-1.5" max="2.5" step="0.05" value="0.3"></div>
+          <div class="ctrl"><label>c₂ <span></span><span class="val" id="c2v">0.40</span></label><input type="range" id="cc2" min="-3" max="3" step="0.05" value="0.4"></div>
+          <div class="ctrl"><label>c₃ <span></span><span class="val" id="c3v">0.50</span></label><input type="range" id="cc3" min="-3" max="3" step="0.05" value="0.5"></div>
+          <h5 style="margin-top:4px">d = (d₁,d₂,d₃)</h5>
+          <div class="ctrl"><label>d₁ <span></span><span class="val" id="d1v">0.80</span></label><input type="range" id="dd1" min="-1.5" max="2.5" step="0.05" value="0.8"></div>
+          <div class="ctrl"><label>d₂ <span></span><span class="val" id="d2v">0.60</span></label><input type="range" id="dd2" min="-3" max="3" step="0.05" value="0.6"></div>
+          <div class="ctrl"><label>d₃ <span></span><span class="val" id="d3v">0.70</span></label><input type="range" id="dd3" min="-3" max="3" step="0.05" value="0.7"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 properties -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">why it behaves like ≤ — axiom by axiom</span></div>
+  <hr class="rule"/>
+  <p><span class="mono">≼_K</span> shares the algebra of <span class="mono">≤</span>: preserved under addition and nonnegative scaling, transitive, reflexive, antisymmetric, preserved under limits. Each property traces back to a cone axiom:</p>
+  <ul class="reads">
+    <li><span class="tag">cone</span><div>Convex + closed under nonnegative scaling → <strong>addition</strong> (<span class="mono">x ≼ y, u ≼ v ⟹ x+u ≼ y+v</span>) and <strong>nonneg scaling</strong>.</div></li>
+    <li><span class="tag">closed</span><div>→ preserved under <strong>limits</strong>.</div></li>
+    <li><span class="tag">pointed</span><div>→ <strong>antisymmetric</strong> (<span class="mono">x ≼ y and y ≼ x ⟹ x = y</span>).</div></li>
+    <li><span class="tag">solid</span><div>→ <span class="mono">int K</span> nonempty → the <strong>strict</strong> order <span class="mono">≺_K</span> is nonvacuous.</div></li>
+  </ul>
+  <div class="note build"><div class="ic">→</div><p><strong>Forward (§2.4.2, not today):</strong> unlike <span class="mono">≤</span> on <span class="mono">R</span>, a generalized inequality is generally <em>not</em> a total order — two points can be incomparable (neither <span class="mono">x ≼_K y</span> nor <span class="mono">y ≼_K x</span>). That's why "minimum" and "minimal" will become genuinely different.</p></div>
+</section>
+
+<!-- 5 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>Test properness</p><p>Convex + closed + solid (nonempty interior) + pointed (no line). All four — miss one and the order misbehaves.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>Read the order</p><p><span class="mono">x ≼_K y ⟺ y − x ∈ K</span> (direction matters); strict via <span class="mono">int K</span>. <span class="mono">K = R₊</span> recovers <span class="mono">≤ / &lt;</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>The two workhorses</p><p>Orthant → componentwise; PSD cone → matrix/Löwner (<span class="mono">Y−X</span> PSD; strict = PD) — <em>not</em> entrywise.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>The diagnose move</p><p>To test <span class="mono">x ≼_K y</span>, form <span class="mono">y − x</span> and check membership in <span class="mono">K</span> — <span class="mono">≽ 0</span> componentwise, or PSD, or polynomial <span class="mono">≥ 0</span> on <span class="mono">[0,1]</span>.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-06-30 · bv.2.4.1</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Proper cone</h6><p>convex + closed + solid (nonempty interior) + pointed (no line; \(x\in K,-x\in K\Rightarrow x=0\)). All four.</p></div>
+      <div class="scard"><h6>Generalized inequality</h6><p>\(x\preceq_K y\iff y-x\in K\) (direction matters); strict via \(\operatorname{int}K\). \(K=\mathbf R_+\) recovers \(\le/<\).</p></div>
+      <div class="scard"><h6>Two workhorses</h6><p>Orthant \(\mathbf R^n_+\) → componentwise (\(x_i\le y_i\ \forall i\)); PSD cone \(S^n_+\) → Löwner (\(Y-X\) PSD; strict = PD) — not entrywise. Third: polynomials ≥ 0 on [0,1].</p></div>
+      <div class="scard"><h6>Behaves like ≤</h6><p>Addition, transitivity, nonneg scaling, reflexive, antisymmetric, limits. pointed ⟹ antisymmetric, closed ⟹ limits, solid ⟹ strict order nonvacuous. But (§2.4.2) not a total order.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §2.4.1 (p. 43–45) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function genericDrag(canvas,pickables,redraw){
+  let act=-1;
+  function pos(e){const r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
+  function hit(px,py){let best=-1,bd=20;pickables().forEach((p,i)=>{const d=Math.hypot(px-p.sx,py-p.sy);if(d<bd){bd=d;best=i;}});return best;}
+  canvas.addEventListener("pointerdown",e=>{const p=pos(e);act=hit(p[0],p[1]);if(act>=0){canvas.setPointerCapture(e.pointerId);e.preventDefault();}});
+  canvas.addEventListener("pointermove",e=>{const p=pos(e);
+    if(act<0){canvas.style.cursor=hit(p[0],p[1])>=0?"grab":"default";return;}
+    canvas.style.cursor="grabbing";pickables()[act].set(p[0],p[1]);redraw();e.preventDefault();});
+  function end(){act=-1;}canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
+}
+
+/* ===== LAB 1 — proper cone diagnostic ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let a1=Math.PI*0.18, a2=Math.PI*0.62;   // edge angles
+  let closed=true;
+  const cl=document.getElementById("closed1"),conds=document.getElementById("conds1"),vd=document.getElementById("vd1");
+  function span(){let s=(a2-a1)%(2*Math.PI);if(s<0)s+=2*Math.PI;return s;}
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const O=view.toS(0,0),sp=span();
+    // fill cone by sweeping angles a1..a1+sp
+    const N=Math.max(2,Math.round(sp/(Math.PI/90)));
+    ctx.beginPath();ctx.moveTo(O[0],O[1]);
+    for(let i=0;i<=N;i++){const ang=a1+sp*i/N;const p=view.toS(8*Math.cos(ang),8*Math.sin(ang));ctx.lineTo(p[0],p[1]);}
+    ctx.closePath();ctx.fillStyle="rgba(215,64,43,0.14)";ctx.fill();
+    // interior (slightly inset) if solid & convex-ish
+    const solid=sp>0.02, convex=sp<=Math.PI+1e-6, pointed=sp<Math.PI-1e-6;
+    // edge rays
+    [a1,a2].forEach((ang,idx)=>{const tip=view.toS(3.4*Math.cos(ang),3.4*Math.sin(ang));
+      ctx.strokeStyle="#17223B";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(O[0],O[1]);ctx.lineTo(tip[0],tip[1]);ctx.stroke();
+      dot(ctx,tip[0],tip[1],6,"#fff","#17223B");});
+    // if not pointed, highlight a contained line
+    if(!pointed){ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle="#C0392B";ctx.lineWidth=1.6;
+      const midA=a1+sp/2; // any line inside: draw the boundary diameter if span>=pi
+      const A=view.toS(6*Math.cos(a1),6*Math.sin(a1)),B=view.toS(6*Math.cos(a1+Math.PI),6*Math.sin(a1+Math.PI));
+      ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();ctx.restore();
+      label(ctx,"contains a line",B[0]+6,B[1],"#C0392B",11);}
+    dot(ctx,O[0],O[1],4,"#17223B");
+    label(ctx,"span "+(sp*180/Math.PI).toFixed(0)+"°",O[0]-30,O[1]+18,"#46506A",12);
+    // conditions
+    function row(ok,txt){return `<div class="cond ${ok?'ok':'no'}"><span class="mk">${ok?'✓':'✗'}</span>${txt}</div>`;}
+    conds.innerHTML=row(convex,"convex  (span ≤ 180°)")+row(closed,"closed  (boundary included)")+
+      row(solid,"solid  (nonempty interior)")+row(pointed,"pointed  (no line, span &lt; 180°)");
+    const proper=convex&&closed&&solid&&pointed;
+    if(proper){vd.className="verdict in";vd.textContent="✓ proper cone — induces a valid ≼_K";}
+    else{vd.className="verdict out";vd.textContent="✗ not proper — the order would misbehave";}
+  }
+  function pickables(){const g=view;
+    return [
+      {sx:g.toS(3.4*Math.cos(a1),3.4*Math.sin(a1))[0],sy:g.toS(3.4*Math.cos(a1),3.4*Math.sin(a1))[1],set:(px,py)=>{const w=g.toW(px,py);a1=Math.atan2(w[1],w[0]);}},
+      {sx:g.toS(3.4*Math.cos(a2),3.4*Math.sin(a2))[0],sy:g.toS(3.4*Math.cos(a2),3.4*Math.sin(a2))[1],set:(px,py)=>{const w=g.toW(px,py);a2=Math.atan2(w[1],w[0]);}}
+    ];}
+  genericDrag(canvas,pickables,draw);
+  cl.addEventListener("change",()=>{closed=cl.checked;draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — generalized inequality ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let x={x:-1.0,y:-0.6}, y={x:1.4,y:1.1}, kind="orthant";
+  const chips=document.getElementById("cones2").querySelectorAll(".chip"),ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  // cone def: edges d1,d2 (for sector), or special
+  function cross(a,b){return a.x*b.y-a.y*b.x;}
+  function inK(v){
+    if(kind==="orthant")return v.x>=-1e-9&&v.y>=-1e-9;
+    if(kind==="half")return v.y>=-1e-9;
+    // tilted sector between -25° and 55°
+    const d1={x:Math.cos(-25*Math.PI/180),y:Math.sin(-25*Math.PI/180)},d2={x:Math.cos(55*Math.PI/180),y:Math.sin(55*Math.PI/180)};
+    return cross(d1,v)>=-1e-9 && cross(v,d2)>=-1e-9;
+  }
+  function fillUpset(base){
+    const L=40;let poly=[];
+    if(kind==="orthant"){poly=[[base.x,base.y],[base.x+L,base.y],[base.x+L,base.y+L],[base.x,base.y+L]];}
+    else if(kind==="half"){poly=[[base.x-L,base.y],[base.x+L,base.y],[base.x+L,base.y+L],[base.x-L,base.y+L]];}
+    else{const d1={x:Math.cos(-25*Math.PI/180),y:Math.sin(-25*Math.PI/180)},d2={x:Math.cos(55*Math.PI/180),y:Math.sin(55*Math.PI/180)};
+      poly=[[base.x,base.y],[base.x+L*d1.x,base.y+L*d1.y],[base.x+L*(d1.x+d2.x),base.y+L*(d1.y+d2.y)],[base.x+L*d2.x,base.y+L*d2.y]];}
+    ctx.beginPath();poly.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();
+    ctx.fillStyle="rgba(47,133,90,0.15)";ctx.fill();
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    // up-set x+K
+    fillUpset(x);
+    // gap vector y-x drawn from origin
+    const gap={x:y.x-x.x,y:y.y-x.y};
+    const O=view.toS(0,0),gS=view.toS(gap.x,gap.y);
+    ctx.save();ctx.setLineDash([4,3]);arrow(ctx,O[0],O[1],gS[0],gS[1],"#D7402B",2);ctx.restore();
+    label(ctx,"y−x",gS[0]+8,gS[1]-6,"#D7402B",12);
+    dot(ctx,O[0],O[1],3.5,"#17223B");
+    // points
+    const xs=view.toS(x.x,x.y),ys=view.toS(y.x,y.y);
+    ctx.strokeStyle="#8A91A3";ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(xs[0],xs[1]);ctx.lineTo(ys[0],ys[1]);ctx.stroke();
+    const le=inK({x:y.x-x.x,y:y.y-x.y}), ge=inK({x:x.x-y.x,y:x.y-y.y});
+    dot(ctx,xs[0],xs[1],7,"#fff","#17223B");label(ctx,"x",xs[0]+9,xs[1]-7,"#17223B",13);
+    dot(ctx,ys[0],ys[1],7,"#fff",le?"#2F855A":"#C0392B");label(ctx,"y",ys[0]+9,ys[1]-7,"#17223B",13);
+    // readout
+    let extra="";
+    if(kind==="orthant")extra=`<br><span class="k">y−x</span> = (${(y.x-x.x).toFixed(2)}, ${(y.y-x.y).toFixed(2)}) — both ≥0? <b>${le?"yes":"no"}</b>`;
+    ro.innerHTML=`<span class="k">y−x ∈ K ?</span> <b>${le?"yes":"no"}</b> &nbsp; <span class="k">x−y ∈ K ?</span> <b>${ge?"yes":"no"}</b>${extra}`;
+    const same=Math.hypot(x.x-y.x,x.y-y.y)<0.08;
+    if(le&&ge&&!same){vd.className="verdict mid";vd.textContent="x ≼ y AND y ≼ x, x≠y → antisymmetry fails (improper)";}
+    else if(le){vd.className="verdict in";vd.textContent="✓ x ≼_K y  (y − x ∈ K)";}
+    else if(ge){vd.className="verdict in";vd.textContent="✓ y ≼_K x  (x − y ∈ K)";}
+    else{vd.className="verdict out";vd.textContent="✗ incomparable — neither holds (§2.4.2 preview)";}
+  }
+  function pickables(){return [
+    {sx:view.toS(x.x,x.y)[0],sy:view.toS(x.x,x.y)[1],set:(px,py)=>{const w=view.toW(px,py);x={x:clamp(w[0],-R,R),y:clamp(w[1],-R,R)};}},
+    {sx:view.toS(y.x,y.y)[0],sy:view.toS(y.x,y.y)[1],set:(px,py)=>{const w=view.toW(px,py);y={x:clamp(w[0],-R,R),y:clamp(w[1],-R,R)};}}
+  ];}
+  genericDrag(canvas,pickables,draw);
+  chips.forEach(c=>c.addEventListener("click",()=>{kind=c.dataset.c;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — polynomials on [0,1] ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  let c=[0.3,0.4,0.5], d=[0.8,0.6,0.7];
+  const ids=["cc1","cc2","cc3","dd1","dd2","dd3"],vids=["c1v","c2v","c3v","d1v","d2v","d3v"];
+  const el=ids.map(i=>document.getElementById(i)),vl=vids.map(i=>document.getElementById(i));
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function poly(co,t){return co[0]+co[1]*t+co[2]*t*t;}
+  function geom(){const r=canvas.getBoundingClientRect();
+    return {w:r.width,h:r.height,x0:52,x1:r.width-24,y0:26,y1:r.height-40,vmin:-1.5,vmax:3.5};}
+  function tx(g,t){return g.x0+(t+0.25)/(1.5)*(g.x1-g.x0);}  // show t in [-0.25,1.25]
+  function vy(g,v){return g.y1-(v-g.vmin)/(g.vmax-g.vmin)*(g.y1-g.y0);}
+  function draw(){
+    fitCanvas(canvas,ctx);const g=geom();ctx.clearRect(0,0,g.w,g.h);
+    // window [0,1]
+    ctx.fillStyle="rgba(47,133,90,0.09)";ctx.fillRect(tx(g,0),g.y0,tx(g,1)-tx(g,0),g.y1-g.y0);
+    // grid
+    ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+    for(let v=-1;v<=3;v++){const yy=vy(g,v);ctx.beginPath();ctx.moveTo(g.x0,yy);ctx.lineTo(g.x1,yy);ctx.stroke();label(ctx,v.toString(),g.x0-20,yy,"#B7AFA0",10);}
+    // zero line
+    ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;const y0=vy(g,0);ctx.beginPath();ctx.moveTo(g.x0,y0);ctx.lineTo(g.x1,y0);ctx.stroke();
+    for(const t of [0,0.5,1]){const xx=tx(g,t);ctx.strokeStyle="#E7E1D4";ctx.beginPath();ctx.moveTo(xx,g.y0);ctx.lineTo(xx,g.y1);ctx.stroke();
+      label(ctx,"t="+t,xx-14,g.y1+12,"#8A91A3",10);}
+    // shade between polys on [0,1]: green if c<=d else red
+    for(let i=0;i<120;i++){const t=i/120,t2=(i+1)/120;if(t>1)break;
+      const pc=poly(c,t),pd=poly(d,t);
+      ctx.fillStyle=(pc<=pd+1e-9)?"rgba(47,133,90,0.16)":"rgba(192,57,43,0.18)";
+      ctx.beginPath();ctx.moveTo(tx(g,t),vy(g,pc));ctx.lineTo(tx(g,t2),vy(g,poly(c,t2)));
+      ctx.lineTo(tx(g,t2),vy(g,poly(d,t2)));ctx.lineTo(tx(g,t),vy(g,pd));ctx.closePath();ctx.fill();}
+    // curves
+    function curve(co,col,wd){ctx.strokeStyle=col;ctx.lineWidth=wd;ctx.beginPath();
+      for(let i=0;i<=200;i++){const t=-0.25+1.5*i/200;const p=[tx(g,t),vy(g,clamp(poly(co,t),g.vmin,g.vmax))];i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);}ctx.stroke();}
+    curve(c,"#2B6CB0",2.4);curve(d,"#D7402B",2.4);
+    label(ctx,"poly_c",tx(g,1.02),vy(g,clamp(poly(c,1),g.vmin,g.vmax)),"#2B6CB0",11);
+    label(ctx,"poly_d",tx(g,1.02),vy(g,clamp(poly(d,1),g.vmin,g.vmax)),"#D7402B",11);
+    // evaluate order & membership on [0,1]
+    let cLEd=true,cInK=true,dInK=true,minGap=1e9;
+    for(let i=0;i<=200;i++){const t=i/200;const pc=poly(c,t),pd=poly(d,t);
+      if(pc>pd+1e-9)cLEd=false; if(pc< -1e-9)cInK=false; if(pd< -1e-9)dInK=false; minGap=Math.min(minGap,pd-pc);}
+    ro.innerHTML=`<span class="k">min(poly_d − poly_c) on [0,1]</span> = <b>${minGap.toFixed(2)}</b><br>`+
+      `<span class="k">c ∈ K?</span> <b>${cInK?"yes":"no"}</b> &nbsp; <span class="k">d ∈ K?</span> <b>${dInK?"yes":"no"}</b>`;
+    if(cLEd){vd.className="verdict in";vd.textContent="✓ c ≼_K d  (poly_c ≤ poly_d on [0,1])";}
+    else{vd.className="verdict out";vd.textContent="✗ c ⋠ d — poly_c exceeds poly_d somewhere";}
+    vl.forEach((v,i)=>v.textContent=(i<3?c[i]:d[i-3]).toFixed(2));
+  }
+  el.forEach((e,i)=>e.addEventListener("input",()=>{const val=parseFloat(e.value);if(i<3)c[i]=val;else d[i-3]=val;draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
