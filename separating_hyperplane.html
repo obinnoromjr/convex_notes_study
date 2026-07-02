@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§2.5.1 — Separating Hyperplane Theorem</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.altbox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.altcard{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
+.altcard .at{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.altcard.i .at{color:var(--halfspace)} .altcard.ii .at{color:var(--normal)}
+.altcard p{margin:0;font-size:15px;color:var(--ink-soft)}
+@media (max-width:640px){.altbox{grid-template-columns:1fr}}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §2.5.1</div>
+    <h1>The separating<br><em>hyperplane</em> theorem</h1>
+    <p class="sub">The first big existence result: two convex sets that don't overlap can always be split by a hyperplane. It's the geometric engine behind LP/convex duality and theorems of alternatives.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--halfspace)"></span> aᵀx ≤ b on C</span>
+      <span><span class="dot" style="background:var(--inside)"></span> aᵀx ≥ b on D</span>
+      <span><span class="dot" style="background:var(--normal)"></span> a = d − c</span>
+      <span>p.&nbsp;46–50 · mastery: design</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="Two disjoint disks separated by the perpendicular bisector of the closest points.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+        <circle cx="170" cy="120" r="76" fill="rgba(43,108,176,0.14)" stroke="#17223B" stroke-width="1.8"/>
+        <circle cx="470" cy="105" r="66" fill="rgba(47,133,90,0.14)" stroke="#17223B" stroke-width="1.8"/>
+        <text x="150" y="120" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600">C</text>
+        <text x="464" y="108" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600">D</text>
+        <!-- closest points -->
+        <circle cx="246" cy="116" r="4.5" fill="#17223B"/><circle cx="404" cy="108" r="4.5" fill="#17223B"/>
+        <text x="238" y="138" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">c</text>
+        <text x="404" y="130" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">d</text>
+        <line x1="246" y1="116" x2="404" y2="108" stroke="#D7402B" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <!-- perpendicular bisector -->
+        <line x1="325" y1="12" x2="325" y2="218" stroke="#17223B" stroke-width="2.4"/>
+        <circle cx="325" cy="112" r="4" fill="#D7402B"/>
+        <text x="332" y="30" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12">aᵀx = b</text>
+        <text x="300" y="128" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="10">½(c+d)</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§2.2–§2.4 built and manipulated convex sets. §2.5 is the first big existence theorem: two convex sets that don't overlap can always be split by a hyperplane. This is the geometric engine behind LP/convex duality and theorems of alternatives.</p>
+</section>
+
+<!-- 1 theorem + construction -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">the theorem &amp; the construction</span></div>
+    <hr class="rule"/>
+    <div class="bv">If \(C,D\) are nonempty disjoint convex sets, there exist \(a\neq0\) and \(b\) with \(a^{\mathsf T}x\le b\) for all \(x\in C\) and \(a^{\mathsf T}x\ge b\) for all \(x\in D\).<span class="src">B&amp;V §2.5.1 · L2382</span></div>
+    <p>The affine function <span class="mono">aᵀx − b</span> is <span class="mono">≤ 0</span> on <span class="mono">C</span>, <span class="mono">≥ 0</span> on <span class="mono">D</span>; the hyperplane <span class="mono">{aᵀx = b}</span> separates them. Note what's required — just nonempty, disjoint, convex. No closedness or boundedness for the non-strict version.</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>The closest-points construction</span><span class="target">this is the design move</span></div>
+      <div class="step crux">
+        <div class="math">\[ a = d-c,\qquad b=\tfrac{1}{2}(\|d\|_2^2-\|c\|_2^2),\qquad f(x)=a^{\mathsf T}x-b=(d-c)^{\mathsf T}\!\big(x-\tfrac12(d+c)\big) \]</div>
+        <div class="why"><b>c ∈ C, d ∈ D</b> the attained closest points; the plane <b>bisects [c,d] perpendicularly</b></div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \text{if some } u\in D \text{ had } f(u)<0:\ \ (d-c)^{\mathsf T}(u-d)<0 \]</div>
+        <div class="why">rewrite \(f(u)=(d-c)^{\mathsf T}(u-d)+\tfrac12\|d-c\|_2^2\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \tfrac{d}{dt}\|d+t(u-d)-c\|_2^2\big|_0=2(d-c)^{\mathsf T}(u-d)<0 \]</div>
+        <div class="why"><b>convexity of D</b> keeps \(d+t(u-d)\in D\), yet it's closer to \(c\) than \(d\) — contradicts \(d\) closest. ∎</div>
+      </div>
+    </div>
+    <div class="note key"><div class="ic">!</div><p>Get the construction right: <span class="mono">a = d − c</span> (<em>not</em> <span class="mono">c + d</span>), and the plane passes through the <em>midpoint</em> <span class="mono">½(c+d)</span> — not through <span class="mono">c</span> or <span class="mono">d</span>. It is perpendicular to the segment <span class="mono">[c,d]</span>.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Build the separator from the closest points</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> C  (aᵀx ≤ b)</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> D  (aᵀx ≥ b)</span>
+            <span><i style="border-color:var(--normal)"></i> a = d − c</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag the two disk <b>centers</b>. The closest points <b>c, d</b> lie on the center line; the separator is the <b>perpendicular bisector</b> of <b>[c,d]</b> through <b>½(c+d)</b>. Push the disks together — separation dies exactly when they touch.</p>
+          <div class="ctrl"><label>radius <span>r_C</span><span class="val" id="rcv">1.40</span></label><input type="range" id="rc" min="0.4" max="2.6" step="0.05" value="1.4"></div>
+          <div class="ctrl"><label>radius <span>r_D</span><span class="val" id="rdv">1.10</span></label><input type="range" id="rd" min="0.4" max="2.6" step="0.05" value="1.1"></div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 strict separation -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">strict separation — a point &amp; a closed convex set</span></div>
+    <hr class="rule"/>
+    <p><strong>Strict</strong> separation means <span class="mono">aᵀx &lt; b</span> on <span class="mono">C</span>, <span class="mono">aᵀx &gt; b</span> on <span class="mono">D</span>. It's <em>not</em> always achievable for disjoint convex sets — even both closed (think of two sets approaching each other asymptotically). But a <strong>point</strong> and a disjoint <strong>closed convex set</strong> always can be strictly separated (Example 2.20): take a small ball around the point disjoint from <span class="mono">C</span>, separate, then shift the offset.</p>
+    <div class="note build"><div class="ic">↺</div><p><strong>The payoff (§2.3.1 converse, now proved):</strong> a closed convex set is the intersection of <em>all</em> halfspaces containing it — because if <span class="mono">x ∉ C</span>, strict separation hands you a halfspace that contains <span class="mono">C</span> but excludes <span class="mono">x</span>.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Strictly separate an outside point from C</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> closed convex C</span>
+            <span><i style="border-color:var(--normal)"></i> separating hyperplane</span>
+            <span><i style="border-color:var(--ink-soft)"></i> supporting plane at c</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag the point <b>x₀</b>. When it's outside <b>C</b>, its closest point <b>c ∈ C</b> gives the normal <b>a = x₀ − c</b>; the <b style="color:var(--normal)">red plane</b> strictly separates them, and the grey <b>supporting plane</b> at <b>c</b> is one halfspace containing all of <b>C</b>.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 alternatives -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">example 2.21 — theorem of alternatives</span></div>
+    <hr class="rule"/>
+    <p>When is <span class="mono">Ax ≺ b</span> (strict) infeasible? Iff <span class="mono">C = {b − Ax}</span> (affine) and <span class="mono">D = Rᵐ₊₊</span> (open) don't meet. By the open-set converse, iff a separating hyperplane exists. Simplifying gives a clean certificate — and the two systems are a pair of <strong>alternatives</strong>: for any <span class="mono">A, b</span>, exactly one is solvable.</p>
+    <div class="altbox">
+      <div class="altcard i"><div class="at">System I — primal</div><p><span class="mono">Ax ≺ b</span> &nbsp;— find <span class="mono">x</span> strictly inside every halfspace <span class="mono">aᵢᵀx &lt; bᵢ</span>.</p></div>
+      <div class="altcard ii"><div class="at">System II — certificate</div><p><span class="mono">λ ≠ 0, λ ≽ 0, Aᵀλ = 0, λᵀb ≤ 0</span> — a nonnegative combination of the rows that cancels, with <span class="mono">λᵀb ≤ 0</span>.</p></div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Exactly one is solvable — watch the certificate appear</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> feasible {Ax ≺ b}</span>
+            <span><i style="border-color:var(--normal)"></i> row normals aᵢ</span>
+            <span><i style="border-color:var(--halfspace)"></i> Σλᵢaᵢ closes to 0</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>3 inequalities aᵢᵀx ≤ b  (drag normals, slide b)</h5>
+          <div class="ctrl"><label>common offset <span>b</span><span class="val" id="bv3">1.20</span></label><input type="range" id="b3" min="-2" max="3" step="0.05" value="1.2"></div>
+          <p class="hint">Drag the three <b>normals aᵢ</b> on the circle. When they wrap all the way around (positively span the plane) and <b>b &lt; 0</b>, the primal goes <b>infeasible</b> — and the certificate <b>λ</b> appears: <b>λᵢaᵢ</b> laid tip-to-tail closes the loop (<b>Aᵀλ = 0</b>).</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — design</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>The theorem</p><p>Nonempty disjoint convex <span class="mono">C, D</span> ⟹ <span class="mono">∃ a≠0, b</span> with <span class="mono">aᵀx ≤ b</span> on <span class="mono">C</span>, <span class="mono">aᵀx ≥ b</span> on <span class="mono">D</span> — no closedness needed.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>The construction</p><p>Closest points <span class="mono">c, d</span>; <span class="mono">a = d − c</span>; the plane bisects <span class="mono">[c,d]</span> perpendicularly (<span class="mono">b</span> at the midpoint). Not <span class="mono">c+d</span>, not through <span class="mono">c</span> or <span class="mono">d</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>Strict &amp; the converse</p><p>Strict isn't always possible — but a point ∉ closed convex <span class="mono">C</span> always can ⟹ closed convex = ∩ of containing halfspaces. Converse needs one set open (<span class="mono">C=D={0}</span> fails otherwise).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>Alternatives</p><p><span class="mono">Ax ≺ b</span> infeasible ⟺ <span class="mono">∃ λ ≠ 0, λ ≽ 0, Aᵀλ = 0, λᵀb ≤ 0</span> — the Farkas / LP-duality prototype.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-06-30 · bv.2.5.1</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Theorem</h6><p>Nonempty disjoint convex \(C, D\) ⟹ \(\exists a\neq0, b\) with \(a^{\mathsf T}x\le b\) on \(C\), \(a^{\mathsf T}x\ge b\) on \(D\). Non-strict needs no closedness/boundedness.</p></div>
+      <div class="scard"><h6>Construction</h6><p>Closest points \(c\in C, d\in D\): \(a=d-c\); the plane perpendicularly bisects \([c,d]\) (\(b=(\|d\|^2-\|c\|^2)/2\) = \(a^{\mathsf T}\cdot\)midpoint).</p></div>
+      <div class="scard"><h6>Strict</h6><p>Not always possible, but a point outside a closed convex \(C\) always can be ⟹ closed convex = ∩ of all containing halfspaces.</p></div>
+      <div class="scard"><h6>Alternatives</h6><p>Converse needs one set open. \(Ax\prec b\) infeasible ⟺ \(\exists\lambda\neq0,\lambda\succeq0,A^{\mathsf T}\lambda=0,\lambda^{\mathsf T}b\le0\) — exactly one of the two systems is solvable.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §2.5.1 (p. 46–50) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawLine(ctx,view,a,b,col,wd,dash){ // a.x*X+a.y*Y=b
+  const na=Math.hypot(a.x,a.y)||1e-6,foot={x:a.x*b/(na*na),y:a.y*b/(na*na)},dir={x:-a.y/na,y:a.x/na};
+  const p1=view.toS(foot.x-14*dir.x,foot.y-14*dir.y),p2=view.toS(foot.x+14*dir.x,foot.y+14*dir.y);
+  ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=wd;
+  ctx.beginPath();ctx.moveTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.stroke();ctx.restore();
+}
+function clipHalf(poly,ax,ay,b){const out=[],n=poly.length;
+  for(let i=0;i<n;i++){const c=poly[i],nx=poly[(i+1)%n];const dc=ax*c[0]+ay*c[1]-b,dn=ax*nx[0]+ay*nx[1]-b;
+    const ci=dc<=1e-9,ni=dn<=1e-9;if(ci)out.push(c);if(ci!==ni){const t=dc/(dc-dn);out.push([c[0]+t*(nx[0]-c[0]),c[1]+t*(nx[1]-c[1])]);}}return out;}
+function polyArea(p){let a=0;for(let i=0;i<p.length;i++){const q=p[(i+1)%p.length];a+=p[i][0]*q[1]-q[0]*p[i][1];}return Math.abs(a)/2;}
+
+/* ===== LAB 1 — closest points separation ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let C={x:-2.0,y:0.3}, rC=1.4, D={x:2.0,y:-0.4}, rD=1.1;
+  const rc=document.getElementById("rc"),rd=document.getElementById("rd"),rcv=document.getElementById("rcv"),rdv=document.getElementById("rdv"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const dvec={x:D.x-C.x,y:D.y-C.y},dist=Math.hypot(dvec.x,dvec.y)||1e-6,u={x:dvec.x/dist,y:dvec.y/dist};
+    const gap=dist-rC-rD, sep=gap>1e-6;
+    const c={x:C.x+rC*u.x,y:C.y+rC*u.y}, d={x:D.x-rD*u.x,y:D.y-rD*u.y};
+    // separating hyperplane
+    if(sep){const a={x:d.x-c.x,y:d.y-c.y};const b=0.5*((d.x*d.x+d.y*d.y)-(c.x*c.x+c.y*c.y));
+      // shade halfspaces
+      let polyC=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],a.x,a.y,b);
+      if(polyC.length>2){ctx.beginPath();polyC.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();ctx.fillStyle="rgba(43,108,176,0.07)";ctx.fill();}
+      let polyD=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],-a.x,-a.y,-b);
+      if(polyD.length>2){ctx.beginPath();polyD.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();ctx.fillStyle="rgba(47,133,90,0.07)";ctx.fill();}
+      drawLine(ctx,view,a,b,"#17223B",2.4);
+    }
+    // disks
+    const cS=view.toS(C.x,C.y),dS=view.toS(D.x,D.y),s=view.s();
+    ctx.beginPath();ctx.arc(cS[0],cS[1],rC*s,0,7);ctx.fillStyle="rgba(43,108,176,0.16)";ctx.fill();ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.stroke();
+    ctx.beginPath();ctx.arc(dS[0],dS[1],rD*s,0,7);ctx.fillStyle="rgba(47,133,90,0.16)";ctx.fill();ctx.stroke();
+    dot(ctx,cS[0],cS[1],4,"#17223B");label(ctx,"C",cS[0]-6,cS[1],"#2B6CB0",13);
+    dot(ctx,dS[0],dS[1],4,"#17223B");label(ctx,"D",dS[0]-6,dS[1],"#2F855A",13);
+    // closest points, segment, midpoint, a
+    const cP=view.toS(c.x,c.y),dP=view.toS(d.x,d.y),mid={x:(c.x+d.x)/2,y:(c.y+d.y)/2},mP=view.toS(mid.x,mid.y);
+    ctx.save();ctx.setLineDash([4,3]);ctx.strokeStyle="#D7402B";ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(cP[0],cP[1]);ctx.lineTo(dP[0],dP[1]);ctx.stroke();ctx.restore();
+    dot(ctx,cP[0],cP[1],5,"#fff","#17223B");label(ctx,"c",cP[0]+7,cP[1]+12,"#46506A",12);
+    dot(ctx,dP[0],dP[1],5,"#fff","#17223B");label(ctx,"d",dP[0]+7,dP[1]+12,"#46506A",12);
+    if(sep){dot(ctx,mP[0],mP[1],4,"#D7402B");
+      // draw a=d-c arrow from midpoint
+      const aTip=view.toS(mid.x+(d.x-c.x)*0.5,mid.y+(d.y-c.y)*0.5);
+      arrow(ctx,mP[0],mP[1],aTip[0],aTip[1],"#D7402B",2.2);label(ctx,"a",aTip[0]+6,aTip[1]-6,"#D7402B",12);}
+    ro.innerHTML=`<span class="k">dist(C,D)</span> = <b>${Math.max(0,gap).toFixed(2)}</b><br>`+
+      `<span class="k">a = d − c</span> = (${(d.x-c.x).toFixed(2)}, ${(d.y-c.y).toFixed(2)})<br>`+
+      `<span class="k">midpoint ½(c+d)</span> = (${((c.x+d.x)/2).toFixed(2)}, ${((c.y+d.y)/2).toFixed(2)})`;
+    if(sep){vd.className="verdict in";vd.textContent="✓ disjoint — hyperplane separates C and D";}
+    else{vd.className="verdict out";vd.textContent="✗ overlapping — no separating hyperplane";}
+    rcv.textContent=rC.toFixed(2);rdv.textContent=rD.toFixed(2);
+  }
+  let act=-1;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function hit(px,py){const list=[C,D];let best=-1,bd=22;list.forEach((p,i)=>{const s=view.toS(p.x,p.y);const d=Math.hypot(px-s[0],py-s[1]);if(d<bd){bd=d;best=i;}});return best;}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);act=hit(p[0],p[1]);if(act>=0){canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(act<0){canvas.style.cursor=hit(p[0],p[1])>=0?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);const t={x:clamp(wv[0],-R,R),y:clamp(wv[1],-R,R)};if(act===0)C=t;else D=t;draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=-1);canvas.addEventListener("pointercancel",()=>act=-1);
+  rc.addEventListener("input",()=>{rC=parseFloat(rc.value);draw();});
+  rd.addEventListener("input",()=>{rD=parseFloat(rd.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — strict separation point / convex set ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  // convex polygon (pentagon)
+  const V=[];const nV=5,rad=2.0;for(let i=0;i<nV;i++){const a=Math.PI/2+i*2*Math.PI/nV;V.push({x:0.2+rad*Math.cos(a),y:0.1+rad*Math.sin(a)});}
+  let x0={x:3.2,y:1.6};
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function inside(p){for(let i=0;i<V.length;i++){const a=V[i],b=V[(i+1)%V.length];
+    if((b.x-a.x)*(p.y-a.y)-(b.y-a.y)*(p.x-a.x)<-1e-9)return false;}return true;}
+  function project(p){ // closest point on convex polygon
+    if(inside(p))return {pt:{...p},inside:true};
+    let best=null,bd=1e18;
+    for(let i=0;i<V.length;i++){const a=V[i],b=V[(i+1)%V.length];
+      const dx=b.x-a.x,dy=b.y-a.y,L2=dx*dx+dy*dy;let t=((p.x-a.x)*dx+(p.y-a.y)*dy)/L2;t=clamp(t,0,1);
+      const q={x:a.x+t*dx,y:a.y+t*dy},dd=(q.x-p.x)**2+(q.y-p.y)**2;if(dd<bd){bd=dd;best=q;}}
+    return {pt:best,inside:false};
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const pr=project(x0),c=pr.pt,isIn=pr.inside;
+    // separating hyperplane a=x0-c, plane between (through 0.5(x0+c))
+    if(!isIn){const a={x:x0.x-c.x,y:x0.y-c.y};const mid={x:(x0.x+c.x)/2,y:(x0.y+c.y)/2};
+      const b=a.x*mid.x+a.y*mid.y;
+      // shade C-side (a·x<=b lightly)
+      let poly=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],a.x,a.y,b);
+      if(poly.length>2){ctx.beginPath();poly.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();ctx.fillStyle="rgba(43,108,176,0.06)";ctx.fill();}
+      drawLine(ctx,view,a,b,"#D7402B",2.4);
+      // supporting plane at c
+      const bs=a.x*c.x+a.y*c.y;drawLine(ctx,view,a,bs,"#8A91A3",1.6,[5,4]);
+      // segment x0-c and normal
+      const x0S=view.toS(x0.x,x0.y),cS=view.toS(c.x,c.y);
+      ctx.save();ctx.setLineDash([4,3]);ctx.strokeStyle="#D7402B";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x0S[0],x0S[1]);ctx.lineTo(cS[0],cS[1]);ctx.stroke();ctx.restore();
+      dot(ctx,cS[0],cS[1],5,"#fff","#17223B");label(ctx,"c",cS[0]+7,cS[1]+12,"#46506A",12);
+    }
+    // polygon
+    ctx.beginPath();V.forEach((v,i)=>{const s=view.toS(v.x,v.y);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();
+    ctx.fillStyle="rgba(43,108,176,0.15)";ctx.fill();ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.stroke();
+    label(ctx,"C",view.toS(0.2,0.1)[0]-6,view.toS(0.2,0.1)[1],"#2B6CB0",14);
+    // x0
+    const x0S=view.toS(x0.x,x0.y),col=isIn?"#C0392B":"#2F855A";
+    dot(ctx,x0S[0],x0S[1],7,"#fff",col);label(ctx,"x₀",x0S[0]+9,x0S[1]-7,"#17223B",13);
+    if(!isIn){const dst=Math.hypot(x0.x-c.x,x0.y-c.y);
+      ro.innerHTML=`<span class="k">x₀ outside C</span><br><span class="k">a = x₀ − c</span> = (${(x0.x-c.x).toFixed(2)}, ${(x0.y-c.y).toFixed(2)})<br><span class="k">dist(x₀, C)</span> = <b>${dst.toFixed(2)}</b>`;
+      vd.className="verdict in";vd.textContent="✓ strictly separated (aᵀx₀ > b > aᵀx on C)";}
+    else{ro.innerHTML=`<span class="k">x₀ ∈ C</span> — no separation possible`;
+      vd.className="verdict out";vd.textContent="✗ x₀ is inside C — not separable";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(x0.x,x0.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<24){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(x0.x,x0.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<24?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);x0={x:clamp(wv[0],-R,R),y:clamp(wv[1],-R,R)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — theorem of alternatives ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let th=[Math.PI/2, Math.PI/2+2*Math.PI/3, Math.PI/2+4*Math.PI/3], b=1.2;
+  const b3=document.getElementById("b3"),bv3=document.getElementById("bv3"),ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function normals(){return th.map(t=>({x:Math.cos(t),y:Math.sin(t)}));}
+  function findLambda(a){ // minimize |sum lambda_i a_i|^2 over simplex; return best
+    let best=null,bd=1e18;const N=60;
+    for(let i=0;i<=N;i++)for(let j=0;j<=N-i;j++){const l1=i/N,l2=j/N,l3=1-l1-l2;if(l3<-1e-9)continue;
+      const sx=l1*a[0].x+l2*a[1].x+l3*a[2].x, sy=l1*a[0].y+l2*a[1].y+l3*a[2].y;const r=sx*sx+sy*sy;
+      if(r<bd){bd=r;best=[l1,l2,l3];}}
+    return {lam:best,res:Math.sqrt(bd)};
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const a=normals();
+    // feasible region {a_i·x <= b}
+    let poly=[[-R,-R],[R,-R],[R,R],[-R,R]];a.forEach(ai=>{poly=clipHalf(poly,ai.x,ai.y,b);});
+    const area=poly.length>2?polyArea(poly):0, feasible=area>1e-4;
+    if(feasible){ctx.beginPath();poly.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();
+      ctx.fillStyle="rgba(47,133,90,0.16)";ctx.fill();ctx.strokeStyle="#2F855A";ctx.lineWidth=1.6;ctx.stroke();}
+    // boundary lines + normals
+    a.forEach((ai,i)=>{drawLine(ctx,view,ai,b,"#B7C4D4",1.2,[5,4]);
+      const O=view.toS(0,0),tip=view.toS(ai.x*1.8,ai.y*1.8);arrow(ctx,O[0],O[1],tip[0],tip[1],"#D7402B",2);
+      label(ctx,"a"+(i+1),tip[0]+6,tip[1]-6,"#D7402B",11);});
+    const O=view.toS(0,0);dot(ctx,O[0],O[1],3.5,"#17223B");
+    // certificate if infeasible
+    const {lam,res}=findLambda(a);const hasCert=res<0.06;
+    let lamTxt="—";
+    if(!feasible&&hasCert){
+      // normalize lambda sum=1 already; draw lambda_i a_i tip to tail (scaled)
+      const scale=2.2;let cur={x:0,y:0};
+      for(let i=0;i<3;i++){const nx=cur.x+lam[i]*a[i].x*scale,ny=cur.y+lam[i]*a[i].y*scale;
+        const s0=view.toS(cur.x,cur.y),s1=view.toS(nx,ny);arrow(ctx,s0[0],s0[1],s1[0],s1[1],"#2B6CB0",2.4);cur={x:nx,y:ny};}
+      lamTxt=`(${lam[0].toFixed(2)}, ${lam[1].toFixed(2)}, ${lam[2].toFixed(2)})`;
+    }
+    const lamB=hasCert?(lam[0]+lam[1]+lam[2])*b:NaN; // λᵀb with common b
+    ro.innerHTML=`<span class="k">feasible area {Ax ≺ b}</span> = <b>${area.toFixed(2)}</b><br>`+
+      `<span class="k">Σλᵢaᵢ residual</span> = <b>${res.toFixed(3)}</b> ${hasCert?"≈ 0 (Aᵀλ=0 possible)":"(no nonneg null combo)"}<br>`+
+      `<span class="k">λ</span> = <b>${lamTxt}</b> &nbsp; <span class="k">λᵀb</span> = <b>${isNaN(lamB)?"—":lamB.toFixed(2)}</b>`;
+    if(feasible){vd.className="verdict in";vd.textContent="System I solvable — ∃ x with Ax ≺ b";}
+    else if(hasCert&&lamB<=1e-6){vd.className="verdict out";vd.textContent="System II solvable — certificate λ proves infeasibility";}
+    else{vd.className="verdict mid";vd.textContent="boundary case — nudge the normals or offset";}
+    bv3.textContent=b.toFixed(2);
+  }
+  let act=-1;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function hit(px,py){const a=normals();let best=-1,bd=22;a.forEach((ai,i)=>{const s=view.toS(ai.x*1.8,ai.y*1.8);const d=Math.hypot(px-s[0],py-s[1]);if(d<bd){bd=d;best=i;}});return best;}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);act=hit(p[0],p[1]);if(act>=0){canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(act<0){canvas.style.cursor=hit(p[0],p[1])>=0?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);th[act]=Math.atan2(wv[1],wv[0]);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=-1);canvas.addEventListener("pointercancel",()=>act=-1);
+  b3.addEventListener("input",()=>{b=parseFloat(b3.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
