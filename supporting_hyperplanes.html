@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§2.5.2 — Supporting Hyperplanes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §2.5.2</div>
+    <h1>Supporting<br><em>hyperplanes</em></h1>
+    <p class="sub">The boundary counterpart to separation: a hyperplane that touches a convex set at a boundary point and keeps the whole set on one side. It falls straight out of the separating theorem — and it's the geometric seed of subgradients and the dual description of convex sets.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> touches at x₀ ∈ bd C</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> C on the ≤ side</span>
+      <span><span class="dot" style="background:var(--inside)"></span> aᵀx ≤ aᵀx₀</span>
+      <span>p.&nbsp;50–51 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A supporting line tangent to a convex blob at a boundary point, and a fan of supports at a corner.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+          <marker id="ar" markerWidth="11" markerHeight="11" refX="7" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#D7402B"/></marker></defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+        <!-- smooth: unique support -->
+        <g>
+          <ellipse cx="175" cy="120" rx="92" ry="72" fill="rgba(43,108,176,0.14)" stroke="#17223B" stroke-width="1.8"/>
+          <!-- tangent at x0=(251,79): perpendicular-bisector-free true tangent, ellipse fully below-left -->
+          <line x1="185" y1="4" x2="352" y2="195" stroke="#17223B" stroke-width="2.4"/>
+          <circle cx="251" cy="79" r="5" fill="#D7402B"/>
+          <line x1="251" y1="79" x2="289" y2="46" stroke="#D7402B" stroke-width="2.4" marker-end="url(#ar)"/>
+          <text x="294" y="42" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">a</text>
+          <text x="255" y="96" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">x₀</text>
+          <text x="120" y="210" text-anchor="middle" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">smooth → unique</text>
+        </g>
+        <!-- corner: fan -->
+        <g transform="translate(430 60)">
+          <rect x="0" y="0" width="130" height="130" fill="rgba(47,133,90,0.13)" stroke="#17223B" stroke-width="1.8"/>
+          <circle cx="0" cy="0" r="5" fill="#D7402B"/>
+          <line x1="-70" y1="0" x2="0" y2="0" stroke="#17223B" stroke-width="1.6" stroke-dasharray="5 3"/>
+          <line x1="0" y1="-70" x2="0" y2="0" stroke="#17223B" stroke-width="1.6" stroke-dasharray="5 3"/>
+          <line x1="-55" y1="-55" x2="0" y2="0" stroke="#D7402B" stroke-width="2" stroke-dasharray="3 2"/>
+          <text x="-10" y="-58" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">x₀</text>
+        </g>
+        <text x="495" y="215" text-anchor="middle" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">corner → many (a fan)</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§2.5.1 separated two disjoint convex sets. §2.5.2 is the boundary counterpart: a hyperplane that touches one convex set at a boundary point and keeps the whole set on one side. It falls straight out of the separating theorem — and it's the geometric seed of subgradients and the dual description of convex sets.</p>
+</section>
+
+<!-- 1 definition + theorem -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">definition &amp; the theorem</span></div>
+    <hr class="rule"/>
+    <div class="bv">Let \(x_0\in\operatorname{bd}C\). If \(a\neq0\) satisfies \(a^{\mathsf T}x\le a^{\mathsf T}x_0\) for all \(x\in C\), then \(\{x\mid a^{\mathsf T}x=a^{\mathsf T}x_0\}\) is a <b>supporting hyperplane</b> to \(C\) at \(x_0\).<span class="src">B&amp;V §2.5.2 · L2589</span></div>
+    <p>The hyperplane passes through <span class="mono">x₀</span> (offset <span class="mono">b = aᵀx₀</span>), is tangent to <span class="mono">C</span> at <span class="mono">x₀</span>, and the halfspace <span class="mono">{aᵀx ≤ aᵀx₀}</span> contains all of <span class="mono">C</span> — the whole set on one side, touching at <span class="mono">x₀</span>. (The <span class="mono">≤</span> side is a convention; using <span class="mono">−a</span> flips it.)</p>
+    <div class="bv">For any nonempty convex \(C\) and any \(x_0\in\operatorname{bd}C\), there exists a supporting hyperplane to \(C\) at \(x_0\).<span class="src">B&amp;V §2.5.2 · L2616</span></div>
+
+    <div class="proof">
+      <div class="proof-head"><span>Proof — from the separating theorem</span><span class="target">two cases</span></div>
+      <div class="step crux">
+        <div class="math">\[ \operatorname{int}C\neq\emptyset:\quad \{x_0\}\ \text{and}\ \operatorname{int}C\ \text{are disjoint convex} \]</div>
+        <div class="why">separate them → \(a\neq0\) with \(a^{\mathsf T}x\le a^{\mathsf T}x_0\) on \(\operatorname{int}C\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \Rightarrow\ a^{\mathsf T}x\le a^{\mathsf T}x_0\ \text{on all of } C \]</div>
+        <div class="why"><b>by closure:</b> every \(x\in C\) is a limit of interior points; the closed halfspace survives the limit</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \operatorname{int}C=\emptyset:\quad C\subseteq\text{affine set of dim}<n \]</div>
+        <div class="why">any hyperplane containing that flat supports \(C\) trivially. Needs only nonempty + convex. ∎</div>
+      </div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Slide x₀ around the boundary — unique, or a whole fan</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> C  (aᵀx ≤ aᵀx₀)</span>
+            <span><i style="border-color:var(--ink)"></i> supporting hyperplane</span>
+            <span><i style="border-color:var(--normal)"></i> normal a</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>shape of C</h5>
+          <div class="chips" id="shape1">
+            <span class="chip on" data-s="disk">disk (smooth)</span>
+            <span class="chip" data-s="square">square</span>
+            <span class="chip" data-s="pent">pentagon</span>
+          </div>
+          <p class="hint">Drag <b>x₀</b> along the boundary. On a smooth arc or a flat edge the support is <b>unique</b>. At a <b>corner</b> a whole fan of normals works — use the slider to sweep between the two extremes.</p>
+          <div class="ctrl"><label>corner fan <span>pick a</span><span class="val" id="fanv">—</span></label><input type="range" id="fan1" min="0" max="1" step="0.01" value="0.5" disabled></div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 interior vs boundary -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">only boundary points have one</span></div>
+    <hr class="rule"/>
+    <p>The theorem is about <em>boundary</em> points. An <strong>interior</strong> point never has a supporting hyperplane: any hyperplane through an interior point cuts <span class="mono">C</span> on both sides, so it can't keep the whole set on one side.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Interior straddles every line; boundary supports</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> C</span>
+            <span><i style="border-color:var(--inside)"></i> C on this side</span>
+            <span><i style="border-color:var(--outside)"></i> C also on this side</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag the point <b>P</b>. On the <b>boundary</b> it gets a unique supporting hyperplane. In the <b>interior</b>, rotate the trial line — <b>C</b> always spills onto both sides, so no support exists. Slide P out to the edge and one side empties.</p>
+          <div class="ctrl"><label>trial line angle <span>ψ</span><span class="val" id="psv">0°</span></label><input type="range" id="ps2" min="0" max="180" step="1" value="30"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 envelope / converse -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">the dual description &amp; the converse</span></div>
+    <hr class="rule"/>
+    <div class="bv">Partial converse: if a set is closed, has nonempty interior, and has a supporting hyperplane at <em>every</em> boundary point, then it is convex.<span class="src">B&amp;V §2.5.2 · L2624</span></div>
+    <p>This is the boundary-side companion to §2.5.1's fact that a closed convex set is the intersection of its containing halfspaces. Sample supporting halfspaces all around the boundary and their intersection rebuilds the set — <em>if</em> it's convex. A non-convex dent has boundary points with <strong>no</strong> supporting hyperplane, and the intersection overshoots to the convex hull.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>C = ∩ of its supporting halfspaces — unless it dents inward</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--inside)"></i> boundary point with support</span>
+            <span><i style="border-color:var(--outside)"></i> no support (in a dent)</span>
+            <span><i style="border-color:var(--ink-faint)"></i> ∩ halfspaces = hull</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>shape of C</h5>
+          <div class="chips" id="shape3">
+            <span class="chip on" data-s="circle">convex (disk)</span>
+            <span class="chip" data-s="peanut">non-convex (dented)</span>
+          </div>
+          <div class="ctrl"><label>supporting lines shown <span>N</span><span class="val" id="nv3">14</span></label><input type="range" id="n3" min="4" max="48" step="1" value="14"></div>
+          <p class="hint">Each boundary sample tries to place a supporting hyperplane. <b>Green</b> points get one (they sit on the hull); <b>red</b> points in a dent get none. The faint lines are the supporting halfspaces — their intersection is the shaded region.</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>The definition</p><p>At <span class="mono">x₀ ∈ bd C</span>: <span class="mono">a ≠ 0</span>, <span class="mono">aᵀx ≤ aᵀx₀ ∀ x ∈ C</span>; the hyperplane passes through <span class="mono">x₀</span>, is tangent, and <span class="mono">C</span> sits on the <span class="mono">≤</span> side.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>The theorem</p><p>Every boundary point of a nonempty convex set has one — no closedness/boundedness needed. Interior points have none.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>Proof idea &amp; uniqueness</p><p>Separate <span class="mono">{x₀}</span> from <span class="mono">int C</span>, extend by closure. Unique at smooth boundary points; a whole fan at corners.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>Partial converse</p><p>Closed + nonempty interior + a supporting hyperplane at every boundary point ⟹ convex.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-06-30 · bv.2.5.2</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Definition</h6><p>At \(x_0\in\operatorname{bd}C\): \(a\neq0\) with \(a^{\mathsf T}x\le a^{\mathsf T}x_0\ \forall x\in C\); the hyperplane through \(x_0\) is tangent, \(C\) in the halfspace \(\{a^{\mathsf T}x\le a^{\mathsf T}x_0\}\).</p></div>
+      <div class="scard"><h6>Theorem</h6><p>Every nonempty convex set has a supporting hyperplane at every boundary point (no closedness/boundedness). Interior points don't.</p></div>
+      <div class="scard"><h6>Proof</h6><p>If \(\operatorname{int}C\neq\emptyset\), separate \(\{x_0\}\) from \(\operatorname{int}C\) and extend by closure; if \(\operatorname{int}C=\emptyset\), \(C\) lies in a lower-dimensional affine set.</p></div>
+      <div class="scard"><h6>Converse &amp; uniqueness</h6><p>Closed + nonempty interior + support at every boundary point ⟹ convex. Unique at smooth points, a fan at corners.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §2.5.2 (p. 50–51) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawLineDir(ctx,view,through,dir,col,wd,dash){ // line through point, along dir
+  const p1=view.toS(through.x-12*dir.x,through.y-12*dir.y),p2=view.toS(through.x+12*dir.x,through.y+12*dir.y);
+  ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=wd;
+  ctx.beginPath();ctx.moveTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.stroke();ctx.restore();
+}
+function clipHalf(poly,ax,ay,b){const out=[],n=poly.length;
+  for(let i=0;i<n;i++){const c=poly[i],nx=poly[(i+1)%n];const dc=ax*c[0]+ay*c[1]-b,dn=ax*nx[0]+ay*nx[1]-b;
+    const ci=dc<=1e-9,ni=dn<=1e-9;if(ci)out.push(c);if(ci!==ni){const t=dc/(dc-dn);out.push([c[0]+t*(nx[0]-c[0]),c[1]+t*(nx[1]-c[1])]);}}return out;}
+function fillPolyW(ctx,view,poly,fill,stroke,wd){if(poly.length<3)return;
+  ctx.beginPath();poly.forEach((p,i)=>{const s=view.toS(p[0],p[1]);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=wd||2;ctx.stroke();}}
+
+/* ===== LAB 1 — supporting hyperplane explorer ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let kind="disk", x0={x:0,y:2.2}, fanT=0.5;
+  const disk={cx:0,cy:0,r:2.2};
+  const chips=document.getElementById("shape1").querySelectorAll(".chip"),fan=document.getElementById("fan1"),fanv=document.getElementById("fanv"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function poly(){
+    if(kind==="square")return [{x:-2.1,y:-2.1},{x:2.1,y:-2.1},{x:2.1,y:2.1},{x:-2.1,y:2.1}];
+    const V=[];for(let i=0;i<5;i++){const a=Math.PI/2+i*2*Math.PI/5;V.push({x:2.4*Math.cos(a),y:2.4*Math.sin(a)});}return V;
+  }
+  function centroid(P){let x=0,y=0;P.forEach(p=>{x+=p.x;y+=p.y;});return {x:x/P.length,y:y/P.length};}
+  function edgeNormal(P,i){const a=P[i],b=P[(i+1)%P.length];const dx=b.x-a.x,dy=b.y-a.y;let n={x:dy,y:-dx};
+    const L=Math.hypot(n.x,n.y);n={x:n.x/L,y:n.y/L};const cen=centroid(P),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+    if(n.x*(mid.x-cen.x)+n.y*(mid.y-cen.y)<0){n={x:-n.x,y:-n.y};}return n;}
+  function projectPoly(P,p){let best=null,bd=1e18,bi=0,bt=0;
+    for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];const dx=b.x-a.x,dy=b.y-a.y,L2=dx*dx+dy*dy;
+      let t=clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/L2,0,1);const q={x:a.x+t*dx,y:a.y+t*dy},d=(q.x-p.x)**2+(q.y-p.y)**2;
+      if(d<bd){bd=d;best=q;bi=i;bt=t;}}
+    return {pt:best,edge:bi,t:bt};
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    let a,cornerFan=null,supportPt;
+    if(kind==="disk"){
+      const ang=Math.atan2(x0.y-disk.cy,x0.x-disk.cx);supportPt={x:disk.cx+disk.r*Math.cos(ang),y:disk.cy+disk.r*Math.sin(ang)};
+      a={x:Math.cos(ang),y:Math.sin(ang)};
+      const cS=view.toS(disk.cx,disk.cy),s=view.s();
+      // shade halfspace a·x<=a·x0
+      const b=a.x*supportPt.x+a.y*supportPt.y;
+      let poly2=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],a.x,a.y,b);
+      fillPolyW(ctx,view,poly2,"rgba(43,108,176,0.06)",null);
+      ctx.beginPath();ctx.arc(cS[0],cS[1],disk.r*s,0,7);ctx.fillStyle="rgba(43,108,176,0.16)";ctx.fill();ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.stroke();
+      fan.disabled=true;fanv.textContent="—";
+    } else {
+      const P=poly();
+      // draw shaded halfspace after we know a
+      const pr=projectPoly(P,x0);supportPt=pr.pt;
+      const atVertex=(pr.t<0.04||pr.t>0.96);
+      const vidx=pr.t>0.5?(pr.edge+1)%P.length:pr.edge;
+      if(atVertex){
+        const nA=edgeNormal(P,(vidx-1+P.length)%P.length),nB=edgeNormal(P,vidx);
+        const angA=Math.atan2(nA.y,nA.x);let angB=Math.atan2(nB.y,nB.x);
+        let dA=angB-angA;while(dA>Math.PI)dA-=2*Math.PI;while(dA<-Math.PI)dA+=2*Math.PI;
+        const ang=angA+dA*fanT;a={x:Math.cos(ang),y:Math.sin(ang)};
+        cornerFan={nA,nB,v:P[vidx]};supportPt=P[vidx];
+        fan.disabled=false;fanv.textContent=fanT.toFixed(2);
+      } else {a=edgeNormal(P,pr.edge);fan.disabled=true;fanv.textContent="—";}
+      const b=a.x*supportPt.x+a.y*supportPt.y;
+      let poly2=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],a.x,a.y,b);
+      fillPolyW(ctx,view,poly2,"rgba(43,108,176,0.06)",null);
+      fillPolyW(ctx,view,P.map(p=>[p.x,p.y]),"rgba(43,108,176,0.16)","#17223B",1.8);
+      if(cornerFan){ // draw the two extreme supports dashed
+        drawLineDir(ctx,view,cornerFan.v,{x:-cornerFan.nA.y,y:cornerFan.nA.x},"#17223B",1.4,[5,3]);
+        drawLineDir(ctx,view,cornerFan.v,{x:-cornerFan.nB.y,y:cornerFan.nB.x},"#17223B",1.4,[5,3]);
+      }
+    }
+    // supporting line (perp to a) through supportPt
+    drawLineDir(ctx,view,supportPt,{x:-a.y,y:a.x},"#17223B",2.4);
+    // normal arrow
+    const spS=view.toS(supportPt.x,supportPt.y),tip=view.toS(supportPt.x+a.x,supportPt.y+a.y);
+    arrow(ctx,spS[0],spS[1],tip[0],tip[1],"#D7402B",2.4);label(ctx,"a",tip[0]+6,tip[1]-6,"#D7402B",13);
+    dot(ctx,spS[0],spS[1],7,"#fff","#D7402B");label(ctx,"x₀",spS[0]+9,spS[1]+12,"#46506A",12);
+    // verify C on ≤ side
+    const b=a.x*supportPt.x+a.y*supportPt.y;let mx=-1e9;
+    if(kind==="disk"){mx=b;} else {poly().forEach(p=>mx=Math.max(mx,a.x*p.x+a.y*p.y));}
+    const ok=mx<=b+1e-6;
+    ro.innerHTML=`<span class="k">x₀</span> = (${supportPt.x.toFixed(2)}, ${supportPt.y.toFixed(2)})<br>`+
+      `<span class="k">a</span> = (${a.x.toFixed(2)}, ${a.y.toFixed(2)}) &nbsp; <span class="k">b=aᵀx₀</span>=<b>${b.toFixed(2)}</b><br>`+
+      `<span class="k">max aᵀx over C</span> = <b>${mx.toFixed(2)}</b> ${ok?"≤ b ✓":"> b"}`;
+    if(cornerFan){vd.className="verdict mid";vd.textContent="corner — a whole fan of supporting hyperplanes";}
+    else{vd.className="verdict in";vd.textContent="✓ supporting hyperplane (unique here)";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(x0.x,x0.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<200){act=true;canvas.setPointerCapture(ev.pointerId);const wv=view.toW(p[0],p[1]);x0={x:wv[0],y:wv[1]};draw();ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{if(!act){canvas.style.cursor="grab";return;}const p=pos(ev);const wv=view.toW(p[0],p[1]);x0={x:wv[0],y:wv[1]};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  chips.forEach(c=>c.addEventListener("click",()=>{kind=c.dataset.s;chips.forEach(z=>z.classList.toggle('on',z===c));
+    x0=(kind==="disk")?{x:0,y:2.2}:{x:2.2,y:2.2};draw();}));
+  fan.addEventListener("input",()=>{fanT=parseFloat(fan.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — interior vs boundary ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const disk={cx:0,cy:0,r:2.3};
+  let P={x:0.4,y:0.3}, psi=30*Math.PI/180;
+  const ps=document.getElementById("ps2"),psv=document.getElementById("psv"),ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const cS=view.toS(disk.cx,disk.cy),s=view.s();
+    ctx.beginPath();ctx.arc(cS[0],cS[1],disk.r*s,0,7);ctx.fillStyle="rgba(43,108,176,0.15)";ctx.fill();ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.stroke();
+    const dist=Math.hypot(P.x-disk.cx,P.y-disk.cy);
+    const boundary=Math.abs(dist-disk.r)<0.16, interior=dist<disk.r-0.16;
+    if(boundary){
+      const ang=Math.atan2(P.y-disk.cy,P.x-disk.cx),a={x:Math.cos(ang),y:Math.sin(ang)};
+      const x0={x:disk.cx+disk.r*a.x,y:disk.cy+disk.r*a.y};
+      const b=a.x*x0.x+a.y*x0.y;let poly=clipHalf([[-R,-R],[R,-R],[R,R],[-R,R]],a.x,a.y,b);
+      fillPolyW(ctx,view,poly,"rgba(43,108,176,0.06)",null);
+      drawLineDir(ctx,view,x0,{x:-a.y,y:a.x},"#2F855A",2.4);
+      const spS=view.toS(x0.x,x0.y),tip=view.toS(x0.x+a.x,x0.y+a.y);arrow(ctx,spS[0],spS[1],tip[0],tip[1],"#D7402B",2.2);
+      dot(ctx,spS[0],spS[1],7,"#fff","#2F855A");
+      ro.innerHTML=`<span class="k">P on boundary</span> (dist=${dist.toFixed(2)}≈r)<br><span class="k">a</span> = (${a.x.toFixed(2)}, ${a.y.toFixed(2)})<br><span class="k">unique support</span>`;
+      vd.className="verdict in";vd.textContent="✓ boundary point — supporting hyperplane exists";
+    } else if(interior){
+      // trial line through P with direction d; normal a=(cos... perpendicular)
+      const d={x:Math.cos(psi),y:Math.sin(psi)},a={x:-d.y,y:d.x};
+      drawLineDir(ctx,view,P,d,"#8A91A3",2.2,[6,4]);
+      // extents of disk along +a and -a from the line value a·P
+      const val=a.x*P.x+a.y*P.y; const cval=a.x*disk.cx+a.y*disk.cy; // center projection
+      const maxC=cval+disk.r, minC=cval-disk.r;
+      // farthest disk points on each side
+      const plusPt={x:disk.cx+disk.r*a.x,y:disk.cy+disk.r*a.y},minusPt={x:disk.cx-disk.r*a.x,y:disk.cy-disk.r*a.y};
+      const pp=view.toS(plusPt.x,plusPt.y),mp=view.toS(minusPt.x,minusPt.y);
+      dot(ctx,pp[0],pp[1],6,"#fff","#2F855A");dot(ctx,mp[0],mp[1],6,"#fff","#C0392B");
+      ctx.save();ctx.setLineDash([2,3]);
+      const Ps=view.toS(P.x,P.y);
+      ctx.strokeStyle="#2F855A";ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(Ps[0],Ps[1]);ctx.lineTo(pp[0],pp[1]);ctx.stroke();
+      ctx.strokeStyle="#C0392B";ctx.beginPath();ctx.moveTo(Ps[0],Ps[1]);ctx.lineTo(mp[0],mp[1]);ctx.stroke();ctx.restore();
+      ro.innerHTML=`<span class="k">P interior</span> (dist=${dist.toFixed(2)}<r)<br><span class="k">C extends to</span> aᵀx=<b>${maxC.toFixed(2)}</b> and <b>${minC.toFixed(2)}</b><br><span class="k">aᵀP</span>=<b>${val.toFixed(2)}</b> — strictly between`;
+      vd.className="verdict out";vd.textContent="✗ interior — C on both sides, no support";
+    } else {
+      ro.innerHTML=`<span class="k">P outside C</span> — support is defined at boundary points`;
+      vd.className="verdict mid";vd.textContent="drag P onto the set";
+    }
+    const Ps=view.toS(P.x,P.y);dot(ctx,Ps[0],Ps[1],7,"#fff","#17223B");label(ctx,"P",Ps[0]+9,Ps[1]-7,"#17223B",13);
+    psv.textContent=Math.round(psi*180/Math.PI)+"°";
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(P.x,P.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<26){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(P.x,P.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<26?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);P={x:clamp(wv[0],-R,R),y:clamp(wv[1],-R,R)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  ps.addEventListener("input",()=>{psi=parseFloat(ps.value)*Math.PI/180;draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — envelope / converse ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let kind="circle", N=14;
+  const chips=document.getElementById("shape3").querySelectorAll(".chip"),n3=document.getElementById("n3"),nv3=document.getElementById("nv3"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function rad(th){return kind==="circle"?2.2:(1.55+0.7*Math.cos(2*th));}
+  function boundaryPts(M){const P=[];for(let i=0;i<M;i++){const th=i/M*2*Math.PI,r=rad(th);P.push({x:r*Math.cos(th),y:r*Math.sin(th),th});}return P;}
+  function convexHull(pts){const p=pts.map(q=>[q.x,q.y]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+    const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+    const lo=[];for(const pt of p){while(lo.length>=2&&cross(lo[lo.length-2],lo[lo.length-1],pt)<=0)lo.pop();lo.push(pt);}
+    const up=[];for(let i=p.length-1;i>=0;i--){const pt=p[i];while(up.length>=2&&cross(up[up.length-2],up[up.length-1],pt)<=0)up.pop();up.push(pt);}
+    lo.pop();up.pop();return lo.concat(up);}
+  function distToPoly(pt,poly){let best=1e18;for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];
+    const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy;let t=L2>0?clamp(((pt.x-a[0])*dx+(pt.y-a[1])*dy)/L2,0,1):0;
+    const qx=a[0]+t*dx,qy=a[1]+t*dy;best=Math.min(best,Math.hypot(pt.x-qx,pt.y-qy));}return best;}
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const dense=boundaryPts(160), hull=convexHull(dense);
+    // hull region (∩ supporting halfspaces)
+    fillPolyW(ctx,view,hull,"rgba(138,145,163,0.10)",null);
+    // supporting lines at N hull-ish directions
+    ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle="rgba(43,108,176,0.5)";ctx.lineWidth=1;
+    for(let i=0;i<N;i++){const th=i/N*2*Math.PI;
+      // supporting halfspace of the shape in direction (cos,sin): max over boundary of a·x
+      const a={x:Math.cos(th),y:Math.sin(th)};let bmax=-1e9,arg=null;
+      dense.forEach(p=>{const v=a.x*p.x+a.y*p.y;if(v>bmax){bmax=v;arg=p;}});
+      drawLineDir(ctx,view,arg,{x:-a.y,y:a.x},"rgba(43,108,176,0.5)",1);}
+    ctx.restore();
+    // shape outline
+    ctx.beginPath();dense.forEach((p,i)=>{const s=view.toS(p.x,p.y);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});ctx.closePath();
+    ctx.strokeStyle="#17223B";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="rgba(43,108,176,0.10)";ctx.fill();
+    // classify boundary samples
+    const samples=boundaryPts(N);let noSup=0;
+    samples.forEach(p=>{const d=distToPoly(p,hull);const onHull=d<0.06;if(!onHull)noSup++;
+      const s=view.toS(p.x,p.y);dot(ctx,s[0],s[1],5,"#fff",onHull?"#2F855A":"#C0392B");});
+    const convex=noSup===0;
+    ro.innerHTML=`<span class="k">boundary samples</span> = <b>${N}</b><br>`+
+      `<span class="k">with a supporting plane</span> = <b>${N-noSup}</b><br>`+
+      `<span class="k">no support (in a dent)</span> = <b>${noSup}</b>`;
+    if(convex){vd.className="verdict in";vd.textContent="✓ convex — support everywhere, ∩ halfspaces = C";}
+    else{vd.className="verdict out";vd.textContent="✗ non-convex — dent points lack support; ∩ = hull ⊋ C";}
+    nv3.textContent=N;
+  }
+  chips.forEach(c=>c.addEventListener("click",()=>{kind=c.dataset.s;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  n3.addEventListener("input",()=>{N=parseInt(n3.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
