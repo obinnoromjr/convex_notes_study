@@ -232,10 +232,19 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   </div>
 </section>
 
-<!-- 2 strict separation -->
+<!-- 2 affine set (Example 2.19) -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">example 2.19 — separating from an affine set</span></div>
+  <hr class="rule"/>
+  <p>Take <span class="mono">C</span> convex and <span class="mono">D = {Fu + g | u ∈ Rᵐ}</span> an affine set, disjoint from <span class="mono">C</span>. Separation gives <span class="mono">a ≠ 0</span> with <span class="mono">aᵀ(Fu + g) ≥ b</span> for <em>all</em> <span class="mono">u</span>, i.e. <span class="mono">aᵀFu ≥ b − aᵀg</span> for every <span class="mono">u ∈ Rᵐ</span>. But a linear function of <span class="mono">u</span> bounded below on <em>all</em> of <span class="mono">Rᵐ</span> must be identically zero — so its coefficient vanishes:</p>
+  \[ \exists\, a\neq0 \ \text{ with }\ F^{\mathsf T}a = 0 \ \text{ and }\ a^{\mathsf T}x \le a^{\mathsf T}g \ \text{ for all } x\in C \qquad(\text{and } b\le a^{\mathsf T}g). \]
+  <div class="note build"><div class="ic">↳</div><p>The separating normal <span class="mono">a</span> is <em>forced orthogonal to the range of <span class="mono">F</span></em> — the directions the affine set is free to move in. Every "separate a convex set from a subspace / affine set" argument takes this shape.</p></div>
+</section>
+
+<!-- 3 strict separation -->
 <section class="bleed">
   <div class="wrap" style="padding:0">
-    <div class="secnum"><span class="n">§2</span><span class="eyebrow">strict separation — a point &amp; a closed convex set</span></div>
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">strict separation — a point &amp; a closed convex set</span></div>
     <hr class="rule"/>
     <p><strong>Strict</strong> separation means <span class="mono">aᵀx &lt; b</span> on <span class="mono">C</span>, <span class="mono">aᵀx &gt; b</span> on <span class="mono">D</span>. It's <em>not</em> always achievable for disjoint convex sets — even both closed (think of two sets approaching each other asymptotically). But a <strong>point</strong> and a disjoint <strong>closed convex set</strong> always can be strictly separated (Example 2.20): take a small ball around the point disjoint from <span class="mono">C</span>, separate, then shift the offset.</p>
     <div class="note build"><div class="ic">↺</div><p><strong>The payoff (§2.3.1 converse, now proved):</strong> a closed convex set is the intersection of <em>all</em> halfspaces containing it — because if <span class="mono">x ∉ C</span>, strict separation hands you a halfspace that contains <span class="mono">C</span> but excludes <span class="mono">x</span>.</p></div>
@@ -262,10 +271,19 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   </div>
 </section>
 
-<!-- 3 alternatives -->
+<!-- 4 the converse -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">the converse — one set must be open</span></div>
+  <hr class="rule"/>
+  <p>Does "a separating hyperplane exists" imply the sets are <em>disjoint</em>? In general, <strong>no</strong>. Take <span class="mono">C = D = {0}</span>: the hyperplane <span class="mono">{x = 0}</span> "separates" them — <span class="mono">aᵀx ≤ 0</span> on <span class="mono">C</span> and <span class="mono">aᵀx ≥ 0</span> on <span class="mono">D</span> both hold — yet they are not disjoint. The converse needs one extra hypothesis.</p>
+  <div class="bv">If <span class="mono">C, D</span> are convex, <span class="mono">C</span> is <b>open</b>, and a nonconstant affine <span class="mono">f</span> (<span class="mono">a ≠ 0</span>) satisfies <span class="mono">f ≤ 0</span> on <span class="mono">C</span> and <span class="mono">f ≥ 0</span> on <span class="mono">D</span>, then <span class="mono">C</span> and <span class="mono">D</span> are disjoint.<span class="src">B&amp;V §2.5.1 · L2546</span></div>
+  <p>Putting the theorem and this together: <strong>two convex sets, at least one open, are disjoint if and only if a separating hyperplane exists.</strong> This "open-set" form is exactly what the theorem of alternatives below leans on (<span class="mono">D = Rᵐ₊₊</span> is open).</p>
+</section>
+
+<!-- 5 alternatives -->
 <section class="bleed">
   <div class="wrap" style="padding:0">
-    <div class="secnum"><span class="n">§3</span><span class="eyebrow">example 2.21 — theorem of alternatives</span></div>
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">example 2.21 — theorem of alternatives</span></div>
     <hr class="rule"/>
     <p>When is <span class="mono">Ax ≺ b</span> (strict) infeasible? Iff <span class="mono">C = {b − Ax}</span> (affine) and <span class="mono">D = Rᵐ₊₊</span> (open) don't meet. By the open-set converse, iff a separating hyperplane exists. Simplifying gives a clean certificate — and the two systems are a pair of <strong>alternatives</strong>: for any <span class="mono">A, b</span>, exactly one is solvable.</p>
     <div class="altbox">
@@ -296,9 +314,9 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   </div>
 </section>
 
-<!-- 4 expert lens -->
+<!-- 6 expert lens -->
 <section class="wrap">
-  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — design</span></div>
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">expert lens — design</span></div>
   <hr class="rule"/>
   <div class="moves">
     <div class="move"><p class="mh"><span class="mnum">D1</span>The theorem</p><p>Nonempty disjoint convex <span class="mono">C, D</span> ⟹ <span class="mono">∃ a≠0, b</span> with <span class="mono">aᵀx ≤ b</span> on <span class="mono">C</span>, <span class="mono">aᵀx ≥ b</span> on <span class="mono">D</span> — no closedness needed.</p></div>
