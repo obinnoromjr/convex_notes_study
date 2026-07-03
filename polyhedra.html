@@ -234,6 +234,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
       <li><span class="tag">prob</span><div><strong>Probability simplex</strong> <span class="mono">(e₁,…,eₙ)</span>: <span class="mono">{x ≽ 0, 1ᵀx = 1}</span> — <em>(n−1)</em>-dimensional, the distributions on <span class="mono">n</span> outcomes.</div></li>
     </ul>
     <p>The single symbol <span class="mono">1ᵀx ≤ 1</span> vs <span class="mono">1ᵀx = 1</span> drops the dimension by one: the equality pins you to the hyperplane <span class="mono">{1ᵀx = 1}</span>.</p>
+    <div class="note build"><div class="ic">▦</div><p><strong>A simplex is a polyhedron.</strong> Its vertex (conv) description can always be rewritten as an inequality description — the mechanism is a change of coordinates (<span class="mono">B = [v₁−v₀ ··· vₖ−v₀]</span>, a nonsingular <span class="mono">A</span> with <span class="mono">AB = (I; 0)</span>, giving <span class="mono">A₁x ≽ A₁v₀</span>). The takeaway, not the algebra: every simplex sits inside the polyhedron family.</p></div>
 
     <div class="lab">
       <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Simplex &amp; barycentric weights — and the one-symbol dimension drop</h4></div>

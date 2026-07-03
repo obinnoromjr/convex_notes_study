@@ -285,6 +285,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     <hr class="rule"/>
     <div class="bv">\(X=\begin{bmatrix}x&y\\y&z\end{bmatrix}\in S^2_+ \iff x\ge0,\ z\ge0,\ xz\ge y^2\).<span class="src">B&amp;V Example 2.6 · L1828</span></div>
     <p>The 2×2 PSD test: <strong>nonnegative diagonal AND nonnegative determinant</strong> (<span class="mono">det = xz − y² ≥ 0</span>). All three are needed and independent — at <span class="mono">x = 0</span>, <span class="mono">xz ≥ y²</span> forces <span class="mono">y = 0</span> but says nothing about <span class="mono">z</span>, so <span class="mono">z ≥ 0</span> must be required separately. The boundary <span class="mono">xz = y²</span> is <em>curved</em>, so <strong>S²₊ is not a polyhedron</strong> — it's a rotated second-order cone, tying back to §2.2.3.</p>
+    <div class="note warn"><div class="ic">⚠</div><p><strong>All three conditions are independent</strong> — each can fail on its own. Witnesses: <span class="mono">[[−1,0],[0,0]]</span> fails only <span class="mono">x ≥ 0</span>; <span class="mono">[[0,0],[0,−1]]</span> fails only <span class="mono">z ≥ 0</span>; <span class="mono">[[1,2],[2,1]]</span> fails only the determinant (<span class="mono">det = 1 − 4 = −3</span>). So "all entries nonnegative" is neither necessary nor sufficient for PSD.</p></div>
 
     <div class="lab">
       <div class="lab-head"><span class="lh-num">LAB 3</span><h4>The quadratic form xᵀXx — PSD ⟺ no negative direction</h4></div>
