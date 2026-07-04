@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§2.6.3 — Minimum &amp; Minimal Elements via Dual Inequalities</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.excard{margin:20px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.excard .exhead{padding:11px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.excard .exhead .tagx{color:var(--normal)}
+.excard .exbody{padding:14px 20px}
+.excard .exbody p{margin:10px 0} .excard .exbody p:first-child{margin-top:0} .excard .exbody p:last-child{margin-bottom:0}
+
+table.vals{border-collapse:collapse;margin:12px 0;font-family:"JetBrains Mono",monospace;font-size:13px;width:100%}
+table.vals th,table.vals td{border:1px solid var(--rule);padding:6px 10px;text-align:center}
+table.vals th{background:var(--paper-2);color:var(--ink-soft);font-weight:600}
+table.vals td.win{background:var(--inside-fill);color:var(--inside);font-weight:600}
+table.vals caption{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-faint);text-align:left;margin-bottom:5px;letter-spacing:0.04em}
+
+.gaptbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+.gaptbl th,.gaptbl td{border:1px solid var(--rule);padding:10px 12px;text-align:left;vertical-align:top}
+.gaptbl thead th{background:var(--ink);color:#fff;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.04em}
+.gaptbl tbody th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);font-weight:600;white-space:nowrap}
+.gaptbl td.mincol{background:#fbfdfb}
+.gaptbl .ok{color:var(--inside);font-weight:600}
+.gaptbl .no{color:var(--outside);font-weight:600}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §2.6.3</div>
+    <h1>Minimum &amp; minimal, seen<br>through <em>dual inequalities</em></h1>
+    <p class="sub">Characterize the extreme elements of a set by minimizing linear functionals <span class="mono">λᵀz</span>. For the <em>minimum</em> the test is clean and iff; for the <em>minimal</em> a real gap opens between sufficient and necessary — and convexity is what closes part of it.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--halfspace)"></span> S — the set, ordered by ≼<sub>K</sub></span>
+      <span><span class="dot" style="background:var(--normal)"></span> λ ≽<sub>K*</sub> 0 — the dual test</span>
+      <span><span class="dot" style="background:var(--inside)"></span> the minimizer of λᵀz</span>
+      <span>p.&nbsp;54–58 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 250" role="img" aria-label="A set S with a minimum element x, and the strict supporting hyperplane with normal lambda that touches S only at x, all of S lying on one side.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="250" fill="url(#dots)"/>
+        <!-- the set S : a blob sitting up-and-right of its minimum corner -->
+        <path d="M250,196 C250,150 286,120 340,116 C398,112 452,120 478,150 C500,176 486,206 448,220 C398,238 300,236 268,222 C252,214 250,206 250,196 Z" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.6"/>
+        <!-- shifted cone x + K (down-left tint, showing "everything is above x") -->
+        <path d="M250,196 L250,120 L258,120 L258,188 L326,188 L326,196 Z" fill="rgba(43,108,176,0.10)" stroke="none"/>
+        <!-- strict supporting hyperplane at x : normal lambda -->
+        <line x1="150" y1="150" x2="348" y2="250" stroke="#D7402B" stroke-width="2.2"/>
+        <!-- lambda normal arrow, pointing into S (up-right) -->
+        <line x1="250" y1="196" x2="308" y2="168" stroke="#D7402B" stroke-width="2.6"/>
+        <polygon points="308,168 292,167 300,181" fill="#D7402B"/>
+        <text x="312" y="164" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="14">λ</text>
+        <!-- minimum element x -->
+        <circle cx="250" cy="196" r="6" fill="#2F855A"/>
+        <text x="216" y="214" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">x</text>
+        <text x="452" y="150" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">S</text>
+        <text x="150" y="142" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12">{z | λᵀ(z−x)=0}</text>
+        <text x="320" y="238" text-anchor="middle" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">x = min ⟺ <tspan fill="#2F855A">x</tspan> uniquely minimizes <tspan fill="#D7402B">λᵀz</tspan> for all λ ≻ 0</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are — the dual view of §2.4.2</span></div>
+  <hr class="rule"/>
+  <p>§2.4.2 defined the <strong>minimum</strong> and <strong>minimal</strong> elements of a set <span class="mono">S</span> with respect to a generalized inequality <span class="mono">≼<sub>K</sub></span>. §2.6.3 characterizes them <em>dually</em> — by minimizing linear functionals <span class="mono">λᵀz</span> over <span class="mono">S</span>. The results are clean for the minimum, but the minimal case has a genuine gap between the sufficient and necessary conditions, and <strong>convexity</strong> is exactly what closes (part of) it. This is precisely <em>scalarization</em> in multi-objective optimization.</p>
+</section>
+
+<!-- 1 minimum -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">dual characterization of the minimum element</span></div>
+    <hr class="rule"/>
+    <div class="bv">
+      \(x\) is the <em>minimum</em> element of \(S\) (w.r.t. \(\preceq_K\)) \(\iff\) for <strong>all</strong> \(\lambda\succ_{K^*}0\), \(x\) is the <strong>unique</strong> minimizer of \(\lambda^{\mathsf T}z\) over \(z\in S\).
+      <span class="src">B&amp;V §2.6.3 · L2800–2841</span>
+    </div>
+    <p>Geometrically: for any <span class="mono">λ ≻<sub>K*</sub> 0</span>, the hyperplane <span class="mono">{z | λᵀ(z − x) = 0}</span> is a <strong>strict supporting hyperplane</strong> to <span class="mono">S</span> at <span class="mono">x</span> — it touches <span class="mono">S</span> only at <span class="mono">x</span>, with all of <span class="mono">S</span> on one side. <strong>Convexity of <span class="mono">S</span> is not required</strong> (Fig 2.23).</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>⟹ &nbsp;minimum forces a unique minimizer for every λ ≻ 0</span><span class="target">strict dual pairing</span></div>
+      <div class="step">
+        <div class="math">\[ x \text{ minimum} \ \Rightarrow\ z \succeq_K x \ \ \forall z\in S \]</div>
+        <div class="why">definition of the minimum element: it sits below all of \(S\)</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ z\neq x:\quad z-x\succeq_K 0,\ \neq 0,\ \ \lambda\succ_{K^*}0 \ \Rightarrow\ \lambda^{\mathsf T}(z-x)>0 \]</div>
+        <div class="why"><b>strict characterization</b> (§2.6.2): a strictly-dual-positive \(\lambda\) paired against a nonzero \(K\)-nonnegative vector is \(>0\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \lambda^{\mathsf T}z>\lambda^{\mathsf T}x \ \ \forall z\neq x \ \Rightarrow\ x \text{ is the unique minimizer} \]</div>
+        <div class="why">every other point of \(S\) scores strictly higher</div>
+      </div>
+    </div>
+
+    <div class="proof">
+      <div class="proof-head"><span>⟸ &nbsp;contrapositive — not the minimum ⟹ some λ is beaten</span><span class="target">a nearby dual λ</span></div>
+      <div class="step">
+        <div class="math">\[ x \text{ not the minimum} \ \Rightarrow\ \exists z\in S:\ z\not\succeq_K x,\ \text{i.e. } z-x\not\succeq_K 0 \]</div>
+        <div class="why">some point of \(S\) fails to dominate \(x\)</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ \exists\,\tilde\lambda\succeq_{K^*}0:\ \tilde\lambda^{\mathsf T}(z-x)<0 \ \Rightarrow\ \lambda^{\mathsf T}(z-x)<0 \ \ \forall \lambda\succ_{K^*}0 \text{ near }\tilde\lambda \]</div>
+        <div class="why"><b>by definition of K*</b>: \(z-x\notin K\) means some dual vector scores it negative; strict \(\lambda\) nearby keep the sign</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \lambda^{\mathsf T}z<\lambda^{\mathsf T}x \ \Rightarrow\ z \text{ beats } x \ \Rightarrow\!\Leftarrow \]</div>
+        <div class="why">contradicts "\(x\) is the unique minimizer for all \(\lambda\succ_{K^*}0\)" ∎</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Example A lab -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">Ex A</span><span class="eyebrow">the minimum characterization on a concrete set</span></div>
+    <hr class="rule"/>
+    <p>Take <span class="mono">S = {(1,1), (1,3), (3,1), (2,2)}</span> in <span class="mono">R²</span> with the componentwise order (<span class="mono">K = R²₊</span>, self-dual so <span class="mono">K* = R²₊</span>, and <span class="mono">λ ≻<sub>K*</sub> 0</span> means <span class="mono">λ = (λ₁,λ₂)</span> with both positive). Recall from §2.4.2 that <span class="mono">(1,1)</span> is the <strong>minimum</strong> of <span class="mono">S</span>. For <em>every</em> <span class="mono">λ ≻ 0</span>, minimizing <span class="mono">λᵀz</span> picks out <span class="mono">(1,1)</span> uniquely — the hyperplane through it touches <span class="mono">S</span> nowhere else.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>For every λ ≻ 0, the minimum is the unique minimizer</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--inside);border:none"></i> the point minimizing λᵀz</span>
+            <span><i style="border-color:var(--normal)"></i> λ direction (level lines ⟂)</span>
+            <span><i class="sw" style="background:#17223B;border:none"></i> other points of S</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Sweep the price direction <b>λ = (λ₁, λ₂)</b> anywhere in the open first quadrant (<b>λ ≻ 0</b>). The vermilion line is a level set of <b>λᵀz</b>; slide it up from below and the <b>first</b> point of S it hits is the minimizer. It is always <b>(1,1)</b> — and only (1,1). That is what "minimum" means dually.</p>
+          <div class="ctrl"><label>angle of λ in the first quadrant<span class="val" id="ang1v">45°</span></label><input type="range" id="ang1" min="3" max="87" step="1" value="45"></div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note key"><div class="ic">!</div><p>Concretely, at <span class="mono">λ=(1,1)</span> the values are <span class="mono">2, 4, 4, 4</span>; at <span class="mono">(2,1)</span> they are <span class="mono">3, 5, 7, 6</span>; at <span class="mono">(1,5)</span> they are <span class="mono">6, 16, 8, 12</span>. Unique min at <span class="mono">(1,1)</span> every time. ✓</p></div>
+  </div>
+</section>
+
+<!-- 2 minimal -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">dual characterization of minimal elements — the gap</span></div>
+    <hr class="rule"/>
+    <p>For <strong>minimal</strong> elements the sufficient and necessary conditions <em>do not match</em>. This gap is the whole content of the section.</p>
+
+    <h3>Sufficient — always holds, no convexity</h3>
+    <div class="bv">If \(\lambda\succ_{K^*}0\) and \(x\) minimizes \(\lambda^{\mathsf T}z\) over \(S\), then \(x\) is <em>minimal</em>.<span class="src">B&amp;V §2.6.3 · L2843–2917 · Fig 2.24</span></div>
+    <div class="proof">
+      <div class="proof-head"><span>a strict-λ minimizer is minimal</span><span class="target">no convexity used</span></div>
+      <div class="step">
+        <div class="math">\[ \text{suppose not minimal:}\ \exists z\in S,\ z\neq x,\ z\preceq_K x \ \Rightarrow\ x-z\succeq_K 0,\ \neq 0 \]</div>
+        <div class="why">something in \(S\) sits strictly below \(x\)</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ \lambda\succ_{K^*}0 \ \Rightarrow\ \lambda^{\mathsf T}(x-z)>0 \ \Rightarrow\ \lambda^{\mathsf T}z<\lambda^{\mathsf T}x \]</div>
+        <div class="why"><b>strict pairing</b> again — but this contradicts \(x\) minimizing \(\lambda^{\mathsf T}z\) over \(S\) ∎</div>
+      </div>
+    </div>
+    <div class="note warn"><div class="ic">!</div><p><strong>The converse fails in general.</strong> A point can be minimal yet <em>not</em> a minimizer of <span class="mono">λᵀz</span> for <em>any</em> <span class="mono">λ</span> (Fig 2.25). Convexity is essential for any converse.</p></div>
+
+    <h3>Necessary — needs convexity, and only nonzero λ</h3>
+    <div class="bv">If \(S\) is <strong>convex</strong> and \(x\) is minimal, then there exists a <em>nonzero</em> \(\lambda\succeq_{K^*}0\) with \(x\) a minimizer of \(\lambda^{\mathsf T}z\) over \(S\).<span class="src">B&amp;V §2.6.3 · L2843–2917 · Fig 2.26</span></div>
+    <div class="proof">
+      <div class="proof-head"><span>minimal + convex ⟹ a separating dual λ</span><span class="target">separate two convex sets</span></div>
+      <div class="step">
+        <div class="math">\[ x \text{ minimal} \ \iff\ \big((x-K)\setminus\{x\}\big)\cap S=\varnothing \]</div>
+        <div class="why">nothing in \(S\) lies strictly below \(x\) in the \(K\)-order</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ \exists\,\lambda\neq0,\ \mu:\quad \lambda^{\mathsf T}(x-y)\le\mu\ \ \forall y\in K,\qquad \lambda^{\mathsf T}z\ge\mu\ \ \forall z\in S \]</div>
+        <div class="why"><b>separate</b> the convex sets \((x-K)\setminus\{x\}\) and \(S\); bounded on the cone forces \(\lambda\succeq_{K^*}0\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ x\in S \text{ and } x\in x-K \ \Rightarrow\ \lambda^{\mathsf T}x=\mu \ \Rightarrow\ x \text{ attains } \min_{z\in S}\lambda^{\mathsf T}z \]</div>
+        <div class="why">\(x\) sits in both sets, so it hits the separating value ∎</div>
+      </div>
+    </div>
+
+    <div class="note key"><div class="ic">!</div><p><strong>Two things you cannot do.</strong> (1) You cannot strengthen the necessary <span class="mono">λ</span> to <span class="mono">λ ≻<sub>K*</sub> 0</span>: a minimal point of a convex <span class="mono">S</span> may fail to minimize <span class="mono">λᵀz</span> for any strictly-positive <span class="mono">λ</span> — only a boundary <span class="mono">λ ≽<sub>K*</sub> 0</span> works (Fig 2.26 left). (2) You cannot reverse the sufficient direction with a boundary <span class="mono">λ</span>: a minimizer of <span class="mono">λᵀz</span> with <span class="mono">λ</span> on the boundary of <span class="mono">K*</span> need not be minimal (Fig 2.26 right).</p></div>
+
+    <table class="gaptbl">
+      <thead><tr><th></th><th class="mincol">minimum</th><th>minimal</th></tr></thead>
+      <tbody>
+        <tr><th>condition</th><td class="mincol">for all λ ≻<sub>K*</sub> 0, <em>unique</em> minimizer of λᵀz</td><td>minimizer of λᵀz for <em>some</em> λ</td></tr>
+        <tr><th>sufficient</th><td class="mincol"><span class="ok">⟺</span> (clean)</td><td>λ ≻<sub>K*</sub> 0 minimizer <span class="ok">⟹</span> minimal (always)</td></tr>
+        <tr><th>necessary</th><td class="mincol"><span class="ok">⟺</span> (clean)</td><td>needs S convex; gives only nonzero λ ≽<sub>K*</sub> 0 (<span class="no">not strict</span>)</td></tr>
+        <tr><th>convexity</th><td class="mincol">not needed</td><td>needed for the necessary direction</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Example B -->
+    <div class="secnum" style="margin-top:34px"><span class="n">Ex B</span><span class="eyebrow">minimal but no minimum — each minimal point via some λ ≻ 0</span></div>
+    <hr class="rule"/>
+    <p>Take <span class="mono">S = {(1,3), (3,1), (2,2), (4,4)}</span> (the §2.4.2 set with <em>no minimum</em>; the minimal set is <span class="mono">{(1,3),(3,1),(2,2)}</span>). Since there is no minimum, no single point wins for every <span class="mono">λ ≻ 0</span> — but each minimal point <em>is</em> a minimizer for some suitable <span class="mono">λ ≻ 0</span> (the sufficient direction).</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Scalarize: sweep λ, watch the minimizer walk the minimal set</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--inside);border:none"></i> minimizer(s) of λᵀz</span>
+            <span><i class="sw" style="background:var(--normal-soft);border:1px solid var(--normal)"></i> minimal points of S</span>
+            <span><i class="sw" style="background:#17223B;border:none"></i> dominated point (4,4)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Slide <b>λ</b> across the first quadrant. At <b>λ=(3,1)</b> the min is <b>(1,3)</b>; at <b>(1,3)</b> it is <b>(3,1)</b>; at the tied <b>λ=(1,1)</b> all three of <b>(1,3),(3,1),(2,2)</b> tie — all three are minimizers, hence all minimal. <b>(4,4)</b> is never a minimizer, matching "dominated ⟹ not minimal".</p>
+          <div class="ctrl"><label>angle of λ in the first quadrant<span class="val" id="ang2v">45°</span></label><input type="range" id="ang2" min="3" max="87" step="1" value="45"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note warn"><div class="ic">!</div><p><span class="mono">(2,2)</span> is a minimizer <em>only</em> in the tied <span class="mono">λ=(1,1)</span> case (one checks it minimizes <span class="mono">λᵀz</span> iff <span class="mono">λ₁=λ₂</span>), so no <span class="mono">λ ≻ 0</span> makes it the <em>unique</em> minimizer — yet it is still minimal. The sufficient direction needs only "a minimizer," not the unique one; uniqueness is the extra strength that pins down a <em>minimum</em>, not a minimal element.</p></div>
+
+    <!-- Example C -->
+    <div class="excard">
+      <div class="exhead"><span>Example C — the sufficient direction, spelled out</span><span class="tagx">no convexity</span></div>
+      <div class="exbody">
+        <p><strong>Claim.</strong> If <span class="mono">λ ≻<sub>K*</sub> 0</span> and <span class="mono">x</span> minimizes <span class="mono">λᵀz</span> over <span class="mono">S</span>, then <span class="mono">x</span> is minimal. Suppose not: some <span class="mono">z ∈ S</span>, <span class="mono">z ≠ x</span> has <span class="mono">z ≼<sub>K</sub> x</span>, i.e. <span class="mono">x − z ≽<sub>K</sub> 0</span> and <span class="mono">x − z ≠ 0</span>. Pair with <span class="mono">λ ≻<sub>K*</sub> 0</span>:</p>
+        <p style="text-align:center">\( \lambda^{\mathsf T}(x-z)>0 \quad\Longrightarrow\quad \lambda^{\mathsf T}z<\lambda^{\mathsf T}x. \)</p>
+        <p>But <span class="mono">x</span> minimizes <span class="mono">λᵀz</span> over <span class="mono">S</span>, so <span class="mono">λᵀx ≤ λᵀz</span> — a contradiction. Hence no such <span class="mono">z</span>; <span class="mono">x</span> is minimal. (No convexity used.)</p>
+      </div>
+    </div>
+
+    <!-- Example D + Lab 3 -->
+    <div class="secnum" style="margin-top:30px"><span class="n">Ex D</span><span class="eyebrow">the gap — a minimal point selected only by a boundary λ (Fig 2.26 left)</span></div>
+    <hr class="rule"/>
+    <p>B&amp;V's Figure 2.26 (left) shows a <em>convex</em> set <span class="mono">S₁ ⊆ R²</span> with a minimal point <span class="mono">x₁</span> that is <strong>not</strong> a minimizer of <span class="mono">λᵀz</span> for <em>any</em> <span class="mono">λ ≻ 0</span> — yet it <em>is</em> a minimizer for the boundary direction <span class="mono">λ=(1,0)</span> (a zero component, so <span class="mono">λ ≽ 0</span> but not <span class="mono">λ ≻ 0</span>). The only supporting hyperplane touching at <span class="mono">x₁</span> is vertical (normal <span class="mono">(1,0)</span>); every strictly-positive <span class="mono">λ</span> tilts the direction so its minimizer sits elsewhere on the boundary.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Convex S₁: a minimal point only a boundary λ can reach</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> convex set S₁</span>
+            <span><i class="sw" style="background:var(--normal);border:none"></i> x₁ — minimal, boundary-only</span>
+            <span><i class="sw" style="background:var(--inside);border:none"></i> minimizer of λᵀz</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Slide <b>λ</b> from the boundary <b>(1,0)</b> up into the open quadrant. At exactly <b>λ=(1,0)</b> the minimizer of <b>λᵀz</b> is the flat left edge containing <b>x₁</b> (green lands on x₁). Nudge λ strictly positive and the green minimizer <b>jumps down</b> to the bottom of S₁ — x₁ is never again selected, though it stays minimal.</p>
+          <div class="ctrl"><label>angle of λ&nbsp; (0° = boundary (1,0))<span class="val" id="ang3v">0°</span></label><input type="range" id="ang3" min="0" max="80" step="1" value="0"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note build"><div class="ic">↺</div><p>The necessary direction still delivers a nonzero <span class="mono">λ ≽<sub>K*</sub> 0</span> at <span class="mono">x₁</span> — but it lands on the <em>boundary</em> of the dual cone and cannot be strengthened to <span class="mono">λ ≻<sub>K*</sub> 0</span>. Fig 2.26 <em>right</em> shows the other side of the gap: a minimizer of <span class="mono">λᵀz</span> for a boundary <span class="mono">λ=(0,1)</span> that is <strong>not</strong> minimal — so the sufficient direction also cannot be relaxed to boundary <span class="mono">λ</span>.</p></div>
+  </div>
+</section>
+
+<!-- 3 Pareto -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">example 2.27 — the Pareto optimal production frontier</span></div>
+    <hr class="rule"/>
+    <p>A product needs <span class="mono">n</span> resources; a <em>production method</em> is a resource vector <span class="mono">x ∈ Rⁿ</span> (<span class="mono">xᵢ ≥ 0</span> = amount of resource <span class="mono">i</span> used; less is better). The <strong>production set</strong> <span class="mono">P ⊆ Rⁿ</span> is all achievable resource vectors.</p>
+    <ul class="reads">
+      <li><span class="tag">efficient</span><div>The <strong>minimal</strong> elements of <span class="mono">P</span> (w.r.t. componentwise <span class="mono">≼</span>) are the <strong>Pareto optimal</strong> methods; the set of them is the <strong>efficient production frontier</strong>.</div></li>
+      <li><span class="tag">better</span><div>"Method <span class="mono">x</span> is better than <span class="mono">y</span>" <span class="mono">⟺ x ≼ y, x ≠ y</span> — uses no more of any resource, and strictly less of at least one. Pareto optimal = no better method exists.</div></li>
+      <li><span class="tag">prices</span><div>To find efficient methods, minimize <span class="mono">λᵀx = λ₁x₁ + ⋯ + λₙxₙ</span> over <span class="mono">P</span> with any <span class="mono">λ ≻ 0</span>. Here <span class="mono">λᵢ</span> is the <em>price</em> of resource <span class="mono">i</span>, so <span class="mono">λᵀx</span> is total cost — minimizing it finds the cheapest method, which for positive prices is guaranteed efficient (the sufficient direction).</div></li>
+    </ul>
+    <p>This is the §2.4.2 "no minimum, several minimal" picture with an economic reading: usually there is no single best method, but a whole efficient frontier. When the cheapest-at-those-prices method exists, positive prices select an efficient one — but <em>not every efficient method is reached by a strictly-positive price</em> (Fig 2.27). That is the min-vs-minimal gap again.</p>
+
+    <!-- Example E -->
+    <div class="excard">
+      <div class="exhead"><span>Example E — Pareto production over a finite set</span><span class="tagx">labor · fuel</span></div>
+      <div class="exbody">
+        <p>Take <span class="mono">P = {a=(2,5), b=(4,2), c=(5,6)}</span> (labor, fuel). Pareto optimal = minimal in <span class="mono">P</span> under componentwise <span class="mono">≼</span>:</p>
+        <p><span class="mono">a</span> vs <span class="mono">b</span>: <span class="mono">2 &lt; 4</span> but <span class="mono">5 &gt; 2</span> — incomparable, neither dominates ⟹ both minimal. And <span class="mono">c=(5,6)</span> is dominated by both (<span class="mono">a ≼ c</span> and <span class="mono">b ≼ c</span>) ⟹ <span class="mono">c</span> not minimal. So the efficient methods are <span class="mono">a</span> and <span class="mono">b</span>; <span class="mono">c</span> is inefficient.</p>
+        <table class="vals">
+          <caption>cost λᵀx over P, per price vector — winner highlighted</caption>
+          <tr><th>λ = (price<sub>labor</sub>, price<sub>fuel</sub>)</th><th>a = (2,5)</th><th>b = (4,2)</th><th>c = (5,6)</th></tr>
+          <tr><td>(1, 1)</td><td>7</td><td class="win">6</td><td>11</td></tr>
+          <tr><td>(3, 1)</td><td class="win">11</td><td>14</td><td>21</td></tr>
+        </table>
+        <p>Different positive prices select different efficient methods (need <span class="mono">λ₁ &gt; 1.5·λ₂</span> to select <span class="mono">a</span> over <span class="mono">b</span>). The dominated method <span class="mono">c</span> is never the minimizer for any <span class="mono">λ ≻ 0</span> — matching "not minimal ⟹ not a strict-λ minimizer".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">M1</span>Minimum ⟺, clean</p><p><span class="mono">x</span> minimum <span class="mono">⟺</span> for <em>all</em> <span class="mono">λ ≻<sub>K*</sub> 0</span>, <span class="mono">x</span> is the <em>unique</em> minimizer of <span class="mono">λᵀz</span> (strict supporting hyperplane; no convexity needed).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">M2</span>Minimal — sufficient</p><p>Always: <span class="mono">λ ≻<sub>K*</sub> 0</span> and <span class="mono">x</span> minimizes <span class="mono">λᵀz</span> <span class="mono">⟹ x</span> minimal. No convexity. Converse fails (Fig 2.25).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">M3</span>Minimal — necessary</p><p>Needs <span class="mono">S</span> convex: <span class="mono">x</span> minimal <span class="mono">⟹</span> some <em>nonzero</em> <span class="mono">λ ≽<sub>K*</sub> 0</span> minimizes <span class="mono">λᵀz</span> — <em>not</em> strengthenable to <span class="mono">λ ≻<sub>K*</sub> 0</span>, and false without convexity.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">M4</span>Watch the quantifiers</p><p>A boundary-<span class="mono">λ</span> minimizer need not be minimal (Fig 2.26 right). Minimum = <em>all</em> λ + <em>unique</em>; minimal (sufficient) = <em>some</em> <span class="mono">λ ≻<sub>K*</sub> 0</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">M5</span>Pareto reading</p><p>Minimal element of <span class="mono">P</span> = efficient. Minimize <span class="mono">λᵀx</span> over <span class="mono">P</span> with <span class="mono">λ ≻ 0</span> (prices) to find one — but scalarization only reaches the <em>supported</em> efficient points.</p></div>
+  </div>
+</section>
+
+<!-- 5 wrap / forward -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">chapter 2 wrap / forward references — not assessed</span></div>
+  <hr class="rule"/>
+  <p>This is the last section of Chapter 2 (Convex sets): §2.6.3 = B&amp;V L2795–2946, followed by the chapter summary/notes (~L2980). The dual-cone / dual-inequality toolkit here previews the <strong>duality</strong> machinery of Chapter 5.</p>
+  <p><strong>Multi-objective framing.</strong> Minimizing a positive-weighted sum <span class="mono">λᵀz</span> is <em>scalarization</em>; when the minimization attains a minimizer, that minimizer is an efficient (Pareto) point — the sufficient direction. But scalarization only reaches the <em>supported</em> efficient points. Nonconvex problems can have <em>unsupported</em> Pareto points that no <span class="mono">λ ≻ 0</span> reaches, and even in convex settings some minimal points require a boundary weight <span class="mono">λ ≽ 0</span> rather than a strictly positive one. This is precisely the min-vs-minimal gap.</p>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-07-04 · bv.2.6.3</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Minimum — clean iff</h6><p>\(x\) minimum \(\iff\) for <b>all</b> \(\lambda\succ_{K^*}0\), \(x\) is the <b>unique</b> minimizer of \(\lambda^{\mathsf T}z\). Strict supporting hyperplane; no convexity needed.</p></div>
+      <div class="scard"><h6>Minimal — sufficient</h6><p>\(\lambda\succ_{K^*}0\) &amp; \(x\) minimizes \(\lambda^{\mathsf T}z\) \(\Rightarrow x\) minimal (always). Converse fails; needs only "a" minimizer, not unique.</p></div>
+      <div class="scard"><h6>Minimal — necessary</h6><p>\(S\) convex &amp; \(x\) minimal \(\Rightarrow\) some nonzero \(\lambda\succeq_{K^*}0\) minimizes \(\lambda^{\mathsf T}z\). Not strict, and false without convexity.</p></div>
+      <div class="scard"><h6>The gap</h6><p>Boundary-\(\lambda\) minimizer need not be minimal (Fig 2.26 right); a minimal point may need boundary \(\lambda\) (left). Convexity closes only the necessary side.</p></div>
+      <div class="scard"><h6>Pareto (Ex 2.27)</h6><p>Minimal in \(P\) = efficient. Minimize \(\lambda^{\mathsf T}x\), \(\lambda\succ0\) (prices) to find an efficient method — scalarization reaches only supported points.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §2.6.3 (p. 54–58) · interactive study sheet · sweep any λ, drag any handle.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range,cx,cy){
+  // cx,cy = world coords placed at canvas centre-ish; default origin centred
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  const ox=(cx===undefined)?0:cx, oy=(cy===undefined)?0:cy;
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+(x-ox)*s,h/2-(y-oy)*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s+ox,(h/2-py)/s+oy];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGridBox(ctx,view,xlo,xhi,ylo,yhi){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=Math.ceil(xlo);i<=Math.floor(xhi);i++){let a=view.toS(i,ylo),b=view.toS(i,yhi);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  for(let j=Math.ceil(ylo);j<=Math.floor(yhi);j++){let a=view.toS(xlo,j),b=view.toS(xhi,j);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(xlo,0),x1=view.toS(xhi,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,ylo),y1=view.toS(0,yhi);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+// draw a level line of λᵀz = c through the whole box (λ=(lx,ly))
+function levelLine(ctx,view,lx,ly,c,col,wd,dash){
+  const {w,h}=view.dims();
+  // param over a big t range, clip by sampling two far points on the line
+  let pts=[];
+  const cross=(x)=> (c-lx*x)/ly;
+  // sample x across a wide world span, convert, canvas will show the segment
+  let x0=-20,x1=20;
+  const P0=view.toS(x0,cross(x0)),P1=view.toS(x1,cross(x1));
+  ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=wd;
+  ctx.beginPath();ctx.moveTo(P0[0],P0[1]);ctx.lineTo(P1[0],P1[1]);ctx.stroke();ctx.restore();
+}
+
+/* ===== LAB 1 — minimum: unique minimizer for every λ ≻ 0 ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d");
+  const view=makeView(canvas,2.6,2,2); // window ~[-0.6,4.6]
+  const S=[{x:1,y:1,min:true},{x:1,y:3},{x:3,y:1},{x:2,y:2}];
+  let ang=45;
+  const angEl=document.getElementById("ang1"),angV=document.getElementById("ang1v"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);
+    drawGridBox(ctx,view,-0.4,4.6,-0.4,4.6);
+    const a=ang*Math.PI/180, lx=Math.cos(a), ly=Math.sin(a);
+    // values
+    let best=Infinity,bi=-1;
+    S.forEach((p,i)=>{const v=lx*p.x+ly*p.y;if(v<best-1e-9){best=v;bi=i;}});
+    // level line through the minimizer
+    levelLine(ctx,view,lx,ly,best,"#D7402B",2.0,[7,5]);
+    // λ direction arrow from origin
+    const O=view.toS(0,0),tip=view.toS(lx*1.5,ly*1.5);
+    arrow(ctx,O[0],O[1],tip[0],tip[1],"#D7402B",2.4);
+    const tl=view.toS(lx*1.5,ly*1.5);label(ctx,"λ",tl[0]+6,tl[1]-6,"#D7402B",13);
+    // points
+    S.forEach((p,i)=>{const s=view.toS(p.x,p.y);const win=(i===bi);
+      dot(ctx,s[0],s[1],win?8:6,win?"#2F855A":"#17223B");
+      label(ctx,`(${p.x},${p.y})`,s[0]+11,s[1]-9,win?"#2F855A":"#46506A",12);});
+    dot(ctx,O[0],O[1],3.2,"#17223B");
+    const mp=S[bi];
+    ro.innerHTML=`<span class="k">λ</span> = (${lx.toFixed(2)}, ${ly.toFixed(2)})<br>`+
+      S.map(p=>`<span class="k">(${p.x},${p.y})</span> ↦ <b>${(lx*p.x+ly*p.y).toFixed(2)}</b>`).join(" &nbsp; ")+
+      `<br><span class="k">unique min</span> at <b>(${mp.x},${mp.y})</b>`;
+    // uniqueness check
+    let count=0;S.forEach(p=>{if(Math.abs((lx*p.x+ly*p.y)-best)<1e-9)count++;});
+    if(mp.min && count===1){vd.className="verdict in";vd.textContent="✓ (1,1) is the UNIQUE minimizer — the minimum";}
+    else{vd.className="verdict mid";vd.textContent="minimizer at ("+mp.x+","+mp.y+")";}
+    angV.textContent=ang+"°";
+  }
+  angEl.addEventListener("input",()=>{ang=parseInt(angEl.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — scalarize a set with no minimum ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d");
+  const view=makeView(canvas,2.9,2.3,2.3); // window ~[-0.6,5.2]
+  const S=[{x:1,y:3,minimal:true},{x:3,y:1,minimal:true},{x:2,y:2,minimal:true},{x:4,y:4,minimal:false}];
+  let ang=45;
+  const angEl=document.getElementById("ang2"),angV=document.getElementById("ang2v"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);
+    drawGridBox(ctx,view,-0.4,5.2,-0.4,5.2);
+    const a=ang*Math.PI/180, lx=Math.cos(a), ly=Math.sin(a);
+    let best=Infinity;S.forEach(p=>{const v=lx*p.x+ly*p.y;if(v<best)best=v;});
+    const winners=S.filter(p=>Math.abs((lx*p.x+ly*p.y)-best)<1e-9);
+    levelLine(ctx,view,lx,ly,best,"#D7402B",2.0,[7,5]);
+    const O=view.toS(0,0),tip=view.toS(lx*1.6,ly*1.6);
+    arrow(ctx,O[0],O[1],tip[0],tip[1],"#D7402B",2.4);
+    label(ctx,"λ",tip[0]+6,tip[1]-6,"#D7402B",13);
+    S.forEach(p=>{const s=view.toS(p.x,p.y);const win=(Math.abs((lx*p.x+ly*p.y)-best)<1e-9);
+      // ring minimal points in vermilion
+      if(p.minimal){ctx.beginPath();ctx.arc(s[0],s[1],11,0,7);ctx.strokeStyle="#D7402B";ctx.lineWidth=1.6;ctx.stroke();}
+      dot(ctx,s[0],s[1],win?8:6,win?"#2F855A":(p.minimal?"#17223B":"#8A91A3"));
+      label(ctx,`(${p.x},${p.y})`,s[0]+13,s[1]-9,win?"#2F855A":"#46506A",12);});
+    dot(ctx,O[0],O[1],3.2,"#17223B");
+    ro.innerHTML=`<span class="k">λ</span> = (${lx.toFixed(2)}, ${ly.toFixed(2)})<br>`+
+      S.map(p=>`<span class="k">(${p.x},${p.y})</span> ↦ <b>${(lx*p.x+ly*p.y).toFixed(2)}</b>`).join(" &nbsp; ")+
+      `<br><span class="k">minimizer(s)</span>: <b>${winners.map(p=>`(${p.x},${p.y})`).join(", ")}</b>`;
+    const allMinimal=winners.every(p=>p.minimal);
+    if(winners.length>1){vd.className="verdict mid";vd.textContent="tie: "+winners.length+" minimizers — all are minimal";}
+    else{vd.className="verdict in";vd.textContent="min at ("+winners[0].x+","+winners[0].y+") — minimal ✓";}
+    angV.textContent=ang+"°";
+  }
+  angEl.addEventListener("input",()=>{ang=parseInt(angEl.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — convex S1: minimal point only a boundary λ reaches ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  const view=makeView(canvas,2.6,1.6,1.4); // window ~[-1,4.2] x
+  let ang=0;
+  const angEl=document.getElementById("ang3"),angV=document.getElementById("ang3v"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  // Convex set S1: polygon with a FLAT vertical left edge (x=0.4) from y=1.2..2.6,
+  // curving right. x1 = midpoint of the vertical edge (0.4, 1.9): minimal, only (1,0) supports it.
+  const poly=[
+    {x:0.4,y:2.6},{x:0.4,y:1.2},   // vertical left edge (min-x boundary)
+    {x:1.1,y:0.5},{x:2.2,y:0.35},  // bottom (min-y-ish) boundary
+    {x:3.2,y:0.9},{x:3.4,y:2.2},
+    {x:2.6,y:3.0},{x:1.3,y:3.1}
+  ];
+  const x1={x:0.4,y:1.9};
+  function minimizeDir(lx,ly){ // return vertex(s) minimizing λᵀz over polygon
+    let best=Infinity,arg=[];
+    poly.forEach(p=>{const v=lx*p.x+ly*p.y;if(v<best-1e-9){best=v;arg=[p];}else if(Math.abs(v-best)<1e-9)arg.push(p);});
+    // also the true min could be along an edge — but for a convex polygon the min is attained at a vertex
+    return {best,arg};
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);
+    drawGridBox(ctx,view,-0.9,4.2,-0.9,4.0);
+    const a=ang*Math.PI/180, lx=Math.cos(a), ly=Math.sin(a);
+    // polygon fill
+    ctx.beginPath();poly.forEach((p,i)=>{const s=view.toS(p.x,p.y);i?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]);});
+    ctx.closePath();ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.7;ctx.stroke();
+    const {best,arg}=minimizeDir(lx,ly);
+    levelLine(ctx,view,lx,ly,best,"#D7402B",2.0,[7,5]);
+    const O=view.toS(0,0),tip=view.toS(lx*1.4,ly*1.4);
+    arrow(ctx,O[0],O[1],tip[0],tip[1],"#D7402B",2.4);label(ctx,"λ",tip[0]+6,tip[1]-6,"#D7402B",13);
+    dot(ctx,O[0],O[1],3.2,"#17223B");
+    // minimizer(s)
+    arg.forEach(p=>{const s=view.toS(p.x,p.y);dot(ctx,s[0],s[1],7,"#2F855A");});
+    // x1 marker
+    const sx1=view.toS(x1.x,x1.y);
+    ctx.beginPath();ctx.arc(sx1[0],sx1[1],10,0,7);ctx.strokeStyle="#D7402B";ctx.lineWidth=1.8;ctx.stroke();
+    dot(ctx,sx1[0],sx1[1],5.5,"#D7402B");
+    label(ctx,"x₁",sx1[0]-24,sx1[1],"#D7402B",13);
+    const St=view.toS(2.3,1.8);label(ctx,"S₁",St[0],St[1],"#2B6CB0",15);
+    // is x1 a minimizer? (within tol along the left edge)
+    const vAtx1=lx*x1.x+ly*x1.y;
+    const x1IsMin=Math.abs(vAtx1-best)<1e-6;
+    ro.innerHTML=`<span class="k">λ</span> = (${lx.toFixed(2)}, ${ly.toFixed(2)})&nbsp; ${ang===0?"— boundary (1,0)":"— strictly ≻ 0"}<br>`+
+      `<span class="k">λᵀx₁</span> = <b>${vAtx1.toFixed(2)}</b> &nbsp; <span class="k">min over S₁</span> = <b>${best.toFixed(2)}</b><br>`+
+      `<span class="k">minimizer</span> ≈ (${arg[0].x.toFixed(1)}, ${arg[0].y.toFixed(1)})`;
+    if(x1IsMin){vd.className="verdict in";vd.textContent="✓ λ selects x₁ — only the boundary λ=(1,0) does this";}
+    else{vd.className="verdict out";vd.textContent="✗ minimizer jumped off x₁ — no λ ≻ 0 reaches it";}
+    angV.textContent=ang+"°";
+  }
+  angEl.addEventListener("input",()=>{ang=parseInt(angEl.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
