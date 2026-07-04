@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§2.6.2 — Dual Generalized Inequalities</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.altbox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.altcard{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
+.altcard .at{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.altcard.i .at{color:var(--halfspace)} .altcard.ii .at{color:var(--normal)}
+.altcard p{margin:0;font-size:15px;color:var(--ink-soft)}
+@media (max-width:640px){.altbox{grid-template-columns:1fr}}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §2.6.2</div>
+    <h1>Dual generalized<br><em>inequalities</em></h1>
+    <p class="sub">A proper cone <span class="mono">K</span> has a proper dual <span class="mono">K*</span>, so <span class="mono">K*</span> induces its own ordering. One cone relation <span class="mono">x ≼<sub>K</sub> y</span> becomes an infinite family of scalar tests <span class="mono">λᵀx ≤ λᵀy</span> — one per dual-feasible <span class="mono">λ</span>.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--halfspace)"></span> K — primal cone</span>
+      <span><span class="dot" style="background:var(--normal)"></span> K* — dual cone &amp; its λ</span>
+      <span><span class="dot" style="background:var(--inside)"></span> every test agrees</span>
+      <span>p.&nbsp;53–54 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 240" role="img" aria-label="A narrow primal cone K in blue and its wide dual cone K* in vermilion sharing the origin, with a dual functional lambda inside K* and a point y minus x inside K.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="240" fill="url(#dots)"/>
+        <!-- dual cone K* (vermilion, wide) -->
+        <path d="M300.0,158.0 L377.8,80.2 L371.6,74.5 L365.0,69.3 L358.1,64.6 L350.8,60.4 L343.2,56.8 L335.4,53.8 L327.3,51.4 L319.1,49.7 L310.8,48.5 L302.4,48.0 L294.0,48.2 L285.6,48.9 L277.4,50.4 L269.2,52.4 L261.3,55.1 L253.5,58.3 L246.0,62.1 L238.9,66.5 L232.1,71.5 L225.7,76.9 L219.7,82.8 L214.2,89.1 L209.2,95.9 L204.7,103.0 L200.8,110.4 L197.5,118.1 L194.7,126.1 L192.6,134.2 L191.1,142.5 L190.2,150.8 L190.0,159.2 L190.4,167.6 Z" fill="rgba(215,64,43,0.12)" stroke="#D7402B" stroke-width="1.6"/>
+        <!-- cone K (blue, narrow) pointing right -->
+        <path d="M300.0,158.0 L399.7,204.5 L401.6,200.1 L403.4,195.6 L404.9,191.1 L406.3,186.5 L407.4,181.8 L408.3,177.1 L409.1,172.4 L409.6,167.6 L409.9,162.8 L410.0,158.0 L409.9,153.2 L409.6,148.4 L409.1,143.6 L408.3,138.9 L407.4,134.2 L406.3,129.5 L404.9,124.9 L403.4,120.4 L401.6,115.9 L399.7,111.5 Z" fill="rgba(43,108,176,0.14)" stroke="#2B6CB0" stroke-width="1.6"/>
+        <!-- lambda ray inside K* -->
+        <line x1="300" y1="158" x2="259.4" y2="71.0" stroke="#D7402B" stroke-width="2.6"/>
+        <polygon points="259.4,71.0 254.0,84.6 267.7,79.4" fill="#D7402B"/>
+        <!-- point y-x inside K -->
+        <circle cx="357.7" cy="151.9" r="5" fill="#17223B"/>
+        <text x="365" y="149" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="13">y − x</text>
+        <circle cx="300" cy="158" r="4" fill="#17223B"/>
+        <text x="415" y="160" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">K</text>
+        <text x="196" y="44" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">K*</text>
+        <text x="244" y="70" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="13">λ</text>
+        <text x="320" y="226" text-anchor="middle" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600"><tspan fill="#2B6CB0">x ≼ᴋ y</tspan>  ⟺  <tspan fill="#D7402B">λᵀx ≤ λᵀy ∀ λ ∈ K*</tspan></text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§2.4.1 gave a proper cone <span class="mono">K</span> and its generalized inequality <span class="mono">≼<sub>K</sub></span>. §2.6.1 showed the dual cone <span class="mono">K*</span> of a proper cone is again proper. Put the two together: <span class="mono">K*</span> induces <em>its own</em> generalized inequality <span class="mono">≼<sub>K*</sub></span> — the <strong>dual</strong> of <span class="mono">≼<sub>K</sub></span>. The payoff is a clean way to test <span class="mono">≼<sub>K</sub></span> using linear functionals, plus a conic <em>theorem of alternatives</em> that generalizes the orthant case of §2.5.1.</p>
+</section>
+
+<!-- 1 the dual generalized inequality -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">the dual generalized inequality</span></div>
+  <hr class="rule"/>
+  <div class="bv">Since <span class="mono">K</span> proper \(\Rightarrow\) <span class="mono">K*</span> proper (§2.6.1), the dual cone <span class="mono">K*</span> itself induces a generalized inequality \(\preceq_{K^*}\), called the <em>dual</em> of \(\preceq_K\).<span class="src">B&amp;V §2.6.2 · L2751–2754</span></div>
+  <p>Nothing new is assumed — properness of <span class="mono">K</span> alone hands you a second proper cone, hence a second ordering, sitting in the same space of vectors that act as linear functionals on the first.</p>
+</section>
+
+<!-- 2 characterization -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">characterization — one inequality, a family of tests</span></div>
+    <hr class="rule"/>
+    <div class="bv">
+      \[ x \preceq_K y \iff \lambda^{\mathsf T}x \le \lambda^{\mathsf T}y \ \text{ for all } \lambda \succeq_{K^*} 0. \]
+      \[ x \prec_K y \iff \lambda^{\mathsf T}x < \lambda^{\mathsf T}y \ \text{ for all } \lambda \succeq_{K^*} 0,\ \lambda \neq 0. \]
+      <span class="src">B&amp;V §2.6.2 · L2755–2759</span>
+    </div>
+    <p>Read it directly: <span class="mono">x ≼<sub>K</sub> y</span> holds exactly when <em>every</em> dual-feasible <span class="mono">λ</span> — every <span class="mono">λ ≽<sub>K*</sub> 0</span> — agrees that <span class="mono">λᵀx ≤ λᵀy</span>. A single cone relation is equivalent to an infinite family of scalar tests, one per <span class="mono">λ ∈ K*</span>. It is the same "cone inequality = all of its dual linear tests" idea that defined the dual cone in the first place.</p>
+    <div class="note key"><div class="ic">!</div><p>The family is infinite, but it is <em>generated</em> by the extreme rays of <span class="mono">K*</span>: if every extreme dual direction passes <span class="mono">λᵀx ≤ λᵀy</span>, so does every nonnegative combination. Checking the finitely many extreme rays certifies the whole ordering.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>One cone inequality = the whole family of dual tests</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> K  (primal cone)</span>
+            <span><i class="sw" style="background:var(--normal-soft);border:1px solid var(--normal)"></i> K*  (dual cone)</span>
+            <span><i style="border-color:var(--normal)"></i> dual test λ ∈ K*</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Set the cone <b>K</b> (blue) with the two sliders. Its dual <b>K*</b> (vermilion) rotates opposite. Drag the point <b>z = y − x</b>. Then <b>x ≼<sub>K</sub> y</b> means <b>z ∈ K</b> — and that holds <i>iff</i> both extreme dual tests <b>λ<sub>a</sub>ᵀz ≥ 0</b> and <b>λ<sub>b</sub>ᵀz ≥ 0</b> pass. Sweep <b>λ</b> across K* to watch every test agree.</p>
+          <div class="ctrl"><label>K orientation<span class="val" id="rot1v">30°</span></label><input type="range" id="rot1" min="0" max="360" step="1" value="30"></div>
+          <div class="ctrl"><label>K width<span class="val" id="wid1v">70°</span></label><input type="range" id="wid1" min="20" max="160" step="1" value="70"></div>
+          <div class="ctrl"><label>sweep λ over K*<span class="val" id="swp1v">50%</span></label><input type="range" id="swp1" min="0" max="100" step="1" value="50"></div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 swap symmetry -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">swap symmetry — the double dual returns</span></div>
+    <hr class="rule"/>
+    <div class="bv">Because <span class="mono">(K*)* = K</span> for proper cones (§2.6.1), the dual of \(\preceq_{K^*}\) is \(\preceq_K\) again. So the characterization holds with the roles swapped: \[ \lambda \preceq_{K^*} \mu \iff \lambda^{\mathsf T}x \le \mu^{\mathsf T}x \ \text{ for all } x \succeq_K 0. \]<span class="src">B&amp;V §2.6.2 · L2761–2763</span></div>
+    <p><span class="mono">≼<sub>K</sub></span> and <span class="mono">≼<sub>K*</sub></span> are a <strong>symmetric pair</strong> — each tests the other. Testing a primal relation ranges <span class="mono">λ</span> over <span class="mono">K*</span>; testing a dual relation ranges <span class="mono">x</span> over <span class="mono">K</span>. The double-dual identity is exactly what makes the two directions mirror images.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Dualize twice — <span style="font-family:inherit">(K*)* snaps back to K</span></h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> K</span>
+            <span><i class="sw" style="background:var(--normal-soft);border:1px solid var(--normal)"></i> K* = dual</span>
+            <span><i style="border-color:var(--halfspace)"></i> (K*)* — overlays K</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Reshape <b>K</b> (blue). Its dual <b>K*</b> (vermilion) is the set of <b>λ</b> with <b>λᵀx ≥ 0</b> for all <b>x ∈ K</b>. Dualize once more and the dashed <b>(K*)*</b> lands exactly back on <b>K</b> — the reason <b>≼<sub>K</sub></b> and <b>≼<sub>K*</sub></b> are a symmetric pair. Wider K ⟹ narrower K*.</p>
+          <div class="ctrl"><label>K orientation<span class="val" id="rot2v">40°</span></label><input type="range" id="rot2" min="0" max="360" step="1" value="40"></div>
+          <div class="ctrl"><label>K width<span class="val" id="wid2v">60°</span></label><input type="range" id="wid2" min="20" max="160" step="1" value="60"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 alternatives -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§4</span><span class="eyebrow">example 2.26 — a conic theorem of alternatives</span></div>
+    <hr class="rule"/>
+    <p>Let <span class="mono">K ⊆ Rᵐ</span> be proper and consider the strict inequality \[ Ax \prec_K b. \tag{2.21}\] When is it infeasible? The dual generalized inequality supplies a certificate.</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>Infeasible \(\Rightarrow\) a certificate in K*</span><span class="target">separation, then read off K*</span></div>
+      <div class="step crux">
+        <div class="math">\[ \{\,b-Ax\,\}\ \cap\ \operatorname{int}K=\varnothing \ \Rightarrow\ \exists\,\lambda\neq0,\mu:\ \lambda^{\mathsf T}(b-Ax)\le\mu\ \forall x,\quad \lambda^{\mathsf T}y\ge\mu\ \forall y\in\operatorname{int}K \]</div>
+        <div class="why"><b>infeasible</b> means the affine set \(\{b-Ax\}\) misses the open set \(\operatorname{int}K\); separate them</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \lambda^{\mathsf T}(b-Ax)\le\mu\ \forall x \ \Rightarrow\ A^{\mathsf T}\lambda=0,\quad \lambda^{\mathsf T}b\le\mu \]</div>
+        <div class="why">a linear function of \(x\) bounded above on all of \(\mathbb R^n\) has zero coefficient</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \lambda^{\mathsf T}y\ge\mu\ \forall y\in K \ \Rightarrow\ \lambda\succeq_{K^*}0,\quad \mu\le0 \]</div>
+        <div class="why">\(\lambda^{\mathsf T}y\) bounded below on the cone \(K\) forces <b>λ ∈ K*</b>, and \(y=0\) gives \(\mu\le0\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \boxed{\,\lambda\neq0,\quad \lambda\succeq_{K^*}0,\quad A^{\mathsf T}\lambda=0,\quad \lambda^{\mathsf T}b\le0\,} \tag{2.22}\]</div>
+        <div class="why"><b>combine:</b> \(\lambda^{\mathsf T}b\le\mu\le0\). The certificate lives in the <b>dual cone</b>, not K</div>
+      </div>
+    </div>
+
+    <div class="note build"><div class="ic">↺</div><p><strong>Certificate \(\Rightarrow\) infeasible.</strong> If both held, take any <span class="mono">x</span> with <span class="mono">b − Ax ≻<sub>K</sub> 0</span>. The strict characterization gives <span class="mono">λᵀ(b − Ax) &gt; 0</span> (since <span class="mono">λ ≠ 0</span>). But <span class="mono">Aᵀλ = 0</span> makes <span class="mono">λᵀ(b − Ax) = λᵀb ≤ 0</span> — a contradiction. So (2.21) and (2.22) can't both hold.</p></div>
+    <p>Together the two directions make (2.21) and (2.22) a pair of <strong>alternatives</strong>: exactly one is feasible.</p>
+
+    <div class="altbox">
+      <div class="altcard i"><div class="at">System I — primal (2.21)</div><p><span class="mono">Ax ≺<sub>K</sub> b</span> — find <span class="mono">x</span> putting <span class="mono">b − Ax</span> strictly inside the cone <span class="mono">K</span>.</p></div>
+      <div class="altcard ii"><div class="at">System II — certificate (2.22)</div><p><span class="mono">λ ≠ 0, λ ≽<sub>K*</sub> 0, Aᵀλ = 0, λᵀb ≤ 0</span> — a nonzero dual-cone <span class="mono">λ</span> in the null space of <span class="mono">Aᵀ</span> with <span class="mono">λᵀb ≤ 0</span>.</p></div>
+    </div>
+    <div class="note key"><div class="ic">!</div><p>Set <span class="mono">K = Rᵐ₊</span> and <span class="mono">≽<sub>K*</sub></span> becomes componentwise <span class="mono">≽ 0</span>: this is exactly the §2.5.1 orthant theorem of alternatives. Example 2.26 is its conic generalization — a Farkas lemma over an arbitrary proper cone.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Exactly one is feasible — the certificate sits in K*</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> K  (b − Ax must land inside)</span>
+            <span><i style="border-color:var(--ink-soft)"></i> line { b − x·a }</span>
+            <span><i style="border-color:var(--normal)"></i> certificate λ ∈ K*</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>n = 1, so A = a (a vector); x is a scalar</h5>
+          <p class="hint">Drag <b>b</b>. Rotate the column <b>a</b>. The set <b>{ b − x·a }</b> is a line. <b>System I</b> is feasible when that line pierces <b>int K</b> (green). When it misses, <b>System II</b> wins: the certificate <b>λ ⟂ a</b> lands in <b>K*</b> with <b>λᵀb ≤ 0</b> (vermilion).</p>
+          <div class="ctrl"><label>direction of a<span class="val" id="ang3v">75°</span></label><input type="range" id="ang3" min="0" max="360" step="1" value="75"></div>
+          <div class="ctrl"><label>K orientation<span class="val" id="rot3v">55°</span></label><input type="range" id="rot3" min="0" max="360" step="1" value="55"></div>
+          <div class="ctrl"><label>K width<span class="val" id="wid3v">70°</span></label><input type="range" id="wid3" min="20" max="160" step="1" value="70"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">G1</span>The dual ordering</p><p><span class="mono">K</span> proper \(\Rightarrow\) <span class="mono">K*</span> proper \(\Rightarrow\) the dual generalized inequality <span class="mono">≼<sub>K*</sub></span>. No new hypotheses beyond properness of <span class="mono">K</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G2</span>Characterization</p><p><span class="mono">x ≼<sub>K</sub> y ⟺ λᵀx ≤ λᵀy for all λ ≽<sub>K*</sub> 0</span> (strict: <span class="mono">&lt;</span>, <span class="mono">λ ≠ 0</span>). One cone inequality = the full family of dual linear tests; extreme rays of <span class="mono">K*</span> suffice.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G3</span>Swap symmetry</p><p><span class="mono">(K*)* = K</span> \(\Rightarrow\) the dual of <span class="mono">≼<sub>K*</sub></span> is <span class="mono">≼<sub>K</sub></span>. e.g. <span class="mono">λ ≼<sub>K*</sub> µ ⟺ λᵀx ≤ µᵀx ∀ x ≽<sub>K</sub> 0</span>. A symmetric pair.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G4</span>Alternatives</p><p><span class="mono">Ax ≺<sub>K</sub> b</span> infeasible <span class="mono">⟺ ∃ λ ≠ 0, λ ≽<sub>K*</sub> 0, Aᵀλ = 0, λᵀb ≤ 0</span>. Exactly one system feasible; the certificate lives in <span class="mono">K*</span>. Generalizes the §2.5.1 orthant case (conic Farkas).</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-06-30 · bv.2.6.2</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Dual ordering</h6><p>\(K\) proper \(\Rightarrow K^*\) proper \(\Rightarrow\) the dual generalized inequality \(\preceq_{K^*}\).</p></div>
+      <div class="scard"><h6>Characterization</h6><p>\(x\preceq_K y \iff \lambda^{\mathsf T}x\le\lambda^{\mathsf T}y\) for all \(\lambda\succeq_{K^*}0\) (strict: \(<\), \(\lambda\neq0\)). One cone inequality = the full family of dual linear tests.</p></div>
+      <div class="scard"><h6>Swap symmetry</h6><p>\((K^*)^*=K \Rightarrow\) the dual of \(\preceq_{K^*}\) is \(\preceq_K\), e.g. \(\lambda\preceq_{K^*}\mu \iff \lambda^{\mathsf T}x\le\mu^{\mathsf T}x\ \forall x\succeq_K 0\).</p></div>
+      <div class="scard"><h6>Alternatives (Ex. 2.26)</h6><p>\(Ax\prec_K b\) infeasible \(\iff \exists\,\lambda\neq0,\lambda\succeq_{K^*}0,A^{\mathsf T}\lambda=0,\lambda^{\mathsf T}b\le0\) — exactly one feasible; certificate in \(K^*\). Conic Farkas.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §2.6.2 (p. 53–54) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+// fill an angular wedge [loDeg,hiDeg] as a BOUNDED sector (arc-capped) that
+// stays fully inside the grid — never draw to the frame edge, or the cone clips.
+function drawWedge(ctx,view,loDeg,hiDeg,fill,stroke,wd){
+  const Rr=4.4; const lo=loDeg*Math.PI/180, hi=hiDeg*Math.PI/180, steps=28;
+  const O=view.toS(0,0);
+  ctx.beginPath();ctx.moveTo(O[0],O[1]);
+  for(let i=0;i<=steps;i++){const t=lo+(hi-lo)*i/steps;const p=view.toS(Rr*Math.cos(t),Rr*Math.sin(t));ctx.lineTo(p[0],p[1]);}
+  ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=wd||1.6;ctx.stroke();}
+}
+function ray(ctx,view,angDeg,len,col,wd,dash){
+  const a=angDeg*Math.PI/180,O=view.toS(0,0),P=view.toS(len*Math.cos(a),len*Math.sin(a));
+  ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(O[0],O[1]);ctx.lineTo(P[0],P[1]);ctx.stroke();ctx.restore();
+}
+// dual cone of wedge [lo,hi] (deg, hi>lo, hi-lo<180) is [hi-90, lo+90]
+function dualWedge(lo,hi){return [hi-90, lo+90];}
+
+/* ===== LAB 1 — characterization via dual tests ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let rot=30, wid=70, swp=0.5, z={x:2.4,y:1.4};
+  const rotEl=document.getElementById("rot1"),widEl=document.getElementById("wid1"),swpEl=document.getElementById("swp1"),
+        rotV=document.getElementById("rot1v"),widV=document.getElementById("wid1v"),swpV=document.getElementById("swp1v"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const lo=rot, hi=rot+wid;                       // K rays
+    const d=dualWedge(lo,hi), dlo=d[0], dhi=d[1];   // K* rays
+    // fills
+    drawWedge(ctx,view,lo,hi,"rgba(43,108,176,0.13)","#2B6CB0",1.7);
+    drawWedge(ctx,view,dlo,dhi,"rgba(215,64,43,0.12)","#D7402B",1.7);
+    // extreme dual directions
+    const la={x:Math.cos(dlo*Math.PI/180),y:Math.sin(dlo*Math.PI/180)};
+    const lb={x:Math.cos(dhi*Math.PI/180),y:Math.sin(dhi*Math.PI/180)};
+    ray(ctx,view,dlo,4.4,"#D7402B",2.4);ray(ctx,view,dhi,4.4,"#D7402B",2.4);
+    const laS=view.toS(la.x*4.4,la.y*4.4),lbS=view.toS(lb.x*4.4,lb.y*4.4);
+    label(ctx,"λa",laS[0]+4,laS[1],"#D7402B",12);label(ctx,"λb",lbS[0]+4,lbS[1],"#D7402B",12);
+    // swept lambda inside K*
+    const sAng=dlo+swp*(dhi-dlo), sv={x:Math.cos(sAng*Math.PI/180),y:Math.sin(sAng*Math.PI/180)};
+    ray(ctx,view,sAng,4.0,"#B7791F",2.6,[6,4]);
+    const svS=view.toS(sv.x*4.0,sv.y*4.0);label(ctx,"λ",svS[0]+5,svS[1]-4,"#B7791F",12);
+    // z point + arrow from origin
+    const O=view.toS(0,0),zS=view.toS(z.x,z.y);
+    const la_z=la.x*z.x+la.y*z.y, lb_z=lb.x*z.x+lb.y*z.y, sv_z=sv.x*z.x+sv.y*z.y;
+    const inK=(la_z>=-1e-9 && lb_z>=-1e-9);
+    arrow(ctx,O[0],O[1],zS[0],zS[1],inK?"#2F855A":"#C0392B",2.2);
+    dot(ctx,zS[0],zS[1],7,"#fff",inK?"#2F855A":"#C0392B");label(ctx,"z=y−x",zS[0]+10,zS[1]-8,"#17223B",12);
+    dot(ctx,O[0],O[1],3.5,"#17223B");
+    const Ktxt=view.toS(4.4*Math.cos((lo+hi)/2*Math.PI/180),4.4*Math.sin((lo+hi)/2*Math.PI/180));
+    label(ctx,"K",Ktxt[0],Ktxt[1],"#2B6CB0",15);
+    const Kstxt=view.toS(3.2*Math.cos((dlo+dhi)/2*Math.PI/180),3.2*Math.sin((dlo+dhi)/2*Math.PI/180));
+    label(ctx,"K*",Kstxt[0],Kstxt[1],"#D7402B",15);
+    ro.innerHTML=`<span class="k">λaᵀz</span> = <b>${la_z.toFixed(2)}</b> &nbsp; <span class="k">λbᵀz</span> = <b>${lb_z.toFixed(2)}</b><br>`+
+      `<span class="k">swept λᵀz</span> = <b>${sv_z.toFixed(2)}</b> ${sv_z>=-1e-9?"≥ 0 ✓":"&lt; 0 ✗"}<br>`+
+      `<span class="k">min over K* extreme rays</span> = <b>${Math.min(la_z,lb_z).toFixed(2)}</b>`;
+    if(inK){vd.className="verdict in";vd.textContent="✓ z ∈ K — every dual test passes ⟹ x ≼ᴋ y";}
+    else{vd.className="verdict out";vd.textContent="✗ z ∉ K — some λ ∈ K* has λᵀz < 0";}
+    rotV.textContent=rot+"°";widV.textContent=wid+"°";swpV.textContent=Math.round(swp*100)+"%";
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(z.x,z.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<26){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(z.x,z.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<26?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);z={x:clamp(wv[0],-R,R),y:clamp(wv[1],-R,R)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  rotEl.addEventListener("input",()=>{rot=parseInt(rotEl.value);draw();});
+  widEl.addEventListener("input",()=>{wid=parseInt(widEl.value);draw();});
+  swpEl.addEventListener("input",()=>{swp=parseInt(swpEl.value)/100;draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — double dual returns K ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let rot=40, wid=60;
+  const rotEl=document.getElementById("rot2"),widEl=document.getElementById("wid2"),
+        rotV=document.getElementById("rot2v"),widV=document.getElementById("wid2v"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const lo=rot,hi=rot+wid;
+    const d=dualWedge(lo,hi),dlo=d[0],dhi=d[1];
+    const dd=dualWedge(dlo,dhi),ddlo=dd[0],ddhi=dd[1];   // should equal [lo,hi]
+    // K fill
+    drawWedge(ctx,view,lo,hi,"rgba(43,108,176,0.15)","#2B6CB0",1.8);
+    // K* fill
+    drawWedge(ctx,view,dlo,dhi,"rgba(215,64,43,0.12)","#D7402B",1.8);
+    // (K*)* dashed overlay on K
+    ray(ctx,view,ddlo,4.6,"#2B6CB0",2.6,[7,5]);ray(ctx,view,ddhi,4.6,"#2B6CB0",2.6,[7,5]);
+    const O=view.toS(0,0);dot(ctx,O[0],O[1],3.5,"#17223B");
+    const Kt=view.toS(4.6*Math.cos((lo+hi)/2*Math.PI/180),4.6*Math.sin((lo+hi)/2*Math.PI/180));
+    label(ctx,"K",Kt[0],Kt[1],"#2B6CB0",15);
+    const Kst=view.toS(3.0*Math.cos((dlo+dhi)/2*Math.PI/180),3.0*Math.sin((dlo+dhi)/2*Math.PI/180));
+    label(ctx,"K*",Kst[0],Kst[1],"#D7402B",15);
+    const norm=(a)=>((a%360)+360)%360;
+    const back=Math.abs(norm(ddlo)-norm(lo))<0.5 && Math.abs(norm(ddhi)-norm(hi))<0.5;
+    ro.innerHTML=`<span class="k">K rays</span> = <b>${norm(lo).toFixed(0)}°, ${norm(hi).toFixed(0)}°</b> &nbsp;(width ${wid}°)<br>`+
+      `<span class="k">K* rays</span> = <b>${norm(dlo).toFixed(0)}°, ${norm(dhi).toFixed(0)}°</b> &nbsp;(width ${(180-wid)}°)<br>`+
+      `<span class="k">(K*)* rays</span> = <b>${norm(ddlo).toFixed(0)}°, ${norm(ddhi).toFixed(0)}°</b>`;
+    vd.className="verdict in";vd.textContent=back?"✓ (K*)* = K — the symmetric pair":"(K*)* = K";
+    rotV.textContent=rot+"°";widV.textContent=wid+"°";
+  }
+  rotEl.addEventListener("input",()=>{rot=parseInt(rotEl.value);draw();});
+  widEl.addEventListener("input",()=>{wid=parseInt(widEl.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — conic theorem of alternatives ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let ang=75, rot=55, wid=70, b={x:-1.6,y:1.9};
+  const angEl=document.getElementById("ang3"),rotEl=document.getElementById("rot3"),widEl=document.getElementById("wid3"),
+        angV=document.getElementById("ang3v"),rotV=document.getElementById("rot3v"),widV=document.getElementById("wid3v"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function inWedge(angDeg,lo,hi){ // strict interior test, mod 360
+    let a=((angDeg-lo)%360+360)%360; return a>1e-6 && a<(hi-lo)-1e-6; }
+  function inWedgeClosed(angDeg,lo,hi){ let a=((angDeg-lo)%360+360)%360; return a>=-1e-9 && a<=(hi-lo)+1e-9; }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const lo=rot,hi=rot+wid, d=dualWedge(lo,hi),dlo=d[0],dhi=d[1];
+    const a={x:Math.cos(ang*Math.PI/180),y:Math.sin(ang*Math.PI/180)};
+    // K fill (light) + K* outline (thin) for reference
+    drawWedge(ctx,view,lo,hi,"rgba(43,108,176,0.14)","#2B6CB0",1.8);
+    ray(ctx,view,dlo,4.6,"#E0B4AC",1.3,[5,4]);ray(ctx,view,dhi,4.6,"#E0B4AC",1.3,[5,4]);
+    // line { b - x a } : sample feasibility (line ∩ int K)
+    let feasible=false;
+    for(let t=-40;t<=40;t+=0.08){const px=b.x-t*a.x,py=b.y-t*a.y;const r=Math.hypot(px,py);
+      if(r<1e-3)continue;const pa=Math.atan2(py,px)*180/Math.PI;if(inWedge(pa,lo,hi)){feasible=true;break;}}
+    // draw line
+    const P1=view.toS(b.x-8*a.x,b.y-8*a.y),P2=view.toS(b.x+8*a.x,b.y+8*a.y);
+    ctx.strokeStyle="#46506A";ctx.lineWidth=2.0;ctx.beginPath();ctx.moveTo(P1[0],P1[1]);ctx.lineTo(P2[0],P2[1]);ctx.stroke();
+    // a direction arrow (from b)
+    const bS=view.toS(b.x,b.y),aTip=view.toS(b.x+1.4*a.x,b.y+1.4*a.y);
+    arrow(ctx,bS[0],bS[1],aTip[0],aTip[1],"#8A91A3",1.8);label(ctx,"a",aTip[0]+5,aTip[1]-5,"#8A91A3",12);
+    // b point
+    dot(ctx,bS[0],bS[1],6,"#fff","#17223B");label(ctx,"b",bS[0]+9,bS[1]+10,"#17223B",13);
+    // certificate lambda = perpendicular to a, choose sign in K* with lam.b<=0
+    const perpA=ang+90, perpB=ang-90;
+    let certAng=null,lamb=null;
+    [perpA,perpB].forEach(pd=>{
+      const lv={x:Math.cos(pd*Math.PI/180),y:Math.sin(pd*Math.PI/180)};const lb_=lv.x*b.x+lv.y*b.y;
+      if(inWedgeClosed(pd,dlo,dhi) && lb_<=1e-6){certAng=pd;lamb=lb_;}
+    });
+    if(!feasible && certAng!==null){ ray(ctx,view,certAng,4.2,"#D7402B",2.8);
+      const cS=view.toS(4.2*Math.cos(certAng*Math.PI/180),4.2*Math.sin(certAng*Math.PI/180));
+      label(ctx,"λ",cS[0]+5,cS[1]-4,"#D7402B",13);}
+    const O=view.toS(0,0);dot(ctx,O[0],O[1],3.5,"#17223B");
+    const Kt=view.toS(4.7*Math.cos((lo+hi)/2*Math.PI/180),4.7*Math.sin((lo+hi)/2*Math.PI/180));
+    label(ctx,"K",Kt[0],Kt[1],"#2B6CB0",15);
+    ro.innerHTML=`<span class="k">a</span> = (${a.x.toFixed(2)}, ${a.y.toFixed(2)}) &nbsp; <span class="k">b</span> = (${b.x.toFixed(2)}, ${b.y.toFixed(2)})<br>`+
+      (certAng!==null?`<span class="k">λ ⟂ a, λ ∈ K*</span> at <b>${(((certAng%360)+360)%360).toFixed(0)}°</b> &nbsp; <span class="k">λᵀb</span> = <b>${lamb.toFixed(2)}</b>`
+                     :`<span class="k">no λ ∈ K* with Aᵀλ=0, λᵀb ≤ 0</span>`);
+    if(feasible){vd.className="verdict in";vd.textContent="System I feasible — line pierces int K (Ax ≺ᴋ b)";}
+    else if(certAng!==null){vd.className="verdict out";vd.textContent="System II — certificate λ ∈ K* proves infeasibility";}
+    else{vd.className="verdict mid";vd.textContent="boundary case — nudge a, b, or K";}
+    angV.textContent=ang+"°";rotV.textContent=rot+"°";widV.textContent=wid+"°";
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(b.x,b.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<26){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(b.x,b.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<26?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);b={x:clamp(wv[0],-R,R),y:clamp(wv[1],-R,R)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  angEl.addEventListener("input",()=>{ang=parseInt(angEl.value);draw();});
+  rotEl.addEventListener("input",()=>{rot=parseInt(rotEl.value);draw();});
+  widEl.addEventListener("input",()=>{wid=parseInt(widEl.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>

@@ -191,6 +191,13 @@ Lab guidelines:
   `psd_cone.html` / `norm_balls_and_cones.html`).
 - **SVG rule:** CSS `var(--…)` does **not** resolve inside SVG presentation attributes.
   In the hero SVG use **hard-coded hex** (`fill="#D7402B"`), never `fill="var(--normal)"`.
+- **Keep every shape inside the frame (recurring bug — check it).** Cones/wedges and any
+  drawn region must be **bounded sectors that sit fully within the grid**, never filled or
+  stroked out to the frame edge — or they clip and look cut off. On canvas, draw wedges as
+  arc-capped sectors at radius **≤ 4.4** (the grid is `range = 5`); keep every ray/label
+  ≤ 4.6. In the **hero SVG**, generate arc-capped sector paths whose every point lies inside
+  the `viewBox` (leave a margin; nothing at the edge). Never draw a wedge to a large "far"
+  radius and rely on the canvas/viewBox to clip it. This applies to the hero **and** every lab.
 
 ---
 
@@ -199,11 +206,21 @@ Lab guidelines:
 Run in the workspace shell:
 1. Extract the `<script>` and `node --check` it (syntax).
 2. Confirm **no `var(--` inside any `<svg>`**.
-3. **Node-sample the core math** to prove the lab is correct — e.g. verify an identity over
+3. **Frame-containment check (required — this is a recurring bug).** Programmatically confirm
+   every shape stays inside its frame *before* presenting:
+   - Grep the script for any wedge/sector "far" radius and confirm it is **≤ 4.4** (grid
+     `range = 5`); confirm ray/label radii are ≤ 4.6.
+   - For the **hero SVG**, compute the bounding box of every `<path>`/`<polygon>`/`<line>`
+     point and assert it lies within the `viewBox` with a margin (nothing at the edge).
+     Then **render the hero to PNG** (`cairosvg` or `rsvg-convert`) and **view it** to confirm
+     no cone spills off the top/right/bottom. Do the same visual check for the labs' initial
+     state if feasible.
+4. **Node-sample the core math** to prove the lab is correct — e.g. verify an identity over
    10–20k random inputs, or that a constructed object satisfies its defining inequality.
    (Examples used before: PSD three-condition ⇔ eigenvalue test; perspective
-   `P(θx+(1−θ)y)=μP(x)+(1−μ)P(y)`; separator `f≤0` on C and `f≥0` on D; ℓ_p boundary norm = r.)
-4. Then re-read the source against the page for the fidelity check (§2).
+   `P(θx+(1−θ)y)=μP(x)+(1−μ)P(y)`; separator `f≤0` on C and `f≥0` on D; ℓ_p boundary norm = r;
+   dual-inequality `x ≼_K y ⟺ λᵀz ≥ 0 ∀ λ∈K*` via extreme rays.)
+5. Then re-read the source against the page for the fidelity check (§2).
 
 ---
 
