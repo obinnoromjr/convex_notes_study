@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.1.4 — Second-Order Conditions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+.reads .tag.alt{background:var(--halfspace)} .reads .tag.acc{background:var(--normal)}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.excard .exh .vt{color:var(--normal)}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF6EC;border-color:#EAD9B4}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.1.4</div>
+    <h1>Second-order<br><em>conditions</em></h1>
+    <p class="sub">For twice-differentiable \(f\), convexity becomes a curvature test: the Hessian \(\nabla^2 f(x)\) must be <em>positive semidefinite</em> at every point — and \(\operatorname{dom}f\) must be convex. Two famous traps hide here: strictness is one-way, and the domain clause cannot be dropped.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> ∇²f(x) ⪰ 0 for all x</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> quadratic: ∇²f = P</span>
+      <span><span class="dot" style="background:var(--inside)"></span> upward curvature</span>
+      <span>p.&nbsp;70–71 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 236" role="img" aria-label="Three curves: one with positive curvature (convex), one flat, one with negative curvature (concave), with a Hessian eigenvalue dial.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="236" fill="url(#dots)"/>
+        <!-- positive curvature: the vermilion through-line -->
+        <path d="M60,60 Q160,220 260,60" fill="none" stroke="#D7402B" stroke-width="3"/>
+        <text x="160" y="46" text-anchor="middle" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">∇²f ≻ 0</text>
+        <text x="160" y="206" text-anchor="middle" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">strictly convex</text>
+        <!-- zero curvature -->
+        <line x1="270" y1="130" x2="370" y2="130" stroke="#17223B" stroke-width="3"/>
+        <text x="320" y="46" text-anchor="middle" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">∇²f = 0</text>
+        <text x="320" y="206" text-anchor="middle" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">affine — both</text>
+        <!-- negative curvature -->
+        <path d="M380,180 Q480,20 580,180" fill="none" stroke="#2B6CB0" stroke-width="3"/>
+        <text x="480" y="46" text-anchor="middle" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">∇²f ≺ 0</text>
+        <text x="480" y="206" text-anchor="middle" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">strictly concave</text>
+        <!-- baseline rule -->
+        <line x1="40" y1="222" x2="600" y2="222" stroke="#D9D3C6" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§3.1.3 gave the first-order (gradient) test: convexity as "the tangent underestimates". §3.1.4 gives the <strong>second-order</strong> (Hessian) test: for twice-differentiable \(f\), convexity \(\iff \nabla^2 f \succeq 0\) everywhere. B&amp;V leaves the proof as exercise 3.8, so the work here is in <em>applying</em> the test — above all to quadratics — plus the two famous traps: <strong>strictness</strong> is only one-way, and the <strong>domain</strong> clause is not decoration.</p>
+</section>
+
+<!-- 1 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">the second-order condition</span></div>
+    <hr class="rule"/>
+    <p>Suppose \(f\) is twice differentiable: its Hessian \(\nabla^2 f\) exists at every point of \(\operatorname{dom}f\), which is open. Then:</p>
+    <div class="bv">\(f\) is <b>convex</b> if and only if \(\operatorname{dom}f\) is convex and its Hessian is positive semidefinite: \[ \nabla^2 f(x)\ \succeq\ 0\qquad\text{for all }x\in\operatorname{dom}f. \]<span class="src">B&amp;V §3.1.4 · L3559–3563</span></div>
+    <p>Two clauses again — a convex domain <em>and</em> the matrix inequality, at <strong>every</strong> point, not just one.</p>
+    <div class="note key"><div class="ic">!</div><p><b>\(\succeq 0\) is the Löwner order, not "entries \(\ge 0\)".</b> It means \(\nabla^2 f(x)\) lies in the positive semidefinite cone \(\mathbf{S}^n_+\) (§2.2.5): \(z^{\mathsf T}\nabla^2 f(x)\,z\ge 0\) for all \(z\), equivalently all eigenvalues \(\ge 0\). A matrix with every entry positive can easily fail it — and \(\begin{bmatrix}1&amp;0\\0&amp;1\end{bmatrix}\succeq 0\) has zero entries.</p></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">scalar case &amp; geometry</span></div>
+    <hr class="rule"/>
+    <div class="bv">For \(f:\mathbb{R}\to\mathbb{R}\) the condition reduces to the familiar one: \(f''(x)\ge 0\) for all \(x\), and \(\operatorname{dom}f\) an interval.<span class="src">B&amp;V §3.1.4 · L3564–3568</span></div>
+    <ul class="reads">
+      <li><span class="tag">calculus</span><div>\(f''\ge 0\) says the derivative \(f'\) is <b>nondecreasing</b> — slopes only turn upward as you move right.</div></li>
+      <li><span class="tag acc">geometry</span><div>\(\nabla^2 f(x)\succeq 0\) means the graph of \(f\) has <b>positive (upward) curvature</b> at \(x\) — it bends away from its tangent, never toward it.</div></li>
+      <li><span class="tag alt">domain</span><div>In one variable "convex domain" just means an <b>interval</b>. Keep it: it is exactly what \(1/x^2\) violates (§5).</div></li>
+    </ul>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Curvature dial — read f″ along the graph</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i> graph of f</span>
+            <span><i style="border-color:var(--halfspace)"></i> derivative f′</span>
+            <span><i style="border-color:var(--normal)"></i> tangent at x</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>choose f</h5>
+          <div class="chips" id="fn1">
+            <span class="chip on" data-f="sq">x² (f″ &gt; 0)</span>
+            <span class="chip" data-f="quartic">x⁴ (f″(0) = 0)</span>
+            <span class="chip" data-f="conc">−x² (f″ &lt; 0)</span>
+            <span class="chip" data-f="cubic">x³ (f″ changes sign)</span>
+          </div>
+          <p class="hint">Drag <b>x</b> along the curve. The vermilion tangent shows the local slope; the blue curve is the <b>derivative</b> \(f'\). Convexity \(\iff f''\ge 0\) everywhere \(\iff f'\) nondecreasing (blue never descends). On \(x^4\), park \(x\) at the origin: \(f''(0)=0\), yet the function is <em>strictly</em> convex — the converse of "\(f''>0\) ⟹ strictly convex" fails. On \(x^3\) the blue curve descends nowhere but \(f''\) still flips sign at \(0\) — check the readout: \(f''&lt;0\) for \(x&lt;0\), so \(x^3\) is not convex on \(\mathbb{R}\).</p>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">concave &amp; strict variants</span></div>
+  <hr class="rule"/>
+  <ul class="reads">
+    <li><span class="tag alt">concave</span><div>\(f\) is <b>concave</b> if and only if \(\operatorname{dom}f\) is convex and \[ \nabla^2 f(x)\ \preceq\ 0\quad\text{for all }x\in\operatorname{dom}f \] — negative semidefinite Hessian, i.e. downward curvature.</div></li>
+    <li><span class="tag acc">strict</span><div>If \(\nabla^2 f(x)\ \succ\ 0\) (positive <b>definite</b>) for all \(x\in\operatorname{dom}f\), then \(f\) is <b>strictly convex</b>. The implication runs one way only.</div></li>
+  </ul>
+  <div class="bv">The converse of the strict condition is <b>false</b>: \(f(x)=x^4\) is strictly convex, but \(f''(0)=0\), so \(\nabla^2 f\succ 0\) fails at the origin. Positive definiteness is <em>sufficient</em>, not necessary, for strict convexity.<span class="src">B&amp;V §3.1.4 · L3569–3576</span></div>
+  <div class="note warn"><div class="ic">!</div><p><b>The asymmetry to memorize.</b> Convexity \(\iff \nabla^2 f\succeq 0\) is an <em>equivalence</em>. Strict convexity \(\Longleftarrow \nabla^2 f\succ 0\) is only an <em>implication</em>. A strictly convex function may have a Hessian that goes singular at isolated points (\(x^4\) at \(0\)); it may not go <em>indefinite</em> anywhere, since it is still convex.</p></div>
+</section>
+
+<!-- 4 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§4</span><span class="eyebrow">example 3.2 — quadratic functions</span></div>
+    <hr class="rule"/>
+    <p>Take the general quadratic on \(\mathbb{R}^n\), with \(P\in\mathbf{S}^n\), \(q\in\mathbb{R}^n\), \(r\in\mathbb{R}\):</p>
+    <div class="bv">\[ f(x)=\tfrac12 x^{\mathsf T}Px+q^{\mathsf T}x+r,\qquad \nabla f(x)=Px+q,\qquad \nabla^2 f(x)=P. \] The Hessian is <b>constant</b> — it does not depend on \(x\). Hence \(f\) is convex \(\iff P\succeq 0\); concave \(\iff P\preceq 0\).<span class="src">B&amp;V §3.1.4 · Example 3.2 · L3578–3585</span></div>
+    <p>And because the Hessian is constant, the strict case closes into a clean equivalence — the \(x^4\)-style gap cannot open up when \(\nabla^2 f\) is the same matrix everywhere:</p>
+    <ul class="reads">
+      <li><span class="tag acc">strictly convex</span><div>\(\iff P\succ 0\) (all eigenvalues \(&gt;0\))</div></li>
+      <li><span class="tag alt">strictly concave</span><div>\(\iff P\prec 0\) (all eigenvalues \(&lt;0\))</div></li>
+    </ul>
+    <div class="note build"><div class="ic">i</div><p>So classifying a quadratic is <em>entirely</em> a question about \(P\): compute its eigenvalues (or run the leading-principal-minor test). \(q\) and \(r\) shift and lift the graph — they never touch curvature.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Classify a quadratic by its Hessian P</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--halfspace)"></i> level set f = c &gt; 0</span>
+            <span><i style="border-color:var(--outside)"></i> level set f = c &lt; 0</span>
+            <span><i style="border-color:var(--normal)"></i> direction z (uᵀPu)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>the matrix P (symmetric)</h5>
+          <div class="ctrl"><label>P₁₁ <span class="val" id="v11">2.00</span></label><input type="range" id="p11" min="-3" max="3" step="0.05" value="2"></div>
+          <div class="ctrl"><label>P₁₂ = P₂₁ <span class="val" id="v12">0.00</span></label><input type="range" id="p12" min="-3" max="3" step="0.05" value="0"></div>
+          <div class="ctrl"><label>P₂₂ <span class="val" id="v22">1.00</span></label><input type="range" id="p22" min="-3" max="3" step="0.05" value="1"></div>
+          <p class="hint">\(f(x)=\tfrac12 x^{\mathsf T}Px\) with \(\nabla^2 f=P\). Drag the vermilion <b>direction</b> \(z\) on the circle to read the curvature \(z^{\mathsf T}Pz\) along it — \(P\succeq 0\) means this is \(\ge 0\) for <em>every</em> \(z\). Slide the entries: closed ellipses ⟹ definite; a hyperbolic cross ⟹ indefinite (neither convex nor concave). Try \(P_{11}=P_{22}=1,\ P_{12}=2\): every entry is positive, yet \(\lambda_{\min}=-1\) — <b>\(\succeq 0\) is not "entries \(\ge 0\)"</b>.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">remark 3.1 — the domain clause cannot be dropped</span></div>
+    <hr class="rule"/>
+    <p>It is tempting to read the theorem as "\(\nabla^2 f\succeq 0\) on \(\operatorname{dom}f\) ⟹ convex". It is not. B&amp;V's remark makes the point with one function:</p>
+    <div class="bv">\[ f(x)=\frac{1}{x^2},\qquad \operatorname{dom}f=\{x\in\mathbb{R}\mid x\ne 0\},\qquad f''(x)=\frac{6}{x^4}>0\ \ \text{for all }x\in\operatorname{dom}f. \] Yet \(f\) is <b>not convex</b> — because \(\operatorname{dom}f\) is not convex.<span class="src">B&amp;V §3.1.4 · Remark 3.1 · L3587–3591</span></div>
+    <p>The witness: take \(x=-1\) and \(y=1\), both in \(\operatorname{dom}f\). Their midpoint is \(0\), which is <em>not</em> in \(\operatorname{dom}f\) — the punctured line is not a convex set — so the defining inequality \(f(\theta x+(1-\theta)y)\le \theta f(x)+(1-\theta)f(y)\) cannot even be stated at \(\theta=1/2\), let alone hold. The curvature condition passes; the function still fails to be convex.</p>
+    <div class="note warn"><div class="ic">!</div><p><b>Second-order tests are local; convexity is global.</b> The Hessian only sees each point in isolation. What glues the local information into a global statement is convexity of the domain — it guarantees that the segment between any two points stays inside \(\operatorname{dom}f\). Delete that clause and the theorem is simply false. (Note \(1/x^2\) <em>is</em> convex on each branch \(x>0\) and \(x<0\) separately — each is an interval.)</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>1/x² — f″ &gt; 0 everywhere, still not convex</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i> graph of 1/x²</span>
+            <span><i style="border-color:var(--normal)"></i> chord x → y</span>
+            <span><i class="sw" style="background:rgba(192,57,43,.12);border:1px solid var(--outside)"></i> hole: x = 0 ∉ dom f</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>place the two points</h5>
+          <p class="hint">Drag <b>x</b> and <b>y</b> along the graph. Both always satisfy \(f''=6/x^4>0\) — the readout confirms it. Keep them on the <em>same</em> branch: the chord lies above the graph, all is well. Now straddle the origin: the chord crosses the vermilion <b>hole</b> at \(x=0\), where \(f\) is undefined. The segment \([x,y]\) leaves \(\operatorname{dom}f\), so convexity fails on a technicality that is not a technicality at all.</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 worked examples -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">worked examples</span></div>
+  <hr class="rule"/>
+
+  <div class="excard">
+    <div class="exh"><span>Example 1 — classify three 2×2 quadratics</span><span class="vt">eigenvalues of P</span></div>
+    <div class="exb">
+      <p>With \(f(x)=\tfrac12 x^{\mathsf T}Px\), so \(\nabla^2 f=P\), and \(\lambda_{1,2}=\tfrac12\big(\operatorname{tr}P\pm\sqrt{(\operatorname{tr}P)^2-4\det P}\big)\):</p>
+      <p>\[ P_a=\begin{bmatrix}2&amp;1\\1&amp;2\end{bmatrix}:\ \lambda=3,1>0\ \Rightarrow\ P_a\succ 0\ \Rightarrow\ f\ \text{strictly convex.} \]</p>
+      <p>\[ P_b=\begin{bmatrix}1&amp;1\\1&amp;1\end{bmatrix}:\ \lambda=2,0\ \Rightarrow\ P_b\succeq 0\ \text{but not}\ \succ 0\ \Rightarrow\ f\ \text{convex, not strictly} \] (it is flat along \(z=(1,-1)\): \(z^{\mathsf T}P_b z=0\)).</p>
+      <p>\[ P_c=\begin{bmatrix}1&amp;2\\2&amp;1\end{bmatrix}:\ \lambda=3,-1\ \Rightarrow\ \text{indefinite}\ \Rightarrow\ f\ \text{neither convex nor concave.} \]</p>
+      <p>Note \(P_c\) has <em>every entry positive</em> and still fails \(\succeq 0\): with \(z=(1,-1)\), \[ z^{\mathsf T}P_c z = 1 + 2(2)(1)(-1) + 1 = -2\ <\ 0. \] Read \(\succeq\) as an eigenvalue / quadratic-form statement, never entrywise.</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Example 2 — x⁴: strictly convex, yet f″(0) = 0</span><span class="vt">the converse fails</span></div>
+    <div class="exb">
+      <p>\(f(x)=x^4\) on \(\mathbb{R}\): \(f'(x)=4x^3\), \(f''(x)=12x^2\ge 0\), so \(f\) is convex by the second-order condition. It is in fact <em>strictly</em> convex (its chords lie strictly above, and \(f'\) is strictly increasing). But</p>
+      <p>\[ f''(0)=0\quad\Longrightarrow\quad \nabla^2 f\succ 0\ \text{fails at }x=0. \]</p>
+      <p>So "strictly convex ⟹ \(\nabla^2 f\succ 0\)" is <b>false</b>. Only the forward direction holds. Contrast the quadratic \(\tfrac12 x^{\mathsf T}Px\), where the Hessian is constant and strict convexity <em>is</em> equivalent to \(P\succ 0\) — the gap needs a Hessian that varies with \(x\) to open at all.</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Example 3 — the 1/x² domain remark, spelled out</span><span class="vt">x = −1, y = 1</span></div>
+    <div class="exb">
+      <p>\(f(x)=1/x^2\), \(\operatorname{dom}f=\{x\ne 0\}\). Compute: \(f'(x)=-2x^{-3}\), \(f''(x)=6x^{-4}=6/x^4>0\) on the whole domain. Second-order condition on the Hessian: <em>passes</em>.</p>
+      <p>Take \(x=-1,\ y=1,\ \theta=\tfrac12\). Then \(f(x)=f(y)=1\), so the right-hand side of the convexity inequality is \(1\). But the left-hand side is \(f(0)\), and \(0\notin\operatorname{dom}f\):</p>
+      <p>\[ \theta x+(1-\theta)y=0\notin\operatorname{dom}f\quad\Longrightarrow\quad \operatorname{dom}f\ \text{is not convex}\ \Longrightarrow\ f\ \text{is not convex.} \]</p>
+      <p>Restrict to \(\operatorname{dom}f=\{x>0\}\) (an interval) and the very same function <em>is</em> convex. The domain clause carries real weight.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>The test</p><p>\(f\) twice differentiable: convex \(\iff \nabla^2 f(x)\succeq 0\) for all \(x\) <em>and</em> \(\operatorname{dom}f\) convex. Scalar: \(f''\ge 0\). Concave: \(\nabla^2 f\preceq 0\).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>Strict is one-way</p><p>\(\nabla^2 f\succ 0\) everywhere \(\Longrightarrow\) strictly convex. Not conversely: \(x^4\) is strictly convex with \(f''(0)=0\).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>Quadratics</p><p>\(f=\tfrac12 x^{\mathsf T}Px+q^{\mathsf T}x+r\) has \(\nabla^2 f=P\) (constant): convex \(\iff P\succeq 0\), strictly convex \(\iff P\succ 0\). Here strictness <em>is</em> an equivalence.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>The domain clause is real</p><p>\(1/x^2\) on \(\{x\ne 0\}\) has \(f''>0\) everywhere and is still not convex — the punctured line is not a convex set.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D5</span>\(\succeq 0\) is not entrywise</p><p>It is the PSD-cone / eigenvalue condition \(z^{\mathsf T}\nabla^2 f\,z\ge 0\ \forall z\), not "all entries \(\ge 0\)". \(\begin{bmatrix}1&amp;2\\2&amp;1\end{bmatrix}\) is all-positive and indefinite.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-07-09 · bv.3.1.4</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>The condition</h6><p>\(f\) twice diff.: convex \(\iff \operatorname{dom}f\) convex and \(\nabla^2 f(x)\succeq 0\) for all \(x\). Scalar: \(f''\ge 0\). Concave: \(\preceq 0\).</p></div>
+      <div class="scard"><h6>Strictness</h6><p>\(\nabla^2 f\succ 0\) everywhere \(\Rightarrow\) strictly convex — but not conversely (\(x^4\): strictly convex, \(f''(0)=0\)).</p></div>
+      <div class="scard"><h6>Quadratics</h6><p>\(\tfrac12 x^{\mathsf T}Px+q^{\mathsf T}x+r\): \(\nabla^2 f=P\); convex \(\iff P\succeq 0\), strictly convex \(\iff P\succ 0\).</p></div>
+      <div class="scard"><h6>Domain</h6><p>Essential: \(1/x^2\) has \(f''>0\) on \(\{x\ne0\}\) but isn't convex — nonconvex domain.</p></div>
+      <div class="scard"><h6>Reading ⪰</h6><p>The PSD-cone (Löwner) order — eigenvalues \(\ge 0\) — not entrywise \(\ge 0\).</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §3.1.4 (p. 70–71) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawCurve(ctx,view,f,R,color,wd,x0,x1){
+  const a=(x0===undefined?-R+0.05:x0), b=(x1===undefined?R-0.05:x1);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let first=true;
+  for(let x=a;x<=b;x+=0.02){
+    const yv=clamp(f(x),-R+0.15,R-0.15);const p=view.toS(x,yv);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();
+}
+function drawLineWorld(ctx,view,x0,y0,slope,R,color,wd,dash){
+  const yAt=xx=>y0+slope*(xx-x0);
+  let pts=[];
+  const xs=[-R+0.05,R-0.05];
+  xs.forEach(xx=>{let yy=yAt(xx);if(yy>=-R&&yy<=R)pts.push([xx,yy]);});
+  const ys=[-R+0.05,R-0.05];
+  ys.forEach(yy=>{if(Math.abs(slope)>1e-9){let xx=x0+(yy-y0)/slope;if(xx>=-R&&xx<=R)pts.push([xx,yy]);}});
+  if(pts.length<2)return;
+  pts.sort((a,b)=>a[0]-b[0]);const A=pts[0],B=pts[pts.length-1];
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;const pa=view.toS(A[0],A[1]),pb=view.toS(B[0],B[1]);
+  ctx.beginPath();ctx.moveTo(pa[0],pa[1]);ctx.lineTo(pb[0],pb[1]);ctx.stroke();ctx.restore();
+}
+
+/* ===== LAB 1 — scalar curvature dial ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const FUN={
+    sq     :{f:x=>0.35*x*x-2.2, d:x=>0.70*x,        dd:x=>0.70,       name:"f(x)=x²",  cls:"convex"},
+    quartic:{f:x=>0.02*x*x*x*x-2.6, d:x=>0.08*x*x*x, dd:x=>0.24*x*x,  name:"f(x)=x⁴",  cls:"quartic"},
+    conc   :{f:x=>-0.35*x*x+2.2, d:x=>-0.70*x,      dd:x=>-0.70,      name:"f(x)=−x²", cls:"concave"},
+    cubic  :{f:x=>0.05*x*x*x,    d:x=>0.15*x*x,     dd:x=>0.30*x,     name:"f(x)=x³",  cls:"neither"}
+  };
+  let fn="sq", xT=-2.0;
+  const chips=document.getElementById("fn1").querySelectorAll(".chip"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  const F=x=>FUN[fn].f(x), D=x=>FUN[fn].d(x), DD=x=>FUN[fn].dd(x);
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    drawCurve(ctx,view,D,R,"#2B6CB0",2.0);          // derivative
+    drawCurve(ctx,view,F,R,"#17223B",2.7);          // f
+    drawLineWorld(ctx,view,xT,F(xT),D(xT),R,"#D7402B",2.4,null);
+    const pT=view.toS(xT,clamp(F(xT),-R+0.15,R-0.15));dot(ctx,pT[0],pT[1],7,"#D7402B",null);
+    label(ctx,"x",pT[0]-4,pT[1]+18,"#D7402B",13);
+    const pD=view.toS(xT,clamp(D(xT),-R+0.15,R-0.15));dot(ctx,pD[0],pD[1],5,"#fff","#2B6CB0");
+    const c=DD(xT);
+    ro.innerHTML=`<span class="k">${FUN[fn].name}</span><br>`+
+      `<span class="k">x</span>=<b>${xT.toFixed(2)}</b>, <span class="k">f′(x)</span>=<b>${D(xT).toFixed(3)}</b><br>`+
+      `<span class="k">f″(x)</span> = <b>${c.toFixed(3)}</b>`;
+    const cl=FUN[fn].cls;
+    if(cl==="convex"){vd.className="verdict in";vd.textContent="✓ f″ > 0 everywhere — strictly convex";}
+    else if(cl==="concave"){vd.className="verdict out";vd.textContent="f″ < 0 everywhere — concave (∇²f ⪯ 0)";}
+    else if(cl==="quartic"){
+      if(Math.abs(xT)<0.25){vd.className="verdict mid";vd.textContent="f″(0)=0 — yet x⁴ IS strictly convex";}
+      else{vd.className="verdict in";vd.textContent="✓ f″ = 12x² ≥ 0 — convex (and strictly so)";}
+    } else {
+      if(c<0){vd.className="verdict out";vd.textContent="✗ f″ < 0 here — x³ is not convex on R";}
+      else{vd.className="verdict mid";vd.textContent="f″ ≥ 0 here, but < 0 for x < 0 — not convex";}
+    }
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const pT=view.toS(xT,clamp(F(xT),-R+0.15,R-0.15));
+    if(Math.hypot(p[0]-pT[0],p[1]-pT[1])<46){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){const pT=view.toS(xT,clamp(F(xT),-R+0.15,R-0.15));
+      canvas.style.cursor=Math.hypot(p[0]-pT[0],p[1]-pT[1])<46?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);xT=clamp(wv[0],-4.4,4.4);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  chips.forEach(c=>c.addEventListener("click",()=>{fn=c.dataset.f;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — classify a quadratic by P ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const s11=document.getElementById("p11"),s12=document.getElementById("p12"),s22=document.getElementById("p22"),
+        v11=document.getElementById("v11"),v12=document.getElementById("v12"),v22=document.getElementById("v22"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  let P=[2,0,1];        // p11, p12, p22
+  let th=0.6;           // direction angle of z
+  const LIM=4.4;        // sampling half-width — everything drawn stays inside the grid
+  function q(x,y){return 0.5*(P[0]*x*x+2*P[1]*x*y+P[2]*y*y);}
+  function eig(){
+    const tr=P[0]+P[2], det=P[0]*P[2]-P[1]*P[1];
+    const disc=Math.sqrt(Math.max(0,tr*tr-4*det));
+    return [(tr+disc)/2,(tr-disc)/2];
+  }
+  // marching squares on [-LIM,LIM]^2 for one level
+  function contour(level,color,wd){
+    const N=90, hstep=2*LIM/N;
+    ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();
+    for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+      const x0=-LIM+i*hstep, y0=-LIM+j*hstep, x1=x0+hstep, y1=y0+hstep;
+      const v=[q(x0,y0)-level,q(x1,y0)-level,q(x1,y1)-level,q(x0,y1)-level];
+      const c=[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+      let pts=[];
+      for(let e=0;e<4;e++){
+        const a=e,b=(e+1)%4;
+        if((v[a]<0)!==(v[b]<0)){
+          const t=v[a]/(v[a]-v[b]);
+          pts.push([c[a][0]+t*(c[b][0]-c[a][0]), c[a][1]+t*(c[b][1]-c[a][1])]);
+        }
+      }
+      if(pts.length>=2){
+        for(let k=0;k+1<pts.length;k+=2){
+          const A=view.toS(pts[k][0],pts[k][1]), B=view.toS(pts[k+1][0],pts[k+1][1]);
+          ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);
+        }
+      }
+    }
+    ctx.stroke();
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    [0.5,1.5,3,5].forEach(c=>contour(c,"#2B6CB0",1.6));
+    [-0.5,-1.5,-3,-5].forEach(c=>contour(c,"#C0392B",1.6));
+    contour(0,"#8A91A3",1.2);
+    // unit-ish direction circle (radius 3), inside the frame
+    const RR=3.0;
+    ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1;ctx.beginPath();
+    for(let a=0;a<=Math.PI*2+0.01;a+=0.05){const p=view.toS(RR*Math.cos(a),RR*Math.sin(a));
+      if(a===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);}
+    ctx.stroke();
+    const ux=Math.cos(th), uy=Math.sin(th);
+    const zq=P[0]*ux*ux+2*P[1]*ux*uy+P[2]*uy*uy;   // zᵀPz for unit z
+    const o=view.toS(0,0), pz=view.toS(RR*ux,RR*uy);
+    arrow(ctx,o[0],o[1],pz[0],pz[1],"#D7402B",2.6);
+    dot(ctx,pz[0],pz[1],7,"#D7402B",null);
+    label(ctx,"z",pz[0]+10,pz[1]-8,"#D7402B",13);
+    const ev=eig(), lmin=Math.min(ev[0],ev[1]), lmax=Math.max(ev[0],ev[1]);
+    v11.textContent=P[0].toFixed(2);v12.textContent=P[1].toFixed(2);v22.textContent=P[2].toFixed(2);
+    ro.innerHTML=`<span class="k">P</span> = <b>[${P[0].toFixed(2)} ${P[1].toFixed(2)}; ${P[1].toFixed(2)} ${P[2].toFixed(2)}]</b><br>`+
+      `<span class="k">tr P</span>=<b>${(P[0]+P[2]).toFixed(2)}</b>, <span class="k">det P</span>=<b>${(P[0]*P[2]-P[1]*P[1]).toFixed(2)}</b><br>`+
+      `<span class="k">λ</span> = <b>${lmax.toFixed(3)}</b>, <b>${lmin.toFixed(3)}</b><br>`+
+      `<span class="k">zᵀPz</span> (‖z‖=1) = <b>${zq.toFixed(3)}</b>`;
+    const eps=1e-6;
+    if(lmin>eps){vd.className="verdict in";vd.textContent="P ≻ 0 — f strictly convex";}
+    else if(lmin>=-eps&&lmax>eps){vd.className="verdict in";vd.textContent="P ⪰ 0 (singular) — convex, not strictly";}
+    else if(lmax<-eps){vd.className="verdict out";vd.textContent="P ≺ 0 — f strictly concave";}
+    else if(lmax<=eps&&lmin<-eps){vd.className="verdict out";vd.textContent="P ⪯ 0 (singular) — concave, not strictly";}
+    else if(Math.abs(lmax)<=eps&&Math.abs(lmin)<=eps){vd.className="verdict mid";vd.textContent="P = 0 — f affine: convex AND concave";}
+    else{vd.className="verdict out";vd.textContent="✗ indefinite (λ has both signs) — neither convex nor concave";}
+  }
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  let act=false;
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const pz=view.toS(3.0*Math.cos(th),3.0*Math.sin(th));
+    if(Math.hypot(p[0]-pz[0],p[1]-pz[1])<46){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){const pz=view.toS(3.0*Math.cos(th),3.0*Math.sin(th));
+      canvas.style.cursor=Math.hypot(p[0]-pz[0],p[1]-pz[1])<46?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);if(Math.hypot(wv[0],wv[1])>1e-3)th=Math.atan2(wv[1],wv[0]);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  [[s11,0],[s12,1],[s22,2]].forEach(([sl,k])=>sl.addEventListener("input",()=>{P[k]=parseFloat(sl.value);draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — 1/x^2 and the nonconvex domain ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const f=x=>1/(x*x), dd=x=>6/Math.pow(x,4);
+  let xA=-2.0, yA=2.4;
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    // the hole at x = 0 : a vermilion band on the vertical axis (kept inside the frame)
+    const hx=view.toS(0,0)[0], top=view.toS(0,4.7)[1], bot=view.toS(0,-4.7)[1];
+    ctx.fillStyle="rgba(192,57,43,0.10)";ctx.fillRect(hx-6,top,12,bot-top);
+    ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle="#C0392B";ctx.lineWidth=1.6;
+    ctx.beginPath();ctx.moveTo(hx,top);ctx.lineTo(hx,bot);ctx.stroke();ctx.restore();
+    label(ctx,"x = 0 ∉ dom f",hx+10,top+16,"#C0392B",12);
+    // branches of 1/x^2 (never touching x = 0)
+    drawCurve(ctx,view,f,R,"#17223B",2.7,-4.8,-0.44);
+    drawCurve(ctx,view,f,R,"#17223B",2.7,0.44,4.8);
+    // chord from (xA,f(xA)) to (yA,f(yA))
+    const straddle = (xA<0)!==(yA<0);
+    const pA=view.toS(xA,clamp(f(xA),-R+0.15,R-0.15)), pB=view.toS(yA,clamp(f(yA),-R+0.15,R-0.15));
+    ctx.strokeStyle=straddle?"#C0392B":"#D7402B";ctx.lineWidth=2.6;
+    ctx.beginPath();ctx.moveTo(pA[0],pA[1]);ctx.lineTo(pB[0],pB[1]);ctx.stroke();
+    dot(ctx,pA[0],pA[1],7,"#D7402B",null);label(ctx,"x",pA[0]-4,pA[1]+18,"#D7402B",13);
+    dot(ctx,pB[0],pB[1],7,"#D7402B",null);label(ctx,"y",pB[0]-4,pB[1]+18,"#D7402B",13);
+    // midpoint marker
+    const mx=0.5*(xA+yA), mfx=0.5*(f(xA)+f(yA));
+    const pm=view.toS(clamp(mx,-4.8,4.8),clamp(mfx,-R+0.15,R-0.15));
+    dot(ctx,pm[0],pm[1],5,"#fff",straddle?"#C0392B":"#2F855A");
+    ro.innerHTML=`<span class="k">x</span>=<b>${xA.toFixed(2)}</b>, <span class="k">f″(x)=6/x⁴</span>=<b>${dd(xA).toFixed(3)}</b><br>`+
+      `<span class="k">y</span>=<b>${yA.toFixed(2)}</b>, <span class="k">f″(y)=6/y⁴</span>=<b>${dd(yA).toFixed(3)}</b><br>`+
+      `<span class="k">midpoint (x+y)/2</span> = <b>${mx.toFixed(2)}</b><br>`+
+      `<span class="k">in dom f?</span> <b>${Math.abs(mx)<1e-9?"NO — it is 0":(straddle?"in the segment, but 0 ∈ [x,y]":"yes")}</b>`;
+    if(straddle){vd.className="verdict out";vd.textContent="✗ segment [x,y] crosses 0 ∉ dom f — dom f not convex ⟹ f not convex";}
+    else{vd.className="verdict in";vd.textContent="✓ same branch (an interval): here f″>0 does give convexity";}
+  }
+  let act=null;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function handles(){return [
+    {id:"x",p:view.toS(xA,clamp(f(xA),-R+0.15,R-0.15))},
+    {id:"y",p:view.toS(yA,clamp(f(yA),-R+0.15,R-0.15))}];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);let best=null,bd=1e9;
+    handles().forEach(hh=>{const d=Math.hypot(p[0]-hh.p[0],p[1]-hh.p[1]);if(d<bd){bd=d;best=hh.id;}});
+    if(bd<44){act=best;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){let near=false;handles().forEach(hh=>{if(Math.hypot(p[0]-hh.p[0],p[1]-hh.p[1])<44)near=true;});
+      canvas.style.cursor=near?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);let x=clamp(wv[0],-4.6,4.6);
+    if(Math.abs(x)<0.45)x=(x<0?-0.45:0.45);       // never step onto the hole
+    if(act==="x")xA=x;else yA=x;draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=null);canvas.addEventListener("pointercancel",()=>act=null);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
