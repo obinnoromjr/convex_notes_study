@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.1.5 — Examples: the convex-function catalogue</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:620px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+.reads .tag.alt{background:var(--halfspace)} .reads .tag.acc{background:var(--normal)}
+
+.cat{margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+table.cat-tbl{width:100%;border-collapse:collapse;font-size:16px}
+table.cat-tbl th{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;text-align:left;padding:11px 16px;background:var(--paper-2);border-bottom:1px solid var(--rule)}
+table.cat-tbl td{padding:11px 16px;border-bottom:1px solid var(--paper-2);vertical-align:top}
+table.cat-tbl tr:last-child td{border-bottom:none}
+table.cat-tbl td.fn{font-family:"Fraunces";width:34%}
+table.cat-tbl td.dm{font-size:15px;color:var(--ink-soft);width:26%}
+table.cat-tbl .cx{color:var(--normal);font-weight:600}
+table.cat-tbl .cc{color:var(--halfspace);font-weight:600}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF6EC;border-color:#EAD9B4}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.proof-head .target{color:var(--normal);text-align:right}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+  table.cat-tbl td.fn,table.cat-tbl td.dm{width:auto}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.1.5</div>
+    <h1>Examples —<br><em>the catalogue</em></h1>
+    <p class="sub">The standard convex and concave functions to recognize on sight. Each earns its label by one of three verifications: the <em>defining inequality</em> (3.1) directly, a <em>positive/negative semidefinite Hessian</em>, or <em>restriction to a line</em>. Know the entries cold; reproduce log-sum-exp and log-det.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> convex on sight</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> concave on sight</span>
+      <span><span class="dot" style="background:var(--inside)"></span> (3.1) · Hessian · line</span>
+      <span>p.&nbsp;71–74 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 236" role="img" aria-label="A catalogue motif: a convex exponential curve, a concave logarithm curve, and a smooth-max curve hugging a kinked maximum.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="236" fill="url(#dots)"/>
+        <!-- convex: the vermilion through-line -->
+        <text x="130" y="34" text-anchor="middle" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">eᵃˣ · convex</text>
+        <path d="M60,188 C120,184 168,150 205,58" fill="none" stroke="#D7402B" stroke-width="3"/>
+        <!-- concave: log -->
+        <text x="360" y="34" text-anchor="middle" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">log x · concave</text>
+        <path d="M262,190 C300,96 356,74 462,70" fill="none" stroke="#2B6CB0" stroke-width="3"/>
+        <!-- smooth max -->
+        <text x="552" y="34" text-anchor="middle" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">lse ≈ max</text>
+        <path d="M498,158 L540,158 L598,64" fill="none" stroke="#8A91A3" stroke-width="2" stroke-dasharray="5 5"/>
+        <path d="M498,150 Q542,140 598,56" fill="none" stroke="#17223B" stroke-width="3"/>
+        <!-- baseline rule -->
+        <line x1="42" y1="206" x2="598" y2="206" stroke="#D9D3C6" stroke-width="1"/>
+        <text x="320" y="222" text-anchor="middle" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">recognize the function · verify by (3.1), Hessian, or line restriction</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§3.1.1–3.1.4 gave the definition of convexity and the first- and second-order tests. §3.1.5 is the <strong>catalogue</strong>: the standard convex and concave functions worth recognizing instantly, each verified by one of three methods — the defining inequality (3.1) applied directly, the Hessian condition \(\nabla^2 f\succeq 0\) / \(\preceq 0\), or restriction of \(f\) to a line. The work here is memory plus a few reproducible proofs — above all <strong>log-sum-exp</strong> and <strong>log-det</strong>.</p>
+</section>
+
+<!-- 1 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">functions on ℝ</span></div>
+    <hr class="rule"/>
+    <p>The one-variable catalogue. In each case the classification is read straight off the sign of \(f''\).</p>
+    <div class="cat">
+      <table class="cat-tbl">
+        <thead><tr><th>function</th><th>domain</th><th>convex / concave</th></tr></thead>
+        <tbody>
+          <tr><td class="fn">\(e^{ax}\) &nbsp;(any \(a\))</td><td class="dm">\(\mathbb{R}\)</td><td><span class="cx">convex</span> — \(f''=a^2e^{ax}\ge 0\)</td></tr>
+          <tr><td class="fn">\(x^{a}\)</td><td class="dm">\(\mathbb{R}_{++}\)</td><td><span class="cx">convex</span> if \(a\ge 1\) or \(a\le 0\); &nbsp;<span class="cc">concave</span> if \(0\le a\le 1\)</td></tr>
+          <tr><td class="fn">\(|x|^{p}\) &nbsp;(\(p\ge 1\))</td><td class="dm">\(\mathbb{R}\)</td><td><span class="cx">convex</span></td></tr>
+          <tr><td class="fn">\(\log x\)</td><td class="dm">\(\mathbb{R}_{++}\)</td><td><span class="cc">concave</span> — \(f''=-1/x^2\)</td></tr>
+          <tr><td class="fn">\(x\log x\) &nbsp;(neg. entropy)</td><td class="dm">\(\mathbb{R}_{++}\) (or \(\mathbb{R}_{+}\), \(0\log 0=0\))</td><td><span class="cx">convex</span> — \(f'=\log x+1,\ f''=1/x>0\)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note key"><div class="ic">!</div><p><b>The power rule is one computation.</b> For \(f(x)=x^a\) on \(\mathbb{R}_{++}\), \(f''(x)=a(a-1)\,x^{a-2}\), and \(x^{a-2}>0\), so the sign of \(f''\) is exactly the sign of \(a(a-1)\): positive when \(a\ge 1\) or \(a\le 0\) (<span class="cx">convex</span>), negative when \(0\le a\le 1\) (<span class="cc">concave</span>). At \(a=0\) and \(a=1\) the function is affine — both.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The ℝ catalogue — read f″ and classify</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--normal)"></i> graph of f</span>
+            <span><i style="border-color:var(--halfspace)"></i> tangent at x</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>choose f</h5>
+          <div class="chips" id="fn1">
+            <span class="chip on" data-f="pow">xᵃ</span>
+            <span class="chip" data-f="exp">e^{ax}</span>
+            <span class="chip" data-f="log">log x</span>
+            <span class="chip" data-f="xlogx">x log x</span>
+          </div>
+          <div class="ctrl"><label>exponent / rate a &nbsp;<span class="mono" style="color:var(--ink-faint)">(xᵃ, e^{ax})</span> <span class="val" id="av">0.50</span></label><input type="range" id="a1" min="-2" max="3" step="0.05" value="0.5"></div>
+          <p class="hint">Drag <b>x</b> along the curve; the blue line is the tangent. The readout gives \(f''(x)\) — convexity \(\iff f''\ge 0\) everywhere. Slide <b>a</b> on \(x^a\): watch the verdict flip at \(a=0\) and \(a=1\), since \(f''=a(a-1)x^{a-2}\). Try \(a=\tfrac12\) (\(\sqrt{x}\), concave), \(a=-1\) (\(1/x\), convex), \(a=2\) (\(x^2\), convex). The domain-restricted functions live on \(x>0\) only.</p>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">functions on ℝⁿ</span></div>
+    <hr class="rule"/>
+    <div class="cat">
+      <table class="cat-tbl">
+        <thead><tr><th>function</th><th>domain</th><th>convex / concave</th></tr></thead>
+        <tbody>
+          <tr><td class="fn">any norm \(\lVert x\rVert\)</td><td class="dm">\(\mathbb{R}^n\)</td><td><span class="cx">convex</span></td></tr>
+          <tr><td class="fn">\(\max\{x_1,\dots,x_n\}\)</td><td class="dm">\(\mathbb{R}^n\)</td><td><span class="cx">convex</span></td></tr>
+          <tr><td class="fn">quad-over-linear \(x^2/y\)</td><td class="dm">\(\mathbb{R}\times\mathbb{R}_{++}\)</td><td><span class="cx">convex</span></td></tr>
+          <tr><td class="fn">log-sum-exp \(\log\sum_i e^{x_i}\)</td><td class="dm">\(\mathbb{R}^n\)</td><td><span class="cx">convex</span></td></tr>
+          <tr><td class="fn">geometric mean \(\big(\prod_i x_i\big)^{1/n}\)</td><td class="dm">\(\mathbb{R}^n_{++}\)</td><td><span class="cc">concave</span></td></tr>
+          <tr><td class="fn">log-determinant \(\log\det X\)</td><td class="dm">\(\mathbf{S}^n_{++}\)</td><td><span class="cc">concave</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Log-sum-exp is a smooth maximum</h3>
+    <p>The name to keep: log-sum-exp is a differentiable approximation of \(\max\), sandwiched within \(\log n\) of it:</p>
+    <div class="bv">\[ \max\{x_1,\dots,x_n\}\ \le\ \log\!\Big(\textstyle\sum_{i} e^{x_i}\Big)\ \le\ \max\{x_1,\dots,x_n\}+\log n. \]<span class="src">B&amp;V §3.1.5 · L3639–3682</span></div>
+    <ul class="reads">
+      <li><span class="tag acc">lower</span><div>The sum is at least its largest term: \(\sum_i e^{x_i}\ge e^{\max_i x_i}\), so \(\log\sum_i e^{x_i}\ge \max_i x_i\).</div></li>
+      <li><span class="tag">upper</span><div>The sum is at most \(n\) copies of the largest: \(\sum_i e^{x_i}\le n\,e^{\max_i x_i}\), so \(\log\sum_i e^{x_i}\le \max_i x_i+\log n\). The right bound is <b>tight exactly when all \(x_i\) are equal</b>.</div></li>
+      <li><span class="tag alt">three methods</span><div>Everything in the catalogue is verified one of three ways: apply <b>(3.1)</b> directly (norms, max), show the <b>Hessian</b> is PSD / NSD (\(x^2/y\), lse, geometric mean), or <b>restrict to a line</b> (log-det).</div></li>
+    </ul>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Log-sum-exp — the smooth max, trapped within log n</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--normal)"></i> lse(x₁, x₂)</span>
+            <span><i style="border-color:var(--ink)"></i> max(x₁, x₂)</span>
+            <span><i style="border-color:var(--ink-faint)"></i> max + log 2 (ceiling)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>the second coordinate</h5>
+          <div class="ctrl"><label>x₂ <span class="val" id="x2v">0.00</span></label><input type="range" id="x2" min="-4" max="4" step="0.05" value="0"></div>
+          <p class="hint">Curves are drawn as functions of \(x_1\) with \(x_2\) fixed. The ink line is the <b>kinked</b> \(\max(x_1,x_2)\); the vermilion curve is <b>lse</b>, rounding the corner. It never dips below the max and never rises above the faint \(\max+\log 2\) ceiling \((n=2)\). Drag the vertical cursor to read all three; the gap is largest at the kink \(x_1=x_2\), where it equals \(\log 2\approx 0.693\), and shrinks to \(0\) as the coordinates separate.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">direct (3.1) proofs — norms &amp; max</span></div>
+  <hr class="rule"/>
+  <p>Two catalogue entries need no calculus at all: the defining inequality (3.1) falls out of their algebra.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Every norm is convex</span><span class="target">triangle inequality + homogeneity</span></div>
+    <div class="step crux"><div class="math">\[ f\big(\theta x+(1-\theta)y\big)\ \le\ f(\theta x)+f\big((1-\theta)y\big) \]</div><div class="why"><b>triangle inequality</b> of the norm applied to the two pieces</div></div>
+    <div class="step"><div class="math">\[ =\ \theta\,f(x)+(1-\theta)\,f(y) \]</div><div class="why">absolute <b>homogeneity</b>: \(f(\theta x)=\theta f(x)\) since \(\theta\ge 0\). This is exactly (3.1) — no differentiability used.</div></div>
+  </div>
+
+  <div class="proof">
+    <div class="proof-head"><span>The max is convex</span><span class="target">max of a sum ≤ sum of maxes</span></div>
+    <div class="step crux"><div class="math">\[ f\big(\theta x+(1-\theta)y\big)=\max_i\big(\theta x_i+(1-\theta)y_i\big) \]</div><div class="why">definition of \(f=\max_i(\cdot)_i\) on the convex combination</div></div>
+    <div class="step"><div class="math">\[ \le\ \theta\max_i x_i+(1-\theta)\max_i y_i=\theta f(x)+(1-\theta)f(y) \]</div><div class="why"><b>max of a sum</b> \(\le\) sum of maxes, and \(\theta,1-\theta\ge 0\). Again (3.1) directly.</div></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">hessian proofs — quad-over-linear &amp; log-sum-exp</span></div>
+  <hr class="rule"/>
+  <p>These two are verified by exhibiting the Hessian as a positive semidefinite form. Log-sum-exp is the one to be able to reproduce.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>\(x^2/y\) is convex on \(\mathbb{R}\times\mathbb{R}_{++}\)</span><span class="target">rank-one PSD Hessian</span></div>
+    <div class="step crux"><div class="math">\[ \nabla^2 f(x,y)=\frac{2}{y^3}\begin{bmatrix} y \\ -x\end{bmatrix}\begin{bmatrix} y & -x\end{bmatrix}=\frac{2}{y^3}\begin{bmatrix} y^2 & -xy\\ -xy & x^2\end{bmatrix} \]</div><div class="why"><b>outer product</b> of a vector with itself, scaled by \(2/y^3>0\)</div></div>
+    <div class="step"><div class="math">\[ \Rightarrow\ \nabla^2 f\ \succeq\ 0 \]</div><div class="why">any \(c\,vv^{\mathsf T}\) with \(c>0\) is PSD (its one nonzero eigenvalue is positive). Convex.</div></div>
+  </div>
+
+  <div class="proof">
+    <div class="proof-head"><span>Log-sum-exp is convex</span><span class="target">Cauchy–Schwarz on the Hessian form</span></div>
+    <div class="step"><div class="math">\[ z=(e^{x_1},\dots,e^{x_n}),\quad \nabla^2 f=\frac{1}{(\mathbf 1^{\mathsf T}z)^2}\Big[(\mathbf 1^{\mathsf T}z)\,\mathrm{diag}(z)-zz^{\mathsf T}\Big] \]</div><div class="why">differentiate \(f=\log\sum_i e^{x_i}\) twice; \(\mathbf 1^{\mathsf T}z=\sum_i z_i\)</div></div>
+    <div class="step crux"><div class="math">\[ v^{\mathsf T}\nabla^2 f\,v=\frac{\big(\sum_i z_i\big)\big(\sum_i v_i^2 z_i\big)-\big(\sum_i v_i z_i\big)^2}{(\mathbf 1^{\mathsf T}z)^2}\ \ge\ 0 \]</div><div class="why"><b>Cauchy–Schwarz</b> with \(a_i=v_i\sqrt{z_i},\ b_i=\sqrt{z_i}\): \((\sum a_i^2)(\sum b_i^2)\ge(\sum a_ib_i)^2\). Hence \(\succeq 0\), convex.</div></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">parallel proofs — geometric mean &amp; log-det</span></div>
+    <hr class="rule"/>
+    <p>The two concave headliners. The geometric mean is the sign-flipped twin of log-sum-exp — <em>same</em> Cauchy–Schwarz, opposite conclusion. Log-det is proved by restricting to a line.</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>Geometric mean is concave on \(\mathbb{R}^n_{++}\)</span><span class="target">Cauchy–Schwarz — the ⪯ 0 twin</span></div>
+      <div class="step"><div class="math">\[ \nabla^2 f=-\frac{(\prod_i x_i)^{1/n}}{n^2}\Big[\,n\,\mathrm{diag}(1/x_i^2)-qq^{\mathsf T}\Big],\quad q_i=1/x_i \]</div><div class="why">same shape as lse, with an overall minus sign</div></div>
+      <div class="step crux"><div class="math">\[ v^{\mathsf T}\nabla^2 f\,v\ \le\ 0\quad\text{since}\quad n\sum_i \frac{v_i^2}{x_i^2}\ \ge\ \Big(\sum_i \frac{v_i}{x_i}\Big)^2 \]</div><div class="why"><b>Cauchy–Schwarz</b> with \(a=\mathbf 1,\ b_i=v_i/x_i\). The bracket is \(\succeq 0\), so \(\nabla^2 f\preceq 0\). Concave.</div></div>
+    </div>
+
+    <div class="proof">
+      <div class="proof-head"><span>Log-det is concave on \(\mathbf{S}^n_{++}\)</span><span class="target">restrict to a line</span></div>
+      <div class="step"><div class="math">\[ X=Z+tV,\quad Z\succ 0,\qquad g(t)=\log\det(Z+tV) \]</div><div class="why">take an arbitrary line through \(Z\succ 0\) in direction \(V\in\mathbf S^n\)</div></div>
+      <div class="step"><div class="math">\[ g(t)=\log\det Z+\sum_{i=1}^n \log(1+t\lambda_i),\quad \lambda_i=\text{eig}\big(Z^{-1/2}VZ^{-1/2}\big) \]</div><div class="why">factor \(Z^{1/2}(I+tZ^{-1/2}VZ^{-1/2})Z^{1/2}\); \(\det\) splits, and \(\det(I+tM)=\prod(1+t\lambda_i)\)</div></div>
+      <div class="step crux"><div class="math">\[ g''(t)=-\sum_{i=1}^n \frac{\lambda_i^2}{(1+t\lambda_i)^2}\ \le\ 0 \]</div><div class="why">each term is a negative square. So \(g\) is concave on every line — hence \(\log\det X\) is <b>concave</b>.</div></div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Log-det along a line — g(t) = Σ log(1 + tλᵢ)</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--normal)"></i> g(t) = Σ log(1+tλᵢ)</span>
+            <span><i style="border-color:var(--halfspace)"></i> tangent at t</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>eigenvalues of Z^{-1/2}VZ^{-1/2}</h5>
+          <div class="ctrl"><label>λ₁ <span class="val" id="l1v">1.00</span></label><input type="range" id="l1" min="-3" max="3" step="0.05" value="1"></div>
+          <div class="ctrl"><label>λ₂ <span class="val" id="l2v">-1.00</span></label><input type="range" id="l2" min="-3" max="3" step="0.05" value="-1"></div>
+          <p class="hint">This is \(\log\det X\) restricted to the line \(X=Z+tV\), reduced to the eigenvalues \(\lambda_i\). Drag <b>t</b> along the curve: the blue <b>tangent always lies above</b> the graph — the signature of concavity — because \(g''(t)=-\sum_i \lambda_i^2/(1+t\lambda_i)^2\le 0\). The default \(\lambda=(1,-1)\) is the worked example \(Z=I,\ V=\mathrm{diag}(1,-1)\): then \(g(t)=\log(1-t^2)\), defined on \(-1<t<1\).</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 worked examples -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">worked examples</span></div>
+  <hr class="rule"/>
+
+  <div class="excard">
+    <div class="exh"><span>Example 1 — powers \(x^a\) for \(a=2,\tfrac12,-1,1\)</span><span class="vt">sign of a(a−1)</span></div>
+    <div class="exb">
+      <p>On \(\mathbb{R}_{++}\), \(f''(x)=a(a-1)x^{a-2}\) with \(x^{a-2}>0\), so classification is the sign of \(a(a-1)\):</p>
+      <p>\[ a=2:\ a(a-1)=2>0\ \Rightarrow\ \textbf{convex}\ (x^2). \qquad a=\tfrac12:\ a(a-1)=-\tfrac14<0\ \Rightarrow\ \textbf{concave}\ (\sqrt{x}). \]</p>
+      <p>\[ a=-1:\ a(a-1)=2>0\ \Rightarrow\ \textbf{convex}\ (1/x\ \text{on }x>0). \qquad a=1:\ a(a-1)=0\ \Rightarrow\ f''=0,\ \text{affine (both).} \]</p>
+      <p>The two boundaries \(a=0\) and \(a=1\) are precisely where curvature vanishes; between them (\(0\le a\le 1\)) the function is concave, outside them (\(a\ge 1\) or \(a\le 0\)) convex.</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Example 2 — log-sum-exp with \(n=2\)</span><span class="vt">max ≤ lse ≤ max + log 2</span></div>
+    <div class="exb">
+      <p>Take \(x=(1,2)\). Then \(\max=2\), and</p>
+      <p>\[ \mathrm{lse}(1,2)=\log(e^{1}+e^{2})=\log(2.71828+7.38906)=\log(10.1073)\approx 2.3133. \]</p>
+      <p>Check the sandwich with \(\log 2\approx 0.6931\): \[ 2\ \le\ 2.3133\ \le\ 2+0.6931=2.6931.\ \checkmark \]</p>
+      <p>The equal case \(x=(0,0)\) makes the upper bound <em>tight</em>: \(\mathrm{lse}(0,0)=\log(1+1)=\log 2\), while \(\max=0\), so \(\mathrm{lse}=\max+\log 2\) exactly. As the coordinates spread apart, the gap collapses toward the lower bound.</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Example 3 — the \(x^2/y\) Hessian at \((1,2)\)</span><span class="vt">rank-one, ⪰ 0</span></div>
+    <div class="exb">
+      <p>With \(\nabla^2 f=\dfrac{2}{y^3}\begin{bmatrix} y^2 & -xy\\ -xy & x^2\end{bmatrix}\), evaluate at \(x=1,\ y=2\) (so \(2/y^3=\tfrac14\)):</p>
+      <p>\[ \nabla^2 f(1,2)=\tfrac14\begin{bmatrix} 4 & -2\\ -2 & 1\end{bmatrix}=\begin{bmatrix} 1 & -0.5\\ -0.5 & 0.25\end{bmatrix}. \]</p>
+      <p>\(\det=1(0.25)-(-0.5)^2=0\) and \(\operatorname{tr}=1.25\), so the eigenvalues are \(\{1.25,\ 0\}\): positive semidefinite, singular (rank one). It is flat along \((x,y)=(1,2)\) — indeed \((y,-x)\cdot(x,y)=yx-xy=0\) — and positively curved in every other direction. Convex, not strictly.</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Example 4 — log-det on the line \(Z=I,\ V=\mathrm{diag}(1,-1)\)</span><span class="vt">g(t) = log(1−t²)</span></div>
+    <div class="exb">
+      <p>Since \(Z=I\), \(Z^{-1/2}VZ^{-1/2}=V=\mathrm{diag}(1,-1)\), so \(\lambda=(1,-1)\) and</p>
+      <p>\[ g(t)=\log\det(I+tV)=\log\big((1+t)(1-t)\big)=\log(1-t^2),\qquad -1<t<1. \]</p>
+      <p>\[ g''(t)=-\Big[\frac{1}{(1+t)^2}+\frac{1}{(1-t)^2}\Big]<0, \]</p>
+      <p>matching \(g''=-\sum_i \lambda_i^2/(1+t\lambda_i)^2\). At \(t=0\), \(g''(0)=-2\). The curve is concave and dives to \(-\infty\) as \(t\to\pm 1\), where \(X=I+tV\) hits the boundary of \(\mathbf S^2_{++}\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>Know the catalogue cold</p><p>Convex: norms, \(\max\), \(x^2/y\), log-sum-exp, \(x\log x\), \(|x|^p\ (p\ge1)\), \(e^{ax}\). Concave: \(\log x\), geometric mean, \(\log\det X\). And \(x^a\): convex for \(a\ge1\) or \(a\le0\), concave for \(0\le a\le1\).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>Cauchy–Schwarz is the engine</p><p>It powers both \(\log\sum e^{x_i}\) (\(\succeq 0\)) and the geometric mean (\(\preceq 0\)) — the <em>same</em> inequality, read with opposite sign.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>Log-sum-exp = smooth max</p><p>\(\max\{x_i\}\le \log\sum_i e^{x_i}\le \max\{x_i\}+\log n\). The upper bound is tight when all \(x_i\) are equal.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>Log-det via eigenvalues on a line</p><p>Restrict to \(Z+tV\); with \(\lambda_i=\text{eig}(Z^{-1/2}VZ^{-1/2})\), \(g''(t)=-\sum_i \lambda_i^2/(1+t\lambda_i)^2\le 0\). Concave.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D5</span>Domains matter</p><p>The strictly-positive orthant for \(x^a,\ \log x,\ \text{geo mean}\); \(y>0\) for \(x^2/y\); \(X\succ 0\) for \(\log\det\). Drop the domain and the classification can fail.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D6</span>Which method, and why</p><p>(3.1) directly for norms and \(\max\); Hessian + Cauchy–Schwarz for \(x^2/y\), lse, geometric mean; line restriction for \(\log\det\).</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-07-13 · bv.3.1.5 · Examples (B&amp;V §3.1.5)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>On ℝ</h6><p>\(e^{ax}\) convex; \(x^a\) convex (\(a\ge1\) or \(a\le0\)) / concave (\(0\le a\le1\)); \(|x|^p\ (p\ge1)\) convex; \(\log x\) concave; \(x\log x\) convex.</p></div>
+      <div class="scard"><h6>On ℝⁿ</h6><p>Norms, \(\max\), \(x^2/y\), log-sum-exp convex; geometric mean and \(\log\det X\) concave.</p></div>
+      <div class="scard"><h6>lse ≈ max</h6><p>\(\max\{x_i\}\le \log\sum_i e^{x_i}\le \max\{x_i\}+\log n\).</p></div>
+      <div class="scard"><h6>Proof methods</h6><p>(3.1) direct (norms, max); Hessian + Cauchy–Schwarz (\(x^2/y\), lse, geo mean); line restriction (log-det).</p></div>
+      <div class="scard"><h6>Watch domains</h6><p>\(\mathbb{R}_{++}\) for powers/log/geo-mean; \(\mathbb{R}\times\mathbb{R}_{++}\) for \(x^2/y\); \(\mathbf S^n_{++}\) for \(\log\det\).</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §3.1.5 (p. 71–74) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawCurve(ctx,view,f,R,color,wd,x0,x1){
+  const a=(x0===undefined?-R+0.05:x0), b=(x1===undefined?R-0.05:x1);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let pen=false;
+  for(let x=a;x<=b+1e-9;x+=0.02){
+    let yv=f(x);
+    if(!isFinite(yv)){pen=false;continue;}
+    if(yv>R-0.15||yv<-R+0.15){yv=clamp(yv,-R+0.15,R-0.15);const p=view.toS(x,yv);
+      if(pen){ctx.lineTo(p[0],p[1]);}else{ctx.moveTo(p[0],p[1]);pen=true;} continue;}
+    const p=view.toS(x,yv);
+    if(pen){ctx.lineTo(p[0],p[1]);}else{ctx.moveTo(p[0],p[1]);pen=true;}
+  }
+  ctx.stroke();
+}
+function drawLineWorld(ctx,view,x0,y0,slope,R,color,wd,dash){
+  const yAt=xx=>y0+slope*(xx-x0);
+  let pts=[];
+  [-R+0.05,R-0.05].forEach(xx=>{let yy=yAt(xx);if(yy>=-R&&yy<=R)pts.push([xx,yy]);});
+  [-R+0.05,R-0.05].forEach(yy=>{if(Math.abs(slope)>1e-9){let xx=x0+(yy-y0)/slope;if(xx>=-R&&xx<=R)pts.push([xx,yy]);}});
+  if(pts.length<2)return;
+  pts.sort((a,b)=>a[0]-b[0]);const A=pts[0],B=pts[pts.length-1];
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;const pa=view.toS(A[0],A[1]),pb=view.toS(B[0],B[1]);
+  ctx.beginPath();ctx.moveTo(pa[0],pa[1]);ctx.lineTo(pb[0],pb[1]);ctx.stroke();ctx.restore();
+}
+
+/* ===== LAB 1 — the R catalogue ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let a=0.5;
+  const FUN={
+    pow  :{dom:"pos", f:x=>Math.pow(x,a), d:x=>a*Math.pow(x,a-1), dd:x=>a*(a-1)*Math.pow(x,a-2),
+           name:()=>"f(x)=x^"+a.toFixed(2), useA:true,
+           cls:()=>{const s=a*(a-1); if(Math.abs(s)<1e-9)return"affine"; return s>0?"convex":"concave";}},
+    exp  :{dom:"all", f:x=>Math.exp(a*x), d:x=>a*Math.exp(a*x), dd:x=>a*a*Math.exp(a*x),
+           name:()=>"f(x)=e^("+a.toFixed(2)+"x)", useA:true, cls:()=>"convex"},
+    log  :{dom:"pos", f:x=>Math.log(x), d:x=>1/x, dd:x=>-1/(x*x),
+           name:()=>"f(x)=log x", useA:false, cls:()=>"concave"},
+    xlogx:{dom:"pos", f:x=>x*Math.log(x), d:x=>Math.log(x)+1, dd:x=>1/x,
+           name:()=>"f(x)=x log x", useA:false, cls:()=>"convex"}
+  };
+  let fn="pow", xT=1.4;
+  const chips=document.getElementById("fn1").querySelectorAll(".chip"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1"),
+        sa=document.getElementById("a1"),av=document.getElementById("av");
+  function dom(){return FUN[fn].dom;}
+  function xlo(){return dom()==="pos"?0.06:-4.8;}
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const O=FUN[fn];
+    xT=clamp(xT, xlo()+0.02, 4.8);
+    drawCurve(ctx,view,O.f,R,"#D7402B",2.7,xlo(),4.8);
+    drawLineWorld(ctx,view,xT,clamp(O.f(xT),-1e4,1e4),O.d(xT),R,"#2B6CB0",2.0,null);
+    const pT=view.toS(xT,clamp(O.f(xT),-R+0.15,R-0.15));dot(ctx,pT[0],pT[1],7,"#D7402B",null);
+    label(ctx,"x",pT[0]-4,pT[1]+18,"#D7402B",13);
+    const c=O.dd(xT);
+    ro.innerHTML=`<span class="k">${O.name()}</span>${O.dom==="pos"?' <span class="k">(x&gt;0)</span>':''}<br>`+
+      `<span class="k">x</span>=<b>${xT.toFixed(2)}</b>, <span class="k">f′(x)</span>=<b>${O.d(xT).toFixed(3)}</b><br>`+
+      `<span class="k">f″(x)</span> = <b>${(isFinite(c)?c.toFixed(3):"–")}</b>`;
+    const cl=O.cls();
+    if(cl==="convex"){vd.className="verdict in";vd.textContent="✓ f″ ≥ 0 on the domain — convex";}
+    else if(cl==="concave"){vd.className="verdict out";vd.textContent="f″ ≤ 0 on the domain — concave (∇²f ⪯ 0)";}
+    else{vd.className="verdict mid";vd.textContent="f″ = 0 — affine (convex AND concave)";}
+    sa.disabled=!O.useA;
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const O=FUN[fn];const pT=view.toS(xT,clamp(O.f(xT),-R+0.15,R-0.15));
+    if(Math.hypot(p[0]-pT[0],p[1]-pT[1])<46){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);const O=FUN[fn];
+    if(!act){const pT=view.toS(xT,clamp(O.f(xT),-R+0.15,R-0.15));
+      canvas.style.cursor=Math.hypot(p[0]-pT[0],p[1]-pT[1])<46?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);xT=clamp(wv[0],xlo()+0.02,4.8);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  chips.forEach(c=>c.addEventListener("click",()=>{fn=c.dataset.f;chips.forEach(z=>z.classList.toggle('on',z===c));
+    if(dom()==="pos"&&xT<0.06)xT=1.4;draw();}));
+  sa.addEventListener("input",()=>{a=parseFloat(sa.value);av.textContent=a.toFixed(2);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — log-sum-exp smooth max ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let x2=0.0, xc=1.2;
+  const L2=Math.log(2);
+  const sx2=document.getElementById("x2"),x2v=document.getElementById("x2v"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  const mx =x1=>Math.max(x1,x2);
+  const lse=x1=>Math.log(Math.exp(x1)+Math.exp(x2));
+  const ceil=x1=>Math.max(x1,x2)+L2;
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    drawCurve(ctx,view,ceil,R,"#8A91A3",1.6,-4.8,4.8);
+    drawCurve(ctx,view,mx,R,"#17223B",2.2,-4.8,4.8);
+    drawCurve(ctx,view,lse,R,"#D7402B",2.8,-4.8,4.8);
+    // vertical cursor at xc
+    xc=clamp(xc,-4.8,4.8);
+    const top=view.toS(xc,R-0.1), bot=view.toS(xc,-R+0.1);
+    ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.moveTo(top[0],top[1]);ctx.lineTo(bot[0],bot[1]);ctx.stroke();ctx.restore();
+    const pL=view.toS(xc,clamp(lse(xc),-R+0.15,R-0.15));dot(ctx,pL[0],pL[1],7,"#D7402B",null);
+    const pM=view.toS(xc,clamp(mx(xc),-R+0.15,R-0.15));dot(ctx,pM[0],pM[1],5,"#fff","#17223B");
+    label(ctx,"x₁",top[0]+6,top[1]+12,"#8A91A3",12);
+    const g=lse(xc)-mx(xc);
+    x2v.textContent=x2.toFixed(2);
+    ro.innerHTML=`<span class="k">x₂</span>=<b>${x2.toFixed(2)}</b>, <span class="k">x₁</span>=<b>${xc.toFixed(2)}</b><br>`+
+      `<span class="k">max</span>=<b>${mx(xc).toFixed(3)}</b>, <span class="k">lse</span>=<b>${lse(xc).toFixed(3)}</b><br>`+
+      `<span class="k">max+log2</span>=<b>${ceil(xc).toFixed(3)}</b><br>`+
+      `<span class="k">gap lse−max</span> = <b>${g.toFixed(3)}</b> <span class="k">/ log2=${L2.toFixed(3)}</span>`;
+    if(Math.abs(xc-x2)<0.06){vd.className="verdict mid";vd.textContent="x₁=x₂ — gap = log 2, the upper bound is tight";}
+    else{vd.className="verdict in";vd.textContent="✓ max ≤ lse ≤ max + log 2";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const cur=view.toS(xc,0)[0];
+    if(Math.abs(p[0]-cur)<40){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){const cur=view.toS(xc,0)[0];canvas.style.cursor=Math.abs(p[0]-cur)<40?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);xc=clamp(wv[0],-4.8,4.8);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  sx2.addEventListener("input",()=>{x2=parseFloat(sx2.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — log-det along a line ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  let l1=1.0, l2=-1.0, tT=0.0;
+  const sl1=document.getElementById("l1"),sl2=document.getElementById("l2"),
+        l1v=document.getElementById("l1v"),l2v=document.getElementById("l2v"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  const g  =t=>Math.log(1+t*l1)+Math.log(1+t*l2);
+  const gp =t=>l1/(1+t*l1)+l2/(1+t*l2);
+  const gpp=t=>-(l1*l1)/Math.pow(1+t*l1,2)-(l2*l2)/Math.pow(1+t*l2,2);
+  // domain: 1+t*li>0 for both -> t in (tlo,thi)
+  function domain(){
+    let lo=-1e9, hi=1e9;
+    [l1,l2].forEach(l=>{ if(l>1e-6){lo=Math.max(lo,-1/l);} else if(l<-1e-6){hi=Math.min(hi,-1/l);} });
+    return [lo,hi];
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const [lo,hi]=domain();
+    const a=Math.max(lo+0.001,-4.8), b=Math.min(hi-0.001,4.8);
+    tT=clamp(tT,a,b);
+    // shade the two forbidden bands (kept inside the frame)
+    ctx.fillStyle="rgba(192,57,43,0.07)";
+    if(lo>-4.8){const xL=view.toS(-4.8,0)[0], xR=view.toS(lo,0)[0], yT=view.toS(0,R-0.1)[1], yB=view.toS(0,-R+0.1)[1];ctx.fillRect(xL,yT,xR-xL,yB-yT);}
+    if(hi<4.8){const xL=view.toS(hi,0)[0], xR=view.toS(4.8,0)[0], yT=view.toS(0,R-0.1)[1], yB=view.toS(0,-R+0.1)[1];ctx.fillRect(xL,yT,xR-xL,yB-yT);}
+    drawCurve(ctx,view,g,R,"#D7402B",2.8,a,b);
+    // tangent (lies above the concave curve)
+    drawLineWorld(ctx,view,tT,clamp(g(tT),-1e4,1e4),gp(tT),R,"#2B6CB0",2.0,null);
+    const pT=view.toS(tT,clamp(g(tT),-R+0.15,R-0.15));dot(ctx,pT[0],pT[1],7,"#D7402B",null);
+    label(ctx,"t",pT[0]-3,pT[1]+18,"#D7402B",13);
+    l1v.textContent=l1.toFixed(2);l2v.textContent=l2.toFixed(2);
+    const dtext = (lo>-1e8?lo.toFixed(2):"−∞")+" < t < "+(hi<1e8?hi.toFixed(2):"+∞");
+    ro.innerHTML=`<span class="k">λ</span> = <b>(${l1.toFixed(2)}, ${l2.toFixed(2)})</b><br>`+
+      `<span class="k">t</span>=<b>${tT.toFixed(2)}</b>, <span class="k">g(t)</span>=<b>${g(tT).toFixed(3)}</b><br>`+
+      `<span class="k">g″(t)</span> = <b>${gpp(tT).toFixed(3)}</b><br>`+
+      `<span class="k">domain</span> <b>${dtext}</b>`;
+    if(gpp(tT)<-1e-9){vd.className="verdict out";vd.textContent="g″(t) < 0 — concave (tangent lies above)";}
+    else{vd.className="verdict mid";vd.textContent="λ = 0 — g″ = 0, the line is affine";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const pT=view.toS(tT,clamp(g(tT),-R+0.15,R-0.15));
+    if(Math.hypot(p[0]-pT[0],p[1]-pT[1])<46){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){const pT=view.toS(tT,clamp(g(tT),-R+0.15,R-0.15));
+      canvas.style.cursor=Math.hypot(p[0]-pT[0],p[1]-pT[1])<46?"grab":"default";return;}
+    const [lo,hi]=domain();const wv=view.toW(p[0],p[1]);
+    tT=clamp(wv[0],Math.max(lo+0.02,-4.8),Math.min(hi-0.02,4.8));draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  sl1.addEventListener("input",()=>{l1=parseFloat(sl1.value);draw();});
+  sl2.addEventListener("input",()=>{l2=parseFloat(sl2.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
