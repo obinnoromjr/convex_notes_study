@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.1.8 — Jensen's Inequality and Extensions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.1.8</div>
+    <h1>Jensen's <em>inequality</em> and extensions</h1>
+    <p class="sub">The defining inequality (3.1), climbed all the way up: two points → k points → integrals → expectations. The general form <span class="mono">f(E x) ≤ E f(x)</span> doesn't merely follow from convexity — it <em>characterizes</em> it.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> f(E x) — function of the mean</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> E f(x) — mean of the function</span>
+      <span><span class="dot" style="background:var(--inside)"></span> convex ⟺ f(E x) ≤ E f(x)</span>
+      <span>p.&nbsp;77–78 · mastery: state (3.5)</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A convex curve with two points joined by a chord; the chord value E f(x) sits above the curve value f(E x) at the mean, the vertical gap being Jensen's inequality.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+          <marker id="ar" markerWidth="11" markerHeight="11" refX="7" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#D7402B"/></marker>
+        </defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+        <!-- the convex curve f -->
+        <polyline fill="none" stroke="#17223B" stroke-width="2.6" stroke-linejoin="round"
+          points="60.0,51.5 77.3,70.6 94.7,88.5 112.0,105.0 129.3,120.1 146.7,134.0 164.0,146.5 181.3,157.8 198.7,167.7 216.0,176.2 233.3,183.5 250.7,189.4 268.0,194.1 285.3,197.4 302.7,199.3 320.0,200.0 337.3,199.3 354.7,197.4 372.0,194.1 389.3,189.4 406.7,183.5 424.0,176.2 441.3,167.7 458.7,157.8 476.0,146.5 493.3,134.0 510.7,120.1 528.0,105.0 545.3,88.5 562.7,70.6 580.0,51.5"/>
+        <!-- the chord: E f(x) lives on it -->
+        <line x1="112" y1="105" x2="476" y2="146.5" stroke="#2B6CB0" stroke-width="2.4"/>
+        <circle cx="112" cy="105" r="5" fill="#17223B"/>
+        <circle cx="476" cy="146.5" r="5" fill="#17223B"/>
+        <!-- the Jensen gap at the mean x-bar -->
+        <line x1="294" y1="125.8" x2="294" y2="198.5" stroke="#D7402B" stroke-width="2.2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+        <circle cx="294" cy="125.8" r="5.4" fill="#2B6CB0"/>
+        <circle cx="294" cy="198.5" r="5.4" fill="#D7402B"/>
+        <text x="304" y="122" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">E f(x)</text>
+        <text x="304" y="212" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">f(E x)</text>
+        <text x="98" y="94" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">x₁</text>
+        <text x="470" y="136" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">x₂</text>
+        <text x="508" y="84" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="12">f convex</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§3.1.7 gave the exact set-theoretic bridge: <span class="mono">f</span> convex ⟺ <span class="mono">epi f</span> convex. §3.1.8 climbs a different ladder — not to sets but to <em>averages</em>. The basic two-point inequality (3.1) is, under another name, Jensen's inequality; it extends to <span class="mono">k</span>-point convex combinations, to infinite sums, to integrals, and finally to expectations. The top of the ladder, <span class="mono">f(E x) ≤ E f(x)</span>, turns out to contain the bottom rung and to <strong>characterize convexity</strong> outright.</p>
+</section>
+
+<!-- 1 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">(3.1) is Jensen — and the k-point extension</span></div>
+    <hr class="rule"/>
+    <p>The defining inequality of a convex function is, under another name, Jensen's inequality:</p>
+    <div class="bv">\[ f\big(\theta x+(1-\theta)y\big)\le\theta f(x)+(1-\theta)f(y). \]<span class="src">B&amp;V §3.1.8 · (3.1) · L3918–3925</span></div>
+    <p>It extends without effort to convex combinations of more than two points:</p>
+    <div class="bv">If \(f\) is convex, \(x_1,\dots,x_k\in\operatorname{dom}f\), and \(\theta_1,\dots,\theta_k\ge0\) with \(\theta_1+\cdots+\theta_k=1\), then
+      \[ f(\theta_1x_1+\cdots+\theta_kx_k)\le\theta_1f(x_1)+\cdots+\theta_kf(x_k). \]<span class="src">B&amp;V §3.1.8 · L3918–3925</span></div>
+
+    <div class="note key"><div class="ic">!</div><p><b>Read the hypotheses exactly.</b> The weights must be <em>nonnegative</em> and must <em>sum to 1</em>. Drop either condition and the inequality is false — these are not bookkeeping, they are the statement. A weight that sneaks below zero flips the corresponding term's contribution; weights summing to more or less than 1 no longer place \(\sum\theta_ix_i\) inside the convex hull at all.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>k-point Jensen — and what breaks when a weight goes negative</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i> graph of f</span>
+            <span><i style="border-color:var(--halfspace)"></i> Σθᵢf(xᵢ) — weighted average</span>
+            <span><i style="border-color:var(--normal)"></i> f(Σθᵢxᵢ) — at the mean</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>function</h5>
+          <div class="chips" id="fn1">
+            <span class="chip on" data-f="quad">x² (convex)</span>
+            <span class="chip" data-f="abs">|x| (convex)</span>
+            <span class="chip" data-f="exp">eˣ (convex)</span>
+          </div>
+          <div class="ctrl"><label>weight w₁<span class="val" id="v1a">1.00</span></label><input type="range" id="w1a" min="0" max="1" step="0.01" value="1"></div>
+          <div class="ctrl"><label>weight w₂<span class="val" id="v1b">1.00</span></label><input type="range" id="w1b" min="0" max="1" step="0.01" value="1"></div>
+          <div class="ctrl"><label>weight w₃<span class="val" id="v1c">1.00</span></label><input type="range" id="w1c" min="-0.6" max="1" step="0.01" value="1"></div>
+          <div class="chips" id="neg1">
+            <span class="chip on" data-n="0">θᵢ ≥ 0 (legal)</span>
+            <span class="chip" data-n="1">allow w₃ &lt; 0</span>
+          </div>
+          <p class="hint">Drag the three points <b>x₁, x₂, x₃</b> along the curve and set the weights (they are normalized so <span class="mono">Σθᵢ = 1</span>). The blue dot is <span class="mono">Σθᵢf(xᵢ)</span>; the vermilion dot below it is <span class="mono">f(Σθᵢxᵢ)</span>. Now flip to <b>allow w₃ &lt; 0</b> and push w₃ negative: the weights still sum to 1, but nonnegativity is gone — and the inequality fails.</p>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">integrals and expectations — the general form</span></div>
+    <hr class="rule"/>
+    <p>Exactly as convex-set combinations climbed from two points to infinite sums, integrals, and mixtures, the inequality climbs too — provided the objects on both sides exist.</p>
+
+    <ul class="reads">
+      <li><span class="tag">integral</span><div>If \(p(x)\ge0\) on \(S\subseteq\operatorname{dom}f\) with \(\int_S p(x)\,dx=1\), then
+        \[ f\!\left(\int_S p(x)\,x\,dx\right)\le\int_S f(x)\,p(x)\,dx, \]
+        <em>provided the integrals exist.</em> The density plays the role of the weights: nonnegative, total mass 1.</div></li>
+      <li><span class="tag">expectation</span><div>If \(x\) is a random variable with \(x\in\operatorname{dom}f\) with probability one, and \(f\) is convex, then
+        \[ f(\mathbf{E}\,x)\le\mathbf{E}\,f(x), \tag{3.5} \]
+        <em>provided the expectations exist.</em></div></li>
+    </ul>
+
+    <div class="bv">\[ f(\mathbf{E}\,x)\;\le\;\mathbf{E}\,f(x)\qquad\text{(3.5)} \]<span class="src">B&amp;V §3.1.8 · (3.5) · L3926–3936</span></div>
+
+    <div class="note warn"><div class="ic">!</div><p><b>The provisos are part of the statement, not fine print.</b> For (3.5) you need \(x\in\operatorname{dom}f\) <em>almost surely</em> (probability one, not merely “usually”), and both expectations must <em>exist</em>. For the integral form you need \(p\ge0\), \(\int_S p=1\), \(S\subseteq\operatorname{dom}f\), and existence of both integrals. Quoting (3.5) without them is quoting a different, false, theorem.</p></div>
+
+    <p>Notice the shape of every rung on the ladder: a nonnegative weighting of total mass one, pushed through \(f\). Two-point weights \((\theta,1-\theta)\), \(k\)-point weights \(\theta_i\), a density \(p\), a probability measure — the same object at four levels of generality.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">(3.5) characterizes convexity — the headline</span></div>
+    <hr class="rule"/>
+    <p>The general form is not a weaker consequence of the basic one — it <em>contains</em> it. Let <span class="mono">x</span> be the two-point random variable with <span class="mono">prob(x = x₁) = θ</span> and <span class="mono">prob(x = x₂) = 1 − θ</span>:</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>Recovering (3.1) from (3.5)</span><span class="target">the general contains the basic</span></div>
+      <div class="step crux">
+        <div class="math">\[ \mathbf{E}\,x=\theta x_1+(1-\theta)x_2 \]</div>
+        <div class="why"><b>mean</b> of the two-point variable is exactly the convex combination</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \mathbf{E}\,f(x)=\theta f(x_1)+(1-\theta)f(x_2) \]</div>
+        <div class="why">the same two atoms, evaluated through \(f\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ f\big(\theta x_1+(1-\theta)x_2\big)\le\theta f(x_1)+(1-\theta)f(x_2) \]</div>
+        <div class="why">so (3.5) <b>collapses to (3.1)</b> — the two-point case. ∎</div>
+      </div>
+    </div>
+
+    <p>And now the converse, which is what makes this section more than a generalization exercise:</p>
+
+    <div class="bv">If \(f\) is <em>not</em> convex, there is a random variable \(x\), with \(x\in\operatorname{dom}f\) with probability one, such that \(f(\mathbf{E}\,x)>\mathbf{E}\,f(x)\).<span class="src">B&amp;V §3.1.8 · L3937–3947</span></div>
+
+    <div class="note key"><div class="ic">!</div><p><b>Therefore (3.5) is a characterization.</b> \(f\) is convex <em>if and only if</em> \(f(\mathbf{E}\,x)\le\mathbf{E}\,f(x)\) for <em>every</em> random variable \(x\) lying in \(\operatorname{dom}f\) with probability one (and with the expectations existing). Convexity is not just sufficient for Jensen — it is equivalent to it.</p></div>
+
+    <div class="excard">
+      <div class="exh"><span>Historical note</span><span class="vt">Jensen: the midpoint case only</span></div>
+      <div class="exb">
+        <p>All of the inequalities above — the two-point (3.1), the \(k\)-point extension, the integral form, and (3.5) — now go by the name <em>Jensen's inequality</em>. Jensen himself studied only the midpoint case \(f\!\left(\tfrac{x+y}{2}\right)\le\tfrac{f(x)+f(y)}{2}\). The name has since been attached to the whole family.</p>
+      </div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>(3.5) at two atoms — and the witness when f is not convex</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i> graph of f</span>
+            <span><i style="border-color:var(--halfspace)"></i> chord · E f(x)</span>
+            <span><i style="border-color:var(--normal)"></i> f(E x)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>function</h5>
+          <div class="chips" id="fn2">
+            <span class="chip on" data-f="quad">x² (convex)</span>
+            <span class="chip" data-f="negexp">−eˣ (concave)</span>
+            <span class="chip" data-f="wave">wave (neither)</span>
+            <span class="chip" data-f="aff">affine</span>
+          </div>
+          <div class="ctrl"><label>θ = prob(x = x₁)<span class="val" id="v2t">0.50</span></label><input type="range" id="th2" min="0" max="1" step="0.01" value="0.5"></div>
+          <p class="hint">A two-atom random variable: mass <b>θ</b> at <b>x₁</b>, mass <b>1−θ</b> at <b>x₂</b> (drag both). The blue dot on the chord is <span class="mono">E f(x)</span>; the vermilion dot on the curve is <span class="mono">f(E x)</span>. For convex <span class="mono">f</span> the vermilion never rises above the blue. Switch to <b>−eˣ</b> or <b>wave</b> and you have built the converse's witness: <span class="mono">f(E x) &gt; E f(x)</span>.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§4</span><span class="eyebrow">Remark 3.2 — dithering can't help</span></div>
+    <hr class="rule"/>
+    <div class="bv">Let \(x\in\operatorname{dom}f\) and let \(z\) be any zero-mean random vector (with \(x+z\in\operatorname{dom}f\) with probability one and \(\mathbf{E}f(x+z)\) existing). Then
+      \[ \mathbf{E}\,f(x+z)\ \ge\ f(x). \]<span class="src">B&amp;V §3.1.8 · Remark 3.2 · L3948–3957</span></div>
+
+    <div class="proof">
+      <div class="proof-head"><span>Proof — one line from (3.5)</span><span class="target">apply (3.5) to x + z</span></div>
+      <div class="step crux">
+        <div class="math">\[ \mathbf{E}\,f(x+z)\ \ge\ f\big(\mathbf{E}(x+z)\big) \]</div>
+        <div class="why"><b>(3.5)</b> applied to the random variable \(x+z\)</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ f\big(\mathbf{E}(x+z)\big)=f(x+\mathbf{E}z)=f(x+0)=f(x) \]</div>
+        <div class="why">linearity of expectation and \(\mathbf{E}z=0\). ∎</div>
+      </div>
+    </div>
+
+    <p><strong>Interpretation.</strong> Randomization or <em>dithering</em> — adding zero-mean noise to the argument — cannot decrease a convex function on average. It can only hurt, or at best break even: for <em>affine</em> \(f\) the inequality is an equality, since \(\mathbf{E}f(x+z)=f(x)+\nabla f^{\mathsf T}\mathbf{E}z=f(x)\). There is never an average gain to be had from jittering the input of a convex objective.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>zero-mean noise: E f(x + z) ≥ f(x)</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--ink)"></i> graph of f</span>
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> spread of x + z</span>
+            <span><i style="border-color:var(--normal)"></i> f(x) vs E f(x+z)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>function</h5>
+          <div class="chips" id="fn3">
+            <span class="chip on" data-f="quad">x² (convex)</span>
+            <span class="chip" data-f="abs">|x| (convex)</span>
+            <span class="chip" data-f="aff">affine (break-even)</span>
+            <span class="chip" data-f="wave">wave (not convex)</span>
+          </div>
+          <div class="ctrl"><label>noise half-width a<span class="val" id="v3a">1.20</span></label><input type="range" id="a3" min="0" max="2.2" step="0.01" value="1.2"></div>
+          <p class="hint">Drag <b>x</b> along the axis and widen the zero-mean noise <span class="mono">z ~ Uniform[−a, a]</span> (so <span class="mono">E z = 0</span>). The vermilion marks <span class="mono">f(x)</span>; the blue marks <span class="mono">E f(x+z)</span>. For convex <span class="mono">f</span> the blue sits on or above the vermilion, always. <b>Affine</b> gives exact equality — dithering breaks even. <b>Wave</b> shows the remark needs convexity.</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>Direction</p><p><span class="mono">f(E x) ≤ E f(x)</span> for convex <span class="mono">f</span> — <em>function of the mean ≤ mean of the function</em>. Reversed for concave. Getting this backwards is the classic error.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>Hypotheses are the statement</p><p><span class="mono">k</span>-point needs <span class="mono">θᵢ ≥ 0</span> and <span class="mono">Σθᵢ = 1</span>; (3.5) needs <span class="mono">x ∈ dom f</span> w.p. 1 and the expectations to exist. Integral form: <span class="mono">p ≥ 0</span>, <span class="mono">∫p = 1</span>, integrals exist.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>(3.5) is a CHARACTERIZATION</p><p>Not a consequence. Strength ladder: §3.1.6 sublevel convexity is only <em>necessary</em>; §3.1.7 epigraph convexity is a biconditional; (3.5) is a characterization too — convex ⟺ Jensen for every admissible <span class="mono">x</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>(3.1) is the two-point case</p><p>Recover it with <span class="mono">prob(x = x₁) = θ</span>, <span class="mono">prob(x = x₂) = 1 − θ</span>: then <span class="mono">E x</span> and <span class="mono">E f(x)</span> are literally the two sides of (3.1).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D5</span>Remark 3.2</p><p><span class="mono">E f(x + z) ≥ f(x)</span> for zero-mean <span class="mono">z</span> — one line from (3.5) plus <span class="mono">E z = 0</span>. Dithering can't lower a convex function on average; affine breaks even.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-07-18 · bv.3.1.8</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>The ladder</h6><p>Jensen = the defining inequality (3.1); extends to \(k\)-point convex combinations (\(\theta_i\ge0\), \(\sum\theta_i=1\)), to integrals, and to expectations.</p></div>
+      <div class="scard"><h6>General form (3.5)</h6><p>\(f(\mathbf{E}x)\le\mathbf{E}f(x)\) for convex \(f\), with \(x\in\operatorname{dom}f\) w.p. 1 and the expectations existing.</p></div>
+      <div class="scard"><h6>It characterizes convexity</h6><p>An iff: if \(f\) isn't convex there exists \(x\) with \(f(\mathbf{E}x)>\mathbf{E}f(x)\). And (3.1) is the two-point case of (3.5).</p></div>
+      <div class="scard"><h6>Remark 3.2</h6><p>\(\mathbf{E}f(x+z)\ge f(x)\) for zero-mean \(z\) — dithering can't lower a convex function on average (affine: equality).</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §3.1.8 (p. 77–78) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawCurve(ctx,view,f,R,color,wd){
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let first=true;
+  for(let x=-R+0.3;x<=R-0.3;x+=0.02){
+    const yv=f(x);if(yv<-R+0.2||yv>R-0.2){first=true;continue;}
+    const p=view.toS(x,yv);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();
+}
+function vline(ctx,view,x,y0,y1,color,wd,dash){
+  const a=view.toS(x,clamp(y0,-4.7,4.7)),b=view.toS(x,clamp(y1,-4.7,4.7));
+  ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.lineWidth=wd;
+  ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.restore();
+}
+
+/* ===== LAB 1 — k-point Jensen, and the nonnegativity hypothesis ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const FUN={
+    quad:{f:x=>0.30*x*x-2.6},
+    abs:{f:x=>1.05*Math.abs(x)-3.2},
+    exp:{f:x=>0.45*Math.exp(0.52*x)-3.2}
+  };
+  let fn="quad", X=[-3.4,-0.6,3.2], allowNeg=false;
+  const sl=[document.getElementById("w1a"),document.getElementById("w1b"),document.getElementById("w1c")],
+        sv=[document.getElementById("v1a"),document.getElementById("v1b"),document.getElementById("v1c")],
+        chips=document.getElementById("fn1").querySelectorAll(".chip"),
+        nchips=document.getElementById("neg1").querySelectorAll(".chip"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function F(x){return FUN[fn].f(x);}
+  function weights(){
+    let w=sl.map(s=>parseFloat(s.value));
+    if(!allowNeg) w=w.map(v=>Math.max(0,v));
+    let s=w[0]+w[1]+w[2];
+    if(Math.abs(s)<1e-3){w=[1,1,1];s=3;}
+    return w.map(v=>v/s);
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    drawCurve(ctx,view,F,R,"#17223B",2.7);
+    const th=weights();
+    const xbar=th[0]*X[0]+th[1]*X[1]+th[2]*X[2];
+    const xb=clamp(xbar,-4.6,4.6);
+    const rhs=th[0]*F(X[0])+th[1]*F(X[1])+th[2]*F(X[2]);
+    const lhs=F(xbar);
+    // dashed polygon through the sample points
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle="#8A91A3";ctx.lineWidth=1.6;ctx.beginPath();
+    const ord=[0,1,2].slice().sort((a,b)=>X[a]-X[b]);
+    ord.forEach((i,k)=>{const p=view.toS(X[i],clamp(F(X[i]),-4.7,4.7));if(k===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);});
+    ctx.stroke();ctx.restore();
+    // sample points, radius encodes |weight|
+    [0,1,2].forEach(i=>{
+      const p=view.toS(X[i],clamp(F(X[i]),-4.7,4.7));
+      const neg=th[i]<0;
+      dot(ctx,p[0],p[1],4.5+7*Math.min(1,Math.abs(th[i])),"#fff",neg?"#C0392B":"#17223B");
+      label(ctx,"x"+(i+1),p[0]-7,p[1]-20,neg?"#C0392B":"#46506A",12);
+    });
+    // the Jensen gap at xbar
+    vline(ctx,view,xb,lhs,rhs,rhs>=lhs?"#2F855A":"#C0392B",2.2,[5,4]);
+    const pR=view.toS(xb,clamp(rhs,-4.7,4.7)),pL=view.toS(xb,clamp(lhs,-4.7,4.7));
+    dot(ctx,pR[0],pR[1],7,"#fff","#2B6CB0");label(ctx,"Σθf(x)",pR[0]+11,pR[1]-3,"#2B6CB0",12);
+    dot(ctx,pL[0],pL[1],7,"#fff","#D7402B");label(ctx,"f(Σθx)",pL[0]+11,pL[1]+3,"#D7402B",12);
+    const anyNeg=th.some(t=>t<-1e-9);
+    ro.innerHTML=`<span class="k">θ</span> = (${th.map(t=>t.toFixed(2)).join(", ")}) &nbsp; <span class="k">Σθ</span>=<b>${(th[0]+th[1]+th[2]).toFixed(2)}</b><br>`+
+      `<span class="k">Σθᵢxᵢ</span>=<b>${xbar.toFixed(3)}</b><br>`+
+      `<span class="k">f(Σθᵢxᵢ)</span>=<b>${lhs.toFixed(3)}</b> &nbsp; <span class="k">Σθᵢf(xᵢ)</span>=<b>${rhs.toFixed(3)}</b><br>`+
+      `<span class="k">gap</span> = <b>${(rhs-lhs).toFixed(3)}</b>`;
+    if(anyNeg&&rhs<lhs-1e-6){vd.className="verdict out";vd.textContent="✗ θ₃ < 0 — nonnegativity dropped, Jensen fails";}
+    else if(anyNeg){vd.className="verdict mid";vd.textContent="θ₃ < 0 — hypothesis violated (push it further)";}
+    else if(rhs>=lhs-1e-6){vd.className="verdict in";vd.textContent="✓ f(Σθᵢxᵢ) ≤ Σθᵢf(xᵢ) — Jensen holds";}
+    else{vd.className="verdict out";vd.textContent="✗ inequality violated";}
+    sv.forEach((s,i)=>s.textContent=parseFloat(sl[i].value).toFixed(2));
+  }
+  let act=-1;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function handles(){return [0,1,2].map(i=>view.toS(X[i],clamp(F(X[i]),-4.7,4.7)));}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);let bd=1e9,bi=-1;
+    handles().forEach((q,i)=>{const d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<bd){bd=d;bi=i;}});
+    if(bd<44){act=bi;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(act<0){let near=false;handles().forEach(q=>{if(Math.hypot(p[0]-q[0],p[1]-q[1])<44)near=true;});canvas.style.cursor=near?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);X[act]=clamp(wv[0],-4.4,4.4);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=-1);canvas.addEventListener("pointercancel",()=>act=-1);
+  sl.forEach(s=>s.addEventListener("input",draw));
+  chips.forEach(c=>c.addEventListener("click",()=>{fn=c.dataset.f;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  nchips.forEach(c=>c.addEventListener("click",()=>{allowNeg=c.dataset.n==="1";nchips.forEach(z=>z.classList.toggle('on',z===c));
+    if(!allowNeg&&parseFloat(sl[2].value)<0){sl[2].value="1";}draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — (3.5) at two atoms; the non-convex witness ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const FUN={
+    quad:{f:x=>0.30*x*x-2.6},
+    negexp:{f:x=>-0.40*Math.exp(0.5*x)+2.4},
+    wave:{f:x=>1.5*Math.sin(1.05*x)},
+    aff:{f:x=>0.7*x-0.4}
+  };
+  let fn="quad", x1=-3.2, x2=3.0, th=0.5;
+  const ts=document.getElementById("th2"),tv=document.getElementById("v2t"),
+        chips=document.getElementById("fn2").querySelectorAll(".chip"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function F(x){return FUN[fn].f(x);}
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    drawCurve(ctx,view,F,R,"#17223B",2.7);
+    const Ex=th*x1+(1-th)*x2, Efx=th*F(x1)+(1-th)*F(x2), fEx=F(Ex);
+    // chord
+    const pa=view.toS(x1,clamp(F(x1),-4.7,4.7)),pb=view.toS(x2,clamp(F(x2),-4.7,4.7));
+    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(pa[0],pa[1]);ctx.lineTo(pb[0],pb[1]);ctx.stroke();
+    // atoms drawn as stems along the bottom, height proportional to probability
+    const base=-4.6;
+    [[x1,th,"x₁"],[x2,1-th,"x₂"]].forEach(([xa,pr,nm])=>{
+      vline(ctx,view,xa,base,base+2.4*pr,"#46506A",5,null);
+      const tip=view.toS(xa,base+2.4*pr);label(ctx,nm+" p="+pr.toFixed(2),tip[0]-30,tip[1]-14,"#46506A",11);
+    });
+    dot(ctx,pa[0],pa[1],6.5,"#fff","#17223B");dot(ctx,pb[0],pb[1],6.5,"#fff","#17223B");
+    // the two competing values at E x
+    vline(ctx,view,clamp(Ex,-4.6,4.6),fEx,Efx,fEx<=Efx?"#2F855A":"#C0392B",2.2,[5,4]);
+    const pE=view.toS(clamp(Ex,-4.6,4.6),clamp(Efx,-4.7,4.7)),pF=view.toS(clamp(Ex,-4.6,4.6),clamp(fEx,-4.7,4.7));
+    dot(ctx,pE[0],pE[1],7,"#fff","#2B6CB0");label(ctx,"E f(x)",pE[0]+11,pE[1]-3,"#2B6CB0",12);
+    dot(ctx,pF[0],pF[1],7,"#fff","#D7402B");label(ctx,"f(E x)",pF[0]+11,pF[1]+3,"#D7402B",12);
+    ro.innerHTML=`<span class="k">E x</span> = θx₁+(1−θ)x₂ = <b>${Ex.toFixed(3)}</b><br>`+
+      `<span class="k">E f(x)</span> = θf(x₁)+(1−θ)f(x₂) = <b>${Efx.toFixed(3)}</b><br>`+
+      `<span class="k">f(E x)</span> = <b>${fEx.toFixed(3)}</b><br>`+
+      `<span class="k">E f(x) − f(E x)</span> = <b>${(Efx-fEx).toFixed(3)}</b>`;
+    if(Math.abs(Efx-fEx)<1e-6){vd.className="verdict mid";vd.textContent="equality — affine f, (3.5) tight";}
+    else if(fEx<=Efx){vd.className="verdict in";vd.textContent="✓ f(E x) ≤ E f(x) — (3.5) holds";}
+    else{vd.className="verdict out";vd.textContent="✗ f(E x) > E f(x) — witness that f is not convex";}
+    tv.textContent=th.toFixed(2);
+  }
+  let act=0;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function handles(){return [view.toS(x1,clamp(F(x1),-4.7,4.7)),view.toS(x2,clamp(F(x2),-4.7,4.7))];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);let bd=1e9,bi=0;
+    handles().forEach((q,i)=>{const d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<bd){bd=d;bi=i+1;}});
+    if(bd<44){act=bi;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){let near=false;handles().forEach(q=>{if(Math.hypot(p[0]-q[0],p[1]-q[1])<44)near=true;});canvas.style.cursor=near?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);
+    if(act===1)x1=clamp(wv[0],-4.4,4.4);else x2=clamp(wv[0],-4.4,4.4);
+    draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=0);canvas.addEventListener("pointercancel",()=>act=0);
+  ts.addEventListener("input",()=>{th=parseFloat(ts.value);draw();});
+  chips.forEach(c=>c.addEventListener("click",()=>{fn=c.dataset.f;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — Remark 3.2, dithering ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const FUN={
+    quad:{f:x=>0.30*x*x-2.6},
+    abs:{f:x=>1.05*Math.abs(x)-3.2},
+    aff:{f:x=>0.7*x-0.4},
+    wave:{f:x=>1.5*Math.sin(1.05*x)}
+  };
+  let fn="quad", x0=-1.6, a=1.2;
+  const as=document.getElementById("a3"),av=document.getElementById("v3a"),
+        chips=document.getElementById("fn3").querySelectorAll(".chip"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function F(x){return FUN[fn].f(x);}
+  function Ef(){ // E f(x0 + z), z ~ Uniform[-a,a] (E z = 0), by midpoint rule
+    if(a<1e-6)return F(x0);
+    const N=400;let s=0;
+    for(let i=0;i<N;i++){const z=-a+(2*a)*((i+0.5)/N);s+=F(x0+z);}
+    return s/N;
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    // shaded spread band [x0-a, x0+a]
+    const lo=clamp(x0-a,-4.7,4.7),hi=clamp(x0+a,-4.7,4.7);
+    const c0=view.toS(lo,4.7),c1=view.toS(hi,-4.7);
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fillRect(c0[0],c0[1],c1[0]-c0[0],c1[1]-c0[1]);
+    drawCurve(ctx,view,F,R,"#17223B",2.7);
+    const fx=F(x0),ef=Ef();
+    // horizontal reference levels
+    const L=(yv,col,dash)=>{const p=view.toS(-4.7,clamp(yv,-4.7,4.7)),q=view.toS(4.7,clamp(yv,-4.7,4.7));
+      ctx.save();if(dash)ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();ctx.restore();};
+    L(fx,"#D7402B",[6,4]);L(ef,"#2B6CB0",[6,4]);
+    // the gap, drawn at the right edge
+    const gx=3.9;
+    vline(ctx,view,gx,fx,ef,ef>=fx-1e-9?"#2F855A":"#C0392B",2.2,null);
+    const pf=view.toS(x0,clamp(fx,-4.7,4.7));
+    dot(ctx,pf[0],pf[1],7,"#fff","#D7402B");label(ctx,"f(x)",pf[0]+11,pf[1]+3,"#D7402B",12);
+    const pe=view.toS(gx,clamp(ef,-4.7,4.7));
+    dot(ctx,pe[0],pe[1],7,"#fff","#2B6CB0");label(ctx,"E f(x+z)",pe[0]-84,pe[1]-3,"#2B6CB0",12);
+    // x0 marker on the axis
+    const px=view.toS(x0,0);dot(ctx,px[0],px[1],5,"#D7402B",null);label(ctx,"x",px[0]-4,px[1]+18,"#D7402B",12);
+    ro.innerHTML=`<span class="k">x</span>=<b>${x0.toFixed(2)}</b> &nbsp; <span class="k">z ~ U[−a,a]</span>, a=<b>${a.toFixed(2)}</b>, <span class="k">E z</span>=<b>0</b><br>`+
+      `<span class="k">f(x)</span> = <b>${fx.toFixed(3)}</b><br>`+
+      `<span class="k">E f(x+z)</span> = <b>${ef.toFixed(3)}</b><br>`+
+      `<span class="k">E f(x+z) − f(x)</span> = <b>${(ef-fx).toFixed(3)}</b>`;
+    if(Math.abs(ef-fx)<1e-6){vd.className="verdict mid";vd.textContent="equality — affine f, dithering breaks even";}
+    else if(ef>fx){vd.className="verdict in";vd.textContent="✓ E f(x+z) ≥ f(x) — dithering can only hurt";}
+    else{vd.className="verdict out";vd.textContent="✗ below f(x) — f is not convex here";}
+    av.textContent=a.toFixed(2);
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);
+    const q=view.toS(x0,clamp(F(x0),-4.7,4.7)),q2=view.toS(x0,0);
+    if(Math.hypot(p[0]-q[0],p[1]-q[1])<44||Math.hypot(p[0]-q2[0],p[1]-q2[1])<44){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);
+    if(!act){const q=view.toS(x0,clamp(F(x0),-4.7,4.7)),q2=view.toS(x0,0);
+      canvas.style.cursor=(Math.hypot(p[0]-q[0],p[1]-q[1])<44||Math.hypot(p[0]-q2[0],p[1]-q2[1])<44)?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);x0=clamp(wv[0],-2.4,2.4);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  as.addEventListener("input",()=>{a=parseFloat(as.value);draw();});
+  chips.forEach(c=>c.addEventListener("click",()=>{fn=c.dataset.f;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
