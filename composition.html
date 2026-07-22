@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.2.4 — Composition</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.rtab{width:100%;border-collapse:collapse;margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;font-size:16px}
+.rtab th,.rtab td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.rtab thead th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rtab tbody tr:last-child td,.rtab tr:last-child td{border-bottom:none}
+.rtab .rn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal);font-weight:600}
+.rtab .res{font-weight:600;color:var(--ink)}
+.rtab td .mono{font-size:14px}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.2.4</div>
+    <h1>General <em>composition</em></h1>
+    <p class="sub">The fourth closure rule, and the subtle one. Feed one function into another — <span class="mono">f = h∘g</span> — and four rules decide the curvature. The load-bearing detail: the monotonicity is on the <em>extended-value extension</em> <span class="mono">h̃</span>, not on <span class="mono">h</span>.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--ink-faint)"></span> g — the inner function</span>
+      <span><span class="dot" style="background:var(--normal)"></span> h̃ — outer, extended-value</span>
+      <span><span class="dot" style="background:var(--inside)"></span> f = h∘g — inherits h's curvature</span>
+      <span>p.&nbsp;83–87 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 236" role="img" aria-label="An inner convex bowl g feeding through an increasing convex outer map h to produce a bold convex composite f = h of g.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="236" fill="url(#dots)"/>
+        <!-- inner g: faint convex bowl -->
+        <polyline fill="none" stroke="#9AA1B3" stroke-width="2" stroke-linejoin="round"
+          points="70,74 118,102 166,124 214,139 262,148 310,151 358,148 406,139 454,124 502,102 550,74"/>
+        <text x="556" y="70" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="12">g (convex)</text>
+        <!-- composite f = h(g): bold convex bowl, steeper -->
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.9" stroke-linejoin="round"
+          points="70,60 118,110 166,150 214,178 262,193 310,197 358,193 406,178 454,150 502,110 550,60"/>
+        <text x="300" y="222" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" text-anchor="middle">f = h∘g — h convex nondecreasing, g convex ⟹ convex</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>This is the fourth convexity-preserving operation and the most subtle: general composition \(f=h\circ g\), \(f(x)=h(g(x))\), with \(\operatorname{dom}f=\{x\in\operatorname{dom}g\mid g(x)\in\operatorname{dom}h\}\). The rules form a small table, but the load-bearing detail is the monotonicity of the extended-value extension \(\tilde h\) — get that wrong (Remark 3.3) and the whole thing collapses.</p>
+</section>
+
+<!-- 1 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">scalar case — the second-derivative "why"</span></div>
+    <hr class="rule"/>
+    <p>Take \(k=1\), everything twice differentiable, domains all of \(\mathbf R\). The chain rule gives \(f''\) directly, and reading its sign gives the four rules.</p>
+
+    <div class="bv">\[ f''(x)=h''\big(g(x)\big)\,g'(x)^2+h'\big(g(x)\big)\,g''(x). \tag{3.9}\]
+      Two terms: \(h''g'^2\) carries \(h\)'s curvature (the \(g'^2\ge0\) factor can't flip it), and \(h'g''\) couples \(h\)'s <em>monotonicity</em> to \(g\)'s curvature.<span class="src">B&amp;V §3.2.4 · p. 83, eq. 3.9</span></div>
+
+    <table class="rtab">
+      <thead><tr><th></th><th>outer h</th><th>inner g</th><th>result</th></tr></thead>
+      <tbody>
+        <tr><td class="rn">1</td><td>convex, nondecreasing</td><td>convex</td><td class="res">f convex</td></tr>
+        <tr><td class="rn">2</td><td>convex, nonincreasing</td><td>concave</td><td class="res">f convex</td></tr>
+        <tr><td class="rn">3</td><td>concave, nondecreasing</td><td>concave</td><td class="res">f concave</td></tr>
+        <tr><td class="rn">4</td><td>concave, nonincreasing</td><td>convex</td><td class="res">f concave</td></tr>
+      </tbody>
+    </table>
+    <p>Row 2 as a worked sign-read: \(h''g'^2\ge0\) (h convex), and \(h'g''=(\le0)(\le0)\ge0\) (h nonincreasing, g concave), so \(f''\ge0\) — convex. The pattern to keep: <b>\(f\) inherits \(h\)'s curvature; \(g\) must match \(h\)'s monotonicity.</b></p>
+
+    <div class="note build"><div class="ic">+</div><p>These are the four <em>guaranteed</em> pairings (eq. 3.10). The backwards pairing — convex nondecreasing \(h\) with a <em>concave</em> \(g\), say — gets no guarantee, and generally fails.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The four rules — pick h and g, read the curvature</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i style="border-color:#B7BCC8"></i> inner g(x)</span>
+            <span><i style="border-color:var(--normal)"></i> f = h(g(x))</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> matches a guaranteed rule</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>outer h</h5>
+          <div class="chips" id="h1">
+            <span class="chip on" data-h="cu">convex ↑</span>
+            <span class="chip" data-h="cd">convex ↓</span>
+            <span class="chip" data-h="vu">concave ↑</span>
+            <span class="chip" data-h="vd">concave ↓</span>
+          </div>
+          <h5 style="margin-top:4px">inner g</h5>
+          <div class="chips" id="g1">
+            <span class="chip on" data-g="cx">convex</span>
+            <span class="chip" data-g="cv">concave</span>
+          </div>
+          <p class="hint">Curvature of \(f\) is measured numerically across the frame. The four <b>matching</b> pairings (convex g ↔ nondecreasing h, concave g ↔ nonincreasing h, mirrored for concave h) give a clean verdict; the mismatched pairings leave \(f\) <b>neither</b> — no guarantee.</p>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">general rules (3.11) — the extended-value extension h̃</span></div>
+    <hr class="rule"/>
+    <p>The same four rules hold with <em>no</em> differentiability — provided the monotonicity condition is read on the <b>extended-value extension</b> \(\tilde h\): \(h\) extended by \(+\infty\) off \(\operatorname{dom}h\) when \(h\) is convex, by \(-\infty\) when \(h\) is concave.</p>
+
+    <div class="bv">"\(\tilde h\) nondecreasing" is <em>two</em> conditions, both needed: (i) \(h\) is monotone on \(\operatorname{dom}h\), and (ii) \(\operatorname{dom}h\) extends the right way — and the direction depends on the curvature.<span class="src">B&amp;V §3.2.4 · p. 83–84, eq. 3.11</span></div>
+
+    <table class="rtab">
+      <thead><tr><th>h</th><th>h̃ (via ±∞)</th><th>dom h must extend</th></tr></thead>
+      <tbody>
+        <tr><td>convex (+∞ off)</td><td>nondecreasing</td><td class="res">left</td></tr>
+        <tr><td>convex</td><td>nonincreasing</td><td class="res">right</td></tr>
+        <tr><td>concave (−∞ off)</td><td>nondecreasing</td><td class="res">right &nbsp;<span class="mono">(e.g. log on R₊₊)</span></td></tr>
+        <tr><td>concave</td><td>nonincreasing</td><td class="res">left</td></tr>
+      </tbody>
+    </table>
+
+    <p>For convex \(h\), the \(+\infty\) extension <em>jumps up</em> off the domain, so "\(\tilde h\) nondecreasing" forces the domain to extend <b>leftward</b> (an \(+\infty\) sitting on the right is fine; on the left it would break monotonicity). Fig. 3.7 is the caution: \(x^2\) on \(\mathbf R_+\) is nondecreasing <em>there</em>, but its extension \(\tilde h\) — which is \(+\infty\) for \(x<0\) — is not nondecreasing. For concave \(h\) the \(-\infty\) extension flips every direction.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Remark 3.3 — why h̃, not just h</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--normal)"></i> u = g(x) = x²</span>
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> band  dom h = [a, b]</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> dom f on the x-axis</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>g(x)=x²,  h ≡ 0 on dom h=[a,b]</h5>
+          <p class="hint">Boyd's counterexample. \(h\) is <em>constant</em> on its domain, so it <b>is</b> nondecreasing there — yet \(\operatorname{dom}f=\{x\mid x^2\in[a,b]\}\) can be two disjoint intervals, so \(f\) is <b>not</b> convex. <b>Slide the left end a leftward</b> (toward \(-\infty\)): the band drops below the vertex, \(\operatorname{dom}f\) fuses into one interval, and \(\tilde h\) becomes nondecreasing. The condition has to be on \(\tilde h\).</p>
+          <div class="ctrl"><label>a (left end of dom h)<span class="val" id="v2a">1.00</span></label><input type="range" id="p2a" min="-3" max="1.6" step="0.01" value="1.0"></div>
+          <div class="ctrl"><label>b (right end of dom h)<span class="val" id="v2b">2.00</span></label><input type="range" id="p2b" min="1.8" max="4.2" step="0.01" value="2.0"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">Example 3.12 — the h̃ condition in the wild</span></div>
+  <hr class="rule"/>
+  <p>Four quick reads on \(x\mapsto\) a power/log, each testing the extension condition:</p>
+  <ul class="reads">
+    <li><span class="tag">✓</span><div>\(\log x\) on \(\mathbf R_{++}\): concave, and \(\tilde h\) nondecreasing (domain extends right, \(-\infty\) fills the left) — so \(\log g\) is concave for concave positive \(g\).</div></li>
+    <li><span class="tag">✓</span><div>\(x^{1/2}\) on \(\mathbf R_+\): concave, \(\tilde h\) nondecreasing.</div></li>
+    <li><span class="tag">✗</span><div>\(x^{3/2}\) on \(\mathbf R_+\): convex, but \(\tilde h\) is <em>not</em> nondecreasing — \(\tilde h(-1)=+\infty>\tilde h(1)=1\). The condition fails as stated.</div></li>
+    <li><span class="tag">fix</span><div>Clipped \(x^{3/2}\) (set \(=0\) for \(x<0\)) on all of \(\mathbf R\): now convex <em>and</em> \(\tilde h\) nondecreasing — the domain was extended leftward to repair it.</div></li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§4</span><span class="eyebrow">proof of the base case — no differentiability</span></div>
+    <hr class="rule"/>
+    <p>Claim: \(g\) convex, \(h\) convex, \(\tilde h\) nondecreasing \(\Rightarrow f=h\circ g\) convex. Take \(x,y\in\operatorname{dom}f\), \(\theta\in[0,1]\).</p>
+
+    <div class="proof">
+      <div class="proof-head"><span>h∘g convex from the definition</span><span class="target">h̃ nondecreasing does two jobs</span></div>
+      <div class="step">
+        <div class="math">\[ g(\theta x+(1-\theta)y)\ \le\ \theta g(x)+(1-\theta)g(y) \tag{3.12}\]</div>
+        <div class="why"><b>g convex.</b> The inner inequality — the only place \(g\)'s convexity is used.</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ \theta x+(1-\theta)y\in\operatorname{dom}f \]</div>
+        <div class="why"><b>domain job.</b> RHS of (3.12) \(\in\operatorname{dom}h\); \(\tilde h\) nondecreasing (domain extends left) forces the smaller LHS into \(\operatorname{dom}h\) too — so \(\operatorname{dom}f\) is convex.</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ h\big(g(\theta x+(1-\theta)y)\big)\ \le\ h\big(\theta g(x)+(1-\theta)g(y)\big) \tag{3.13}\]</div>
+        <div class="why"><b>inequality job.</b> apply the nondecreasing \(\tilde h\) to (3.12).</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \le\ \theta\,h(g(x))+(1-\theta)\,h(g(y))=\theta f(x)+(1-\theta)f(y) \tag{3.14}\]</div>
+        <div class="why"><b>h convex.</b> chain the three steps ⟹ \(f\) convex. ∎</div>
+      </div>
+    </div>
+
+    <div class="note key"><div class="ic">!</div><p><b>Division of labor.</b> \(\tilde h\) nondecreasing does <em>two</em> jobs — domain convexity <em>and</em> step (3.13); \(h\) convex does (3.14); \(g\) convex does (3.12). Every hypothesis is load-bearing, and that is exactly why weakening "\(\tilde h\)" to "\(h\)" (Remark 3.3) breaks the proof at the domain step.</p></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">Example 3.13 — everyday consequences (reach for these)</span></div>
+    <hr class="rule"/>
+    <p>The five compositions you actually invoke, each an instance of a single rule:</p>
+    <ul class="reads">
+      <li><span class="tag">exp</span><div>\(g\) convex \(\Rightarrow \exp g\) convex.</div></li>
+      <li><span class="tag">log</span><div>\(g\) concave and positive \(\Rightarrow \log g\) concave.</div></li>
+      <li><span class="tag">1/g</span><div>\(g\) concave and positive \(\Rightarrow 1/g\) convex.</div></li>
+      <li><span class="tag">gᵖ</span><div>\(g\) convex and nonnegative, \(p\ge1 \Rightarrow g^{p}\) convex.</div></li>
+      <li><span class="tag">−log</span><div>\(g\) convex \(\Rightarrow -\log(-g)\) convex on \(\{x\mid g(x)<0\}\).</div></li>
+    </ul>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>The reach-for-it catalogue — one rule, five faces</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:#B7BCC8"></i> inner g(x)</span>
+            <span><i style="border-color:var(--normal)"></i> f = outer(g)</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> curvature as claimed</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>which composition</h5>
+          <div class="chips" id="op3">
+            <span class="chip on" data-o="exp">exp g</span>
+            <span class="chip" data-o="log">log g</span>
+            <span class="chip" data-o="inv">1/g</span>
+            <span class="chip" data-o="pow">gᵖ</span>
+            <span class="chip" data-o="nlog">−log(−g)</span>
+          </div>
+          <p class="hint">Each chip loads the inner \(g\) with the curvature/sign its rule needs (drawn faint) and plots \(f\) bold. <b>Slide the shift</b> to move \(g\); the verdict on \(f\) holds throughout — the rule doesn't depend on the particular \(g\), only its class.</p>
+          <div class="ctrl"><label>shift g<span class="val" id="v3c">0.00</span></label><input type="range" id="p3c" min="-1" max="1" step="0.01" value="0"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">Remark 3.3 — the cautionary tale, stated</span></div>
+  <hr class="rule"/>
+  <p>Why the condition must be on \(\tilde h\) and not \(h\), in one clean counterexample (Lab 2 above is this remark, made draggable):</p>
+  <div class="bv">Take \(g(x)=x^2\) (convex) and \(h=0\) on \(\operatorname{dom}h=[1,2]\) (convex, and nondecreasing on its domain). Then
+    \[ \operatorname{dom}f=\{x\mid x^2\in[1,2]\}=[-\sqrt2,-1]\cup[1,\sqrt2] \]
+    is <em>not convex</em>, so \(f\) is not convex. No contradiction with the rule: \(\tilde h\) is <em>not</em> nondecreasing, since \(\tilde h(0)=+\infty>\tilde h(1.5)=0\).<span class="src">B&amp;V §3.2.4 · p. 85, Remark 3.3</span></div>
+  <div class="note warn"><div class="ic">!</div><p>\(h\) nondecreasing <em>on its domain</em> is not enough. The moment the \(+\infty\) extension sits to the <em>left</em> of a finite value, \(\tilde h\) is no longer monotone — and the domain of \(f\) can shatter into disconnected pieces.</p></div>
+</section>
+
+<!-- 7 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">vector case (k ≥ 1)</span></div>
+  <hr class="rule"/>
+  <p>When \(g:\mathbf R^n\to\mathbf R^k\) and \(h:\mathbf R^k\to\mathbf R\), the same story holds argument-by-argument. The twice-differentiable check reads:</p>
+  <div class="bv">\[ f''(x)=g'(x)^{\mathsf T}\,\nabla^2 h(g(x))\,g'(x)+\nabla h(g(x))^{\mathsf T}\,g''(x). \tag{3.15}\]
+    The monotonicity condition becomes "\(\tilde h\) nondecreasing in <em>each</em> argument" — equivalently \(\operatorname{dom}h-\mathbf R^k_+=\operatorname{dom}h\) for convex \(h\). Then \(h\) convex, nondecreasing in each argument, and each \(g_i\) convex \(\Rightarrow f\) convex; and the mirror rules.<span class="src">B&amp;V §3.2.4 · p. 86, eq. 3.15</span></div>
+  <p><strong>Example 3.14.</strong> Three staples fall straight out: the sum of the \(r\) largest of convex \(g_i\) is convex; \(\log\sum_i e^{g_i}\) is convex when each \(g_i\) is convex; and the geometric mean \(\big(\prod_i g_i\big)^{1/k}\) is concave when each \(g_i\) is concave and nonnegative.</p>
+  <div class="excard">
+    <div class="exh"><span>log-sum-exp of convex gᵢ</span><span class="vt">convex</span></div>
+    <div class="exb"><p>\(h(y)=\log\sum_i e^{y_i}\) is convex and nondecreasing in each \(y_i\); composing with convex \(g_i\) keeps convexity. This is the smooth-max you meet everywhere in logistic and softmax models.</p></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§8</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">D1</span>The four rules</p><p>\(f\) inherits \(h\)'s curvature. For a convex \(f\): pair convex \(g\) ↔ nondecreasing \(\tilde h\), concave \(g\) ↔ nonincreasing \(\tilde h\). Backwards pairing is the classic error.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D2</span>Monotonicity on h̃, not h</p><p>And the domain direction is curvature-dependent: convex \(h\) → extends <em>left</em> for nondecreasing; concave \(h\) → extends <em>right</em> (e.g. \(\log\)). See the §2 table.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D3</span>Remark 3.3 is the test</p><p>\(g=x^2\) into \(h=0\) on \([1,2]\) gives a non-convex \(\operatorname{dom}f\). If you can explain why, you've internalized "\(\tilde h\), not \(h\)."</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D4</span>The affine special case</p><p>§3.2.2 is this rule with an affine inner \(g(x)=Ax+b\): the Jensen step holds with equality, so <em>no</em> outer monotonicity is needed.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">D5</span>Reach-for-it</p><p>\(\exp g\), \(\log g\), \(1/g\), \(g^p\) (\(p\ge1\)), \(-\log(-g)\). Vector: log-sum-exp of convex; geometric mean of concave nonnegative.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-07-20 · bv.3.2.4 · Composition (B&amp;V §3.2.4)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Rules</h6><p>\(h\circ g\) convex if [\(h\) convex, \(\tilde h\) nondecreasing, \(g\) convex] or [\(h\) convex, \(\tilde h\) nonincreasing, \(g\) concave]; concave mirrors. \(f\) inherits \(h\)'s curvature; \(g\) matches \(h\)'s monotonicity.</p></div>
+      <div class="scard"><h6>Why (twice-diff)</h6><p>\(f''=h''g'^2+h'g''\) (3.9), sign-read the two terms.</p></div>
+      <div class="scard"><h6>Crucial</h6><p>Monotonicity on \(\tilde h\); domain-direction is curvature-dependent (convex \(h\) nondec → left; concave \(h\) nondec → right, e.g. \(\log\)). Remark 3.3: \(g=x^2\) into \(h=0\) on \([1,2]\) → non-convex \(\operatorname{dom}f\).</p></div>
+      <div class="scard"><h6>Proof</h6><p>(3.12) \(g\) convex → (3.13) \(\tilde h\) nondecreasing → (3.14) \(h\) convex.</p></div>
+      <div class="scard"><h6>Ex 3.13</h6><p>\(\exp g\), \(\log g\), \(1/g\), \(g^p\), \(-\log(-g)\). Vector: log-sum-exp; geometric mean.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §3.2.4 (p. 83–87) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+// draw y=fn(x); skip where undefined (NaN) or out of range
+function drawCurve(ctx,view,fn,R,color,wd){
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let first=true;
+  for(let x=-R+0.2;x<=R-0.2;x+=0.02){
+    const yv=fn(x);
+    if(yv==null||!isFinite(yv)||yv<-R+0.15||yv>R-0.15){first=true;continue;}
+    const p=view.toS(x,yv);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();
+}
+// scan second difference over region where fn is finite; returns {min,max}
+function curvScan(fn,lo,hi){
+  const N=300,h=(hi-lo)/N;let mn=Infinity,mx=-Infinity;
+  for(let i=1;i<N;i++){const x=lo+i*h;
+    const a=fn(x-h),b=fn(x),c=fn(x+h);
+    if(a==null||b==null||c==null||!isFinite(a)||!isFinite(b)||!isFinite(c))continue;
+    const d=(a-2*b+c)/(h*h);
+    if(d<mn)mn=d; if(d>mx)mx=d;
+  }
+  return {min:mn,max:mx};
+}
+function classify(sc){
+  const tol=8e-3;
+  if(!isFinite(sc.min))return "none";
+  if(sc.min>=-tol)return "convex";
+  if(sc.max<=tol)return "concave";
+  return "neither";
+}
+
+/* ===== LAB 1 — the four rules ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const H={
+    cu:{f:u=>Math.exp(0.5*u),  name:"h(u)=eᵘ  (convex ↑)",  cvx:true, dir:"up"},
+    cd:{f:u=>Math.exp(-0.5*u), name:"h(u)=e⁻ᵘ  (convex ↓)", cvx:true, dir:"dn"},
+    vu:{f:u=>-Math.exp(-0.5*u),name:"h(u)=−e⁻ᵘ  (concave ↑)",cvx:false,dir:"up"},
+    vd:{f:u=>-Math.exp(0.5*u), name:"h(u)=−eᵘ  (concave ↓)", cvx:false,dir:"dn"}
+  };
+  const G={
+    cx:{f:x=>0.5*x*x-2, name:"g convex",  cvx:true},
+    cv:{f:x=>-0.5*x*x+2,name:"g concave", cvx:false}
+  };
+  let hcur="cu", gcur="cx";
+  const hchips=document.getElementById("h1").querySelectorAll(".chip"),
+        gchips=document.getElementById("g1").querySelectorAll(".chip"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function f(x){return H[hcur].f(G[gcur].f(x));}
+  // guaranteed pairing? convex g <-> nondecreasing h ; concave g <-> nonincreasing h (both curvatures of h)
+  function guaranteed(){
+    // convex g pairs with nondecreasing h̃ when h is convex, with nonincreasing when h is concave
+    const gCx=G[gcur].cvx, up=H[hcur].dir==="up", hCx=H[hcur].cvx;
+    return up ? (gCx===hCx) : (gCx!==hCx);
+  }
+  function expect(){
+    // result curvature if guaranteed: inherits h's curvature
+    return H[hcur].cvx? "convex":"concave";
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    drawCurve(ctx,view,x=>G[gcur].f(x),R,"#B7BCC8",1.8);
+    drawCurve(ctx,view,f,R,"#D7402B",2.9);
+    const sc=curvScan(f,-4,4),cls=classify(sc),g=guaranteed();
+    ro.innerHTML=`<span class="k">${H[hcur].name}</span><br><span class="k">${G[gcur].name}</span><br>`+
+      `<span class="k">f''</span> range = [<b>${sc.min.toFixed(2)}</b>, <b>${sc.max.toFixed(2)}</b>] → <b>${cls}</b>`;
+    if(g){vd.className="verdict in";vd.textContent="✓ matches rule → f "+expect()+" (guaranteed)";}
+    else{vd.className="verdict out";vd.textContent="✗ backwards pairing — f "+cls+", no guarantee";}
+  }
+  hchips.forEach(c=>c.addEventListener("click",()=>{hcur=c.dataset.h;hchips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  gchips.forEach(c=>c.addEventListener("click",()=>{gcur=c.dataset.g;gchips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — Remark 3.3: dom f = {x: x^2 in [a,b]} ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const as=document.getElementById("p2a"),bs=document.getElementById("p2b"),
+        v2a=document.getElementById("v2a"),v2b=document.getElementById("v2b"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    let a=parseFloat(as.value), b=parseFloat(bs.value);
+    if(b<a+0.2)b=a+0.2;
+    // parabola u=x^2 (clamped to frame)
+    drawCurve(ctx,view,x=>x*x,R,"#D7402B",2.6);
+    label(ctx,"u = x²",view.toS(1.9,4.2)[0],view.toS(1.9,4.2)[1],"#D7402B",12);
+    // band a<=u<=b (horizontal strip), clamped to frame
+    const yb=clamp(b,-R+0.1,R-0.1), ya=clamp(a,-R+0.1,R-0.1);
+    const pT=view.toS(-R+0.15,yb), pB=view.toS(-R+0.15,ya);
+    const wpx=view.toS(R-0.15,ya)[0]-pT[0];
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fillRect(pT[0],pT[1],wpx,pB[1]-pT[1]);
+    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.4;
+    ctx.beginPath();ctx.moveTo(pT[0],pT[1]);ctx.lineTo(pT[0]+wpx,pT[1]);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pB[0],pB[1]);ctx.lineTo(pB[0]+wpx,pB[1]);ctx.stroke();
+    label(ctx,"dom h=[a,b]",view.toS(-4.3,(ya+yb)/2)[0],view.toS(-4.3,(ya+yb)/2)[1]-0,"#2B6CB0",11);
+    // dom f on x-axis: x^2 in [max(a,0),b]  => |x| in [sqrt(max(a,0)), sqrt(b)]
+    const lo=Math.sqrt(Math.max(a,0)), hi=Math.sqrt(Math.max(b,0));
+    const axisY=view.toS(0,0)[1];
+    function seg(x0,x1){const p0=view.toS(clamp(x0,-R+0.1,R-0.1),0),p1=view.toS(clamp(x1,-R+0.1,R-0.1),0);
+      ctx.strokeStyle="#2F855A";ctx.lineWidth=6;ctx.lineCap="round";
+      ctx.beginPath();ctx.moveTo(p0[0],axisY);ctx.lineTo(p1[0],axisY);ctx.stroke();}
+    const twoPieces = a>0+1e-9;
+    if(twoPieces){ seg(-hi,-lo); seg(lo,hi); }
+    else { seg(-hi,hi); }
+    // vertices dropping from parabola to axis at the segment ends (light guides)
+    ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle="#9AA1B3";ctx.lineWidth=1;
+    [lo,hi].forEach(xx=>{ if(xx>0){ const pTop=view.toS(xx,clamp(xx*xx,-R+0.1,R-0.1)),pBot=view.toS(xx,0);
+      ctx.beginPath();ctx.moveTo(pTop[0],pTop[1]);ctx.lineTo(pBot[0],pBot[1]);ctx.stroke();
+      const pTop2=view.toS(-xx,clamp(xx*xx,-R+0.1,R-0.1)),pBot2=view.toS(-xx,0);
+      ctx.beginPath();ctx.moveTo(pTop2[0],pTop2[1]);ctx.lineTo(pBot2[0],pBot2[1]);ctx.stroke(); }});
+    ctx.restore();
+    ro.innerHTML=`<span class="k">dom h</span> = [${a.toFixed(2)}, ${b.toFixed(2)}]<br>`+
+      `<span class="k">dom f</span> = {x : x² ∈ dom h}<br>`+
+      (twoPieces
+        ? `= [−${hi.toFixed(2)}, −${lo.toFixed(2)}] ∪ [${lo.toFixed(2)}, ${hi.toFixed(2)}]`
+        : `= [−${hi.toFixed(2)}, ${hi.toFixed(2)}]  (single interval)`);
+    if(twoPieces){vd.className="verdict out";vd.textContent="✗ dom f disconnected — h̃ NOT nondecreasing — f not convex";}
+    else{vd.className="verdict in";vd.textContent="✓ a≤0: domain extends left — h̃ nondecreasing — dom f convex";}
+    v2a.textContent=a.toFixed(2);v2b.textContent=b.toFixed(2);
+  }
+  [as,bs].forEach(s=>s.addEventListener("input",draw));
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — Example 3.13 reach-for-it catalogue ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=5,view=makeView(canvas,R);
+  const cs=document.getElementById("p3c"),v3c=document.getElementById("v3c"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  let cur="exp";
+  const chips=document.getElementById("op3").querySelectorAll(".chip");
+  // each: g(x,c) with the needed class; f = outer(g); note (gclass, claim)
+  const OP={
+    exp:{ g:(x,c)=>0.32*x*x-1.6+c, f:v=>Math.exp(0.5*v), gcl:"g convex", claim:"convex", want:"convex" },
+    log:{ g:(x,c)=>-0.3*x*x+3.4+c, f:v=>v>0?Math.log(v):null, gcl:"g concave, positive", claim:"concave", want:"concave" },
+    inv:{ g:(x,c)=>-0.3*x*x+3.4+c, f:v=>v>0?1/v:null, gcl:"g concave, positive", claim:"convex", want:"convex" },
+    pow:{ g:(x,c)=>0.3*x*x+0.7+c,  f:v=>v>=0?Math.pow(v,1.5):null, gcl:"g convex, nonneg (p=1.5)", claim:"convex", want:"convex" },
+    nlog:{g:(x,c)=>0.32*x*x-3.4+c, f:v=>v<0?-Math.log(-v):null, gcl:"g convex, on {g<0}", claim:"convex", want:"convex" }
+  };
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const c=parseFloat(cs.value),o=OP[cur];
+    const gfn=x=>o.g(x,c), ffn=x=>o.f(o.g(x,c));
+    drawCurve(ctx,view,gfn,R,"#B7BCC8",1.8);
+    drawCurve(ctx,view,ffn,R,"#D7402B",2.9);
+    const sc=curvScan(ffn,-4,4),cls=classify(sc);
+    const ok = cls===o.want;
+    ro.innerHTML=`<span class="k">${o.gcl}</span><br>`+
+      `<span class="k">claim</span>: f is <b>${o.claim}</b><br>`+
+      `<span class="k">measured f''</span> ∈ [<b>${isFinite(sc.min)?sc.min.toFixed(2):'—'}</b>, <b>${isFinite(sc.max)?sc.max.toFixed(2):'—'}</b>] → <b>${cls}</b>`;
+    if(ok){vd.className="verdict in";vd.textContent="✓ f "+o.claim+" — as the rule promises";}
+    else{vd.className="verdict mid";vd.textContent="shift g back toward center to see f "+o.claim;}
+    v3c.textContent=c.toFixed(2);
+  }
+  chips.forEach(c=>c.addEventListener("click",()=>{cur=c.dataset.o;chips.forEach(z=>z.classList.toggle('on',z===c));draw();}));
+  cs.addEventListener("input",draw);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
