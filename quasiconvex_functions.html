@@ -299,7 +299,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
 
   <div class="note key">
     <div class="ic">!</div>
-    <p><strong>The two-well function is the whole point.</strong> For \(\alpha\) between the two minima and the local max, \(S_\alpha\) splits into two intervals — and the midpoint of a point in the left piece and a point in the right piece has \(f>\alpha\). That single \(\alpha\) is enough: quasiconvexity fails.</p>
+    <p><strong>The two-well function is the whole point.</strong> For \(\alpha\) between the two minima and the local max, \(S_\alpha\) splits into two intervals — and the midpoint of a point in the left piece and a point in the right piece has \(f&gt;\alpha\). That single \(\alpha\) is enough: quasiconvexity fails.</p>
   </div>
 </section>
 
@@ -317,7 +317,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <div class="excard">
     <div class="exh"><span>Example 3.29a — the logarithm</span><span class="vt">quasilinear on \(\mathbf{R}_{++}\)</span></div>
     <div class="exb">
-      <p>\(\log x\) on \(\mathbf{R}_{++}\) is <strong>quasiconvex and quasiconcave</strong>, i.e. quasilinear. Each sublevel set is \(\{x>0\mid \log x\le\alpha\}=(0,e^{\alpha}]\), an interval; each superlevel set is \([e^{\alpha},\infty)\), also an interval.</p>
+      <p>\(\log x\) on \(\mathbf{R}_{++}\) is <strong>quasiconvex and quasiconcave</strong>, i.e. quasilinear. Each sublevel set is \(\{x&gt;0\mid \log x\le\alpha\}=(0,e^{\alpha}]\), an interval; each superlevel set is \([e^{\alpha},\infty)\), also an interval.</p>
       <p>And \(\log\) is <em>concave</em>, not convex. So here is a quasiconvex function that is not convex — the converse of "convex \(\Rightarrow\) quasiconvex" is dead on arrival.</p>
     </div>
   </div>
@@ -386,7 +386,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
 
   <div class="note warn">
     <div class="ic">!</div>
-    <p><strong>The domain is not decoration.</strong> \(x_1x_2\) is <em>not</em> quasiconcave on all of \(\mathbf{R}^{2}\). On the full plane, \(\{x_1x_2\ge\alpha\}\) for \(\alpha>0\) is the union of <em>two</em> hyperbola branches — one in the first quadrant, one in the third — and a segment joining them passes through the origin, where the product is \(0<\alpha\). Restricting to the nonnegative orthant is what makes the claim true.</p>
+    <p><strong>The domain is not decoration.</strong> \(x_1x_2\) is <em>not</em> quasiconcave on all of \(\mathbf{R}^{2}\). On the full plane, \(\{x_1x_2\ge\alpha\}\) for \(\alpha&gt;0\) is the union of <em>two</em> hyperbola branches — one in the first quadrant, one in the third — and a segment joining them passes through the origin, where the product is \(0&lt;\alpha\). Restricting to the nonnegative orthant is what makes the claim true.</p>
   </div>
 </section>
 
@@ -398,7 +398,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
 
   <div class="bv">
     The linear-fractional function
-    \[ f(x)=\frac{a^{\mathsf T}x+b}{c^{\mathsf T}x+d},\qquad \operatorname{dom}f=\{x\mid c^{\mathsf T}x+d>0\}, \]
+    \[ f(x)=\frac{a^{\mathsf T}x+b}{c^{\mathsf T}x+d},\qquad \operatorname{dom}f=\{x\mid c^{\mathsf T}x+d&gt;0\}, \]
     is quasiconvex and quasiconcave, i.e. <strong>quasilinear</strong>.
     <span class="src">B&amp;V §3.4.1 · L4979–4992</span>
   </div>
@@ -406,19 +406,19 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <div class="proof">
     <div class="proof-head"><span>Claim — every sublevel set of \(f\) is convex</span><span class="target">multiply out, positively</span></div>
     <div class="step crux">
-      <div class="math">\[ S_\alpha=\Bigl\{\,x \;\Bigm|\; c^{\mathsf T}x+d>0,\ \ \frac{a^{\mathsf T}x+b}{c^{\mathsf T}x+d}\le\alpha \,\Bigr\} \]</div>
+      <div class="math">\[ S_\alpha=\Bigl\{\,x \;\Bigm|\; c^{\mathsf T}x+d&gt;0,\ \ \frac{a^{\mathsf T}x+b}{c^{\mathsf T}x+d}\le\alpha \,\Bigr\} \]</div>
       <div class="why"><b>why</b> the domain condition travels with the sublevel set — it is part of the definition of \(S_\alpha\), not an afterthought.</div>
     </div>
     <div class="step crux">
-      <div class="math">\[ =\{\,x\mid c^{\mathsf T}x+d>0,\ \ a^{\mathsf T}x+b\le\alpha\,(c^{\mathsf T}x+d)\,\} \]</div>
+      <div class="math">\[ =\{\,x\mid c^{\mathsf T}x+d&gt;0,\ \ a^{\mathsf T}x+b\le\alpha\,(c^{\mathsf T}x+d)\,\} \]</div>
       <div class="why"><b>why</b> on \(\operatorname{dom}f\) the denominator is <em>strictly positive</em>, so multiplying through preserves the direction of the inequality. This is the whole trick.</div>
     </div>
     <div class="step">
-      <div class="math">\[ =\{\,x\mid c^{\mathsf T}x+d>0\,\}\ \cap\ \{\,x\mid (a-\alpha c)^{\mathsf T}x+(b-\alpha d)\le 0\,\} \]</div>
+      <div class="math">\[ =\{\,x\mid c^{\mathsf T}x+d&gt;0\,\}\ \cap\ \{\,x\mid (a-\alpha c)^{\mathsf T}x+(b-\alpha d)\le 0\,\} \]</div>
       <div class="why"><b>why</b> both conditions are now affine in \(x\): an open halfspace intersected with a closed halfspace. Convex.</div>
     </div>
     <div class="step">
-      <div class="math">\[ \{x\mid f(x)\ge\alpha\}=\{c^{\mathsf T}x+d>0\}\cap\{(a-\alpha c)^{\mathsf T}x+(b-\alpha d)\ge 0\} \]</div>
+      <div class="math">\[ \{x\mid f(x)\ge\alpha\}=\{c^{\mathsf T}x+d&gt;0\}\cap\{(a-\alpha c)^{\mathsf T}x+(b-\alpha d)\ge 0\} \]</div>
       <div class="why"><b>why</b> the same multiplication runs with the inequality reversed, so the superlevel sets are convex too — hence quasilinear.</div>
     </div>
   </div>
@@ -460,7 +460,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
 
   <div class="note key">
     <div class="ic">!</div>
-    <p><strong>Use the lab to see both halves of §5.</strong> On <span class="mono">x₁x₂ on R²₊</span> the <em>superlevel</em> set is convex but the <em>sublevel</em> set is not — that is exactly what "quasiconcave, not quasiconvex" looks like. Switch to <span class="mono">x₁x₂ on R²</span> with \(\alpha>0\) and the superlevel set breaks into two branches; a segment from one to the other crosses the origin and leaves.</p>
+    <p><strong>Use the lab to see both halves of §5.</strong> On <span class="mono">x₁x₂ on R²₊</span> the <em>superlevel</em> set is convex but the <em>sublevel</em> set is not — that is exactly what "quasiconcave, not quasiconvex" looks like. Switch to <span class="mono">x₁x₂ on R²</span> with \(\alpha&gt;0\) and the superlevel set breaks into two branches; a segment from one to the other crosses the origin and leaves.</p>
   </div>
 </section>
 
@@ -482,7 +482,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <div class="proof">
     <div class="proof-head"><span>Claim — \(S_\alpha\) is convex for every \(\alpha\)</span><span class="target">square, then recognize a ball</span></div>
     <div class="step">
-      <div class="math">\[ \alpha<0:\quad S_\alpha=\varnothing \]</div>
+      <div class="math">\[ \alpha&lt;0:\quad S_\alpha=\varnothing \]</div>
       <div class="why"><b>why</b> \(f\ge 0\) everywhere on its domain; the empty set is convex.</div>
     </div>
     <div class="step crux">
@@ -491,7 +491,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     </div>
     <div class="step crux">
       <div class="math">\[ (1-\alpha^{2})\,x^{\mathsf T}x-2(a-\alpha^{2}b)^{\mathsf T}x+a^{\mathsf T}a-\alpha^{2}b^{\mathsf T}b\ \le\ 0 \]</div>
-      <div class="why"><b>why</b> expand both norms and collect. For \(0\le\alpha<1\) the coefficient \(1-\alpha^{2}>0\), so this is a convex quadratic inequality — a <em>Euclidean ball</em>.</div>
+      <div class="why"><b>why</b> expand both norms and collect. For \(0\le\alpha&lt;1\) the coefficient \(1-\alpha^{2}&gt;0\), so this is a convex quadratic inequality — a <em>Euclidean ball</em>.</div>
     </div>
     <div class="step">
       <div class="math">\[ \alpha=1:\quad -2(a-b)^{\mathsf T}x+a^{\mathsf T}a-b^{\mathsf T}b\le 0 \]</div>
@@ -499,7 +499,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     </div>
   </div>
 
-  <p>Explicitly, for \(0\le\alpha<1\) the ball has center and radius</p>
+  <p>Explicitly, for \(0\le\alpha&lt;1\) the ball has center and radius</p>
   \[ x_c=\frac{a-\alpha^{2}b}{1-\alpha^{2}},\qquad r^{2}=\|x_c\|_2^{2}-\frac{a^{\mathsf T}a-\alpha^{2}b^{\mathsf T}b}{1-\alpha^{2}}, \]
   <p>the classical <em>circle of Apollonius</em>. Every sublevel set is empty, a ball, or a halfspace — all convex — so \(f\) is quasiconvex on \(\{\|x-a\|_2\le\|x-b\|_2\}\).</p>
 
@@ -541,7 +541,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <p>which is a <em>linear</em> function of \(x\) for each fixed \(r\) — that is the hinge of the whole example.</p>
 
   <div class="bv">
-    Assume \(x_0<0\) (an initial investment) and \(x_0+x_1+\cdots+x_n>0\) (the total return exceeds the investment). The <strong>internal rate of return</strong> is
+    Assume \(x_0&lt;0\) (an initial investment) and \(x_0+x_1+\cdots+x_n&gt;0\) (the total return exceeds the investment). The <strong>internal rate of return</strong> is
     \[ \mathrm{IRR}(x)=\inf\{\,r\ge 0\mid \mathrm{PV}(x,r)=0\,\}, \]
     and \(\mathrm{IRR}\) is quasiconcave.
     <span class="src">B&amp;V §3.4.1 · L5015–5047</span>
@@ -550,11 +550,11 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <div class="proof">
     <div class="proof-head"><span>Claim — every superlevel set of IRR is convex</span><span class="target">turn a level into an intersection</span></div>
     <div class="step crux">
-      <div class="math">\[ \mathrm{IRR}(x)\ge R \iff \mathrm{PV}(x,r)>0\ \ \text{for all } 0\le r<R \]</div>
+      <div class="math">\[ \mathrm{IRR}(x)\ge R \iff \mathrm{PV}(x,r)&gt;0\ \ \text{for all } 0\le r&lt;R \]</div>
       <div class="why"><b>why</b> the IRR is the <em>first</em> rate at which the present value hits zero; it is at least \(R\) exactly when the present value has not yet vanished anywhere below \(R\).</div>
     </div>
     <div class="step crux">
-      <div class="math">\[ \{x\mid \mathrm{IRR}(x)\ge R\}=\bigcap_{0\le r<R}\{\,x\mid \mathrm{PV}(x,r)>0\,\} \]</div>
+      <div class="math">\[ \{x\mid \mathrm{IRR}(x)\ge R\}=\bigcap_{0\le r&lt;R}\{\,x\mid \mathrm{PV}(x,r)&gt;0\,\} \]</div>
       <div class="why"><b>why</b> "for all \(r\)" is an intersection. Each member is an open halfspace, because \(\mathrm{PV}(\cdot,r)\) is linear in \(x\).</div>
     </div>
     <div class="step">
