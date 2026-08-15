@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.4.3 — Differentiable Quasiconvex Functions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.rtab{width:100%;border-collapse:collapse;margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;font-size:16px}
+.rtab th,.rtab td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.rtab thead th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rtab tbody tr:last-child td,.rtab tr:last-child td{border-bottom:none}
+.rtab .rn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal);font-weight:600}
+.rtab .res{font-weight:600;color:var(--ink)}
+.rtab td .mono{font-size:14px}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.4.3</div>
+    <h1>Differentiable <em>quasiconvex</em> functions</h1>
+    <p class="sub">Calculus characterizations, and the two places quasiconvexity parts company with convexity: the gradient only fixes a <em>direction</em>, and a zero gradient certifies nothing.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> (3.20) f(y) ≤ f(x) ⟹ ∇f(x)ᵀ(y−x) ≤ 0</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> ∇f(x) supports the sublevel set</span>
+      <span><span class="dot" style="background:var(--inside)"></span> (3.21) ≥ necessary · (3.22) &gt; sufficient</span>
+      <span>p.&nbsp;99–101 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 250" role="img" aria-label="Left: the sublevel set of a quasiconvex function drawn as a shaded region, with the gradient at a boundary point acting as the outward normal of a supporting hyperplane — the whole sublevel set lies on one side. Right: the graph of a cubic, whose derivative vanishes at the origin even though the function keeps decreasing to the left, so a zero gradient is not a certificate of optimality.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="250" fill="url(#dots)"/>
+
+        <!-- ===== panel A: gradient = outward normal of a supporting hyperplane ===== -->
+        <polygon fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="2"
+          points="236.9,164.1 235.7,166.4 234.3,168.7 232.7,170.8 231.0,172.8 229.1,174.8 227.0,176.6 224.7,178.2 222.3,179.8 219.8,181.2 217.1,182.5 214.3,183.6 211.3,184.6 208.2,185.5 205.0,186.2 201.8,186.8 198.4,187.2 194.9,187.4 191.4,187.5 187.8,187.5 184.1,187.3 180.4,187.0 176.7,186.5 173.0,185.8 169.2,185.0 165.4,184.1 161.7,183.0 157.9,181.8 154.2,180.4 150.5,178.9 146.9,177.3 143.3,175.6 139.8,173.7 136.4,171.7 133.0,169.6 129.8,167.5 126.6,165.2 123.6,162.8 120.7,160.3 117.9,157.8 115.3,155.2 112.8,152.5 110.4,149.8 108.2,147.0 106.2,144.2 104.4,141.3 102.7,138.5 101.2,135.6 99.9,132.7 98.7,129.7 97.8,126.8 97.0,124.0 96.5,121.1 96.1,118.3 96.0,115.5 96.0,112.7 96.2,110.0 96.7,107.4 97.3,104.8 98.1,102.3 99.1,99.9 100.3,97.6 101.7,95.3 103.3,93.2 105.0,91.2 106.9,89.2 109.0,87.4 111.3,85.8 113.7,84.2 116.2,82.8 118.9,81.5 121.7,80.4 124.7,79.4 127.8,78.5 131.0,77.8 134.2,77.2 137.6,76.8 141.1,76.6 144.6,76.5 148.2,76.5 151.9,76.7 155.6,77.0 159.3,77.5 163.0,78.2 166.8,79.0 170.6,79.9 174.3,81.0 178.1,82.2 181.8,83.6 185.5,85.1 189.1,86.7 192.7,88.4 196.2,90.3 199.6,92.3 203.0,94.4 206.2,96.5 209.4,98.8 212.4,101.2 215.3,103.7 218.1,106.2 220.7,108.8 223.2,111.5 225.6,114.2 227.8,117.0 229.8,119.8 231.6,122.7 233.3,125.5 234.8,128.4 236.1,131.3 237.3,134.3 238.2,137.2 239.0,140.0 239.5,142.9 239.9,145.7 240.0,148.5 240.0,151.3 239.8,154.0 239.3,156.6 238.7,159.2 237.9,161.7"/>
+        <line x1="61.3" y1="84.9" x2="155.3" y2="209.3" stroke="#17223B" stroke-width="2"/>
+        <line x1="108.3" y1="147.1" x2="71.6" y2="174.8" stroke="#D7402B" stroke-width="2.6"/>
+        <polygon points="71.6,174.8 77.0,163.8 83.7,172.5" fill="#D7402B"/>
+        <circle cx="108.3" cy="147.1" r="4.6" fill="#D7402B"/>
+        <circle cx="168" cy="152" r="4" fill="#17223B"/>
+        <line x1="108.3" y1="147.1" x2="168" y2="152" stroke="#17223B" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="114" y="136" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">x</text>
+        <text x="174" y="156" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">y</text>
+        <text x="48" y="196" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">∇f(x)</text>
+        <text x="152" y="112" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11">{y | f(y) ≤ f(x)}</text>
+        <text x="34" y="52" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">the sublevel set lies in one halfspace</text>
+        <text x="34" y="228" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11">∇f(x)ᵀ(y − x) ≤ 0 for every such y</text>
+
+        <!-- ===== panel B: ∇f = 0 is not a certificate ===== -->
+        <line x1="352" y1="132" x2="612" y2="132" stroke="#E7E1D4" stroke-width="1.2"/>
+        <line x1="480" y1="60" x2="480" y2="206" stroke="#E7E1D4" stroke-width="1.2"/>
+        <polyline fill="none" stroke="#8A91A3" stroke-width="2.6" stroke-linejoin="round"
+          points="358.4,197.5 362.5,191.2 366.5,185.3 370.6,179.8 374.6,174.7 378.7,169.9 382.7,165.6 386.8,161.5 390.8,157.8 394.9,154.5 398.9,151.4 403.0,148.6 407.0,146.2 411.1,143.9 415.1,141.9 419.2,140.2 423.3,138.7 427.3,137.3 431.4,136.2 435.4,135.2 439.5,134.4 443.5,133.8 447.6,133.2 451.6,132.8 455.7,132.5 459.7,132.3 463.8,132.2 467.8,132.1 471.9,132.0 475.9,132.0 480.0,132.0 484.1,132.0 488.1,132.0 492.2,131.9 496.2,131.8 500.3,131.7 504.3,131.5 508.4,131.2 512.4,130.8 516.5,130.2 520.5,129.6 524.6,128.8 528.6,127.8 532.7,126.7 536.7,125.3 540.8,123.8 544.9,122.1 548.9,120.1 553.0,117.8 557.0,115.4 561.1,112.6 565.1,109.5 569.2,106.2 573.2,102.5 577.3,98.4 581.3,94.1 585.4,89.3 589.4,84.2 593.5,78.7 597.5,72.8 601.6,66.5"/>
+        <line x1="418" y1="132" x2="542" y2="132" stroke="#D7402B" stroke-width="2.2" stroke-dasharray="6 4"/>
+        <circle cx="480" cy="132" r="5" fill="#D7402B"/>
+        <circle cx="378.7" cy="169.9" r="4" fill="#2F855A"/>
+        <line x1="378.7" y1="169.9" x2="378.7" y2="132" stroke="#2F855A" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="486" y="124" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">f′(0) = 0</text>
+        <text x="346" y="188" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11">f keeps falling</text>
+        <text x="352" y="52" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">f(t) = t³ — 0 is not a minimizer</text>
+        <text x="352" y="228" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">stationarity certifies nothing here</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ §0 ============ -->
+<section class="wrap" id="s0">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <h2>From the modified Jensen inequality to calculus</h2>
+  <hr class="rule">
+  <p>§3.4.2 characterized quasiconvexity by the modified Jensen inequality (3.19): on any segment the value never exceeds the larger of the two endpoint values. That is a statement about pairs of points. This subsection gives the <em>calculus</em> characterizations for differentiable \(f\) — the analogs of the first- and second-order conditions for convexity — together with the important ways quasiconvexity differs from convexity. Two of those differences matter more than anything else here: the first-order condition constrains only a <em>direction</em>, not a value; and a vanishing gradient is not a certificate of optimality.</p>
+</section>
+
+<!-- ============ §1 ============ -->
+<section class="wrap" id="s1">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">first-order condition</span></div>
+  <h2>(3.20) — a sign condition on the directional derivative</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    Suppose \(f:\mathbb{R}^n\to\mathbb{R}\) is differentiable. Then \(f\) is quasiconvex if and only if \(\mathrm{dom}\,f\) is convex and for all \(x,y\in\mathrm{dom}\,f\),
+    \[ f(y)\le f(x)\quad\Longrightarrow\quad \nabla f(x)^{T}(y-x)\le 0. \]
+    <span class="src">B&amp;V §3.4.3 · L5130–5134 · (3.20)</span>
+  </div>
+
+  <p>Read it as an implication with a premise you must check first. Only pairs with \(f(y)\le f(x)\) say anything; for pairs with \(f(y)&gt;f(x)\) the condition is silent, and the inner product may have either sign.</p>
+
+  <p>The contrast with the convexity condition (3.2) is the point of the whole subsection:</p>
+
+  <ul class="reads">
+    <li><span class="tag">convex</span><div>\(f(y)\ \ge\ f(x)+\nabla f(x)^{T}(y-x)\) for all \(x,y\). The gradient produces a global affine <strong>underestimator</strong> — a numerical lower bound on \(f(y)\), valid everywhere.</div></li>
+    <li><span class="tag">quasiconvex</span><div>\(f(y)\le f(x)\ \Rightarrow\ \nabla f(x)^{T}(y-x)\le 0\). The gradient produces no bound at all — only the statement that stepping from \(x\) <em>toward</em> \(y\) cannot have positive directional slope.</div></li>
+  </ul>
+
+  <p>Equivalently: if \(y\) is no higher than \(x\), then moving from \(x\) in the direction \(y-x\) does not increase \(f\) to first order. Convexity bounds the <em>value</em>; quasiconvexity only tells you which direction does not go up. The proof of (3.20) is left as exercise 3.43.</p>
+
+  <div class="note warn"><div class="ic">!</div><p>The condition is not symmetric in \(x\) and \(y\), and the gradient is always taken at \(x\) — the point whose value is the <em>larger</em> of the two. Writing \(\nabla f(y)^{T}(y-x)\), or writing the convex bound \(f(y)\ge f(x)+\nabla f(x)^T(y-x)\) and calling it quasiconvexity, are the two standard errors here.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>the contrapositive, which is sometimes easier to use</span><span class="vt">a strict ascent direction certifies a strictly higher value</span></div>
+    <div class="exb">
+      <p>Contrapositive of (3.20): \(\nabla f(x)^{T}(y-x) &gt; 0 \Rightarrow f(y) &gt; f(x)\). If the direction \(y-x\) strictly ascends at \(x\), then \(y\) must sit strictly above \(x\). This is the form that shows up when you want to <em>exclude</em> points from a sublevel set.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §2 ============ -->
+<section class="wrap" id="s2">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">geometric interpretation · figure 3.12</span></div>
+  <h2>∇f(x) is the outward normal of a supporting hyperplane</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    The condition (3.20) has a simple geometric interpretation when \(\nabla f(x)\neq 0\). It states that \(\nabla f(x)\) defines a supporting hyperplane to the sublevel set \(\{y\mid f(y)\le f(x)\}\) at the point \(x\).
+    <span class="src">B&amp;V §3.4.3 · L5165–5167 · figure 3.12</span>
+  </div>
+
+  <p>Unpack it in two steps. Every \(y\) in the sublevel set \(\{y\mid f(y)\le f(x)\}\) satisfies the premise of (3.20), so it satisfies \(\nabla f(x)^{T}(y-x)\le 0\). That inequality describes exactly the halfspace</p>
+
+  \[ H \;=\; \{\,y \mid \nabla f(x)^{T}(y-x)\le 0\,\}, \]
+
+  <p>whose bounding hyperplane \(\{y\mid \nabla f(x)^{T}(y-x)=0\}\) passes through \(x\). So the entire sublevel set lies inside \(H\), and \(x\) itself lies on the boundary hyperplane. A hyperplane that contains a point of a set and has the whole set on one side of it is a <strong>supporting hyperplane</strong> — the §2.5.2 notion — and \(\nabla f(x)\) is its <strong>outward</strong> normal.</p>
+
+  <div class="note key"><div class="ic">!</div><p>The gradient points <em>out</em> of the sublevel set, in the direction of increase, and the sublevel set sits in the halfspace opposite the gradient. Note also that \(x\) need not be a boundary point of the sublevel set for the statement to be interesting — but when \(\nabla f(x)\ne0\), it is: \(f\) increases along \(\nabla f(x)\), so points just past \(x\) in that direction have larger value and are excluded.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The sublevel set inside the gradient's halfspace</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:rgba(43,108,176,0.30)"></i> sublevel set, inside the halfspace</span>
+          <span><i class="sw" style="background:rgba(192,57,43,0.35)"></i> sublevel set, outside — (3.20) violated</span>
+          <span><i style="border-color:#17223B"></i> the hyperplane through x</span>
+          <span><i style="border-color:#D7402B"></i> ∇f(x) — the outward normal</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>x</b> (red) and the test point <b>y</b> (navy). The shaded region is \(\{y\mid f(y)\le f(x)\}\); every shaded point should lie on the far side of the black hyperplane. Red shading is a violation.</p>
+        <div class="chips" id="c1"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+        <p class="hint" id="h1"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>the quasilinear case</span><span class="vt">the supporting hyperplane <em>is</em> the sublevel boundary</span></div>
+    <div class="exb">
+      <p>For a linear-fractional \(f(z)=(c^{T}z+d)/(e^{T}z+g)\) the sublevel sets are halfspaces, so the supporting hyperplane at \(x\) coincides with the sublevel set's own boundary through \(x\). For the strictly curved examples the hyperplane touches at \(x\) and the set curls away from it. Both are supporting hyperplanes; only the flat case has the set pressed flat against it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §3 ============ -->
+<section class="wrap" id="s3">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">the key contrast</span></div>
+  <h2>∇f(x) = 0 does <em>not</em> give a global minimizer</h2>
+  <hr class="rule">
+
+  <p>For a differentiable convex \(f\), condition (3.2) with \(\nabla f(x)=0\) collapses to \(f(y)\ge f(x)\) for all \(y\): the point \(x\) is a global minimizer. This single line is why unconstrained convex minimization is the search for a stationary point.</p>
+
+  <div class="bv">
+    For quasiconvex functions this is not true: a point can satisfy \(\nabla f(x)=0\), yet not be a global (or even local) minimizer of \(f\). As an example consider the quasiconvex function \(f(x)=x^{3}\) on \(\mathbb{R}\), and the point \(x=0\): we have \(f'(0)=0\), but for all \(x&lt;0\), \(f(x)&lt;f(0)=0\).
+    <span class="src">B&amp;V §3.4.3 · L5169–5173</span>
+  </div>
+
+  <p>Why does the convex argument break? Because it used the value bound. For quasiconvex \(f\), setting \(\nabla f(x)=0\) in (3.20) yields \(0\le 0\) — the implication becomes vacuous and delivers no information about \(f(y)\) whatsoever. There is nothing left to conclude.</p>
+
+  <p>\(f(x)=x^{3}\) is quasiconvex because it is monotone (nondecreasing), and every monotone function on \(\mathbb{R}\) is quasiconvex: its sublevel sets \(\{x\mid x^{3}\le\alpha\}=(-\infty,\alpha^{1/3}]\) are intervals. Yet \(f'(0)=0\) while \(f\) decreases without bound to the left, \(f(x)\to-\infty\) as \(x\to-\infty\). The stationary point at the origin is an inflection, not a minimum.</p>
+
+  <div class="note key"><div class="ic">!</div><p><strong>Moral.</strong> A zero gradient does not certify optimality for quasiconvex problems. Stationarity is not trustworthy — which is exactly why quasiconvex problems are solved by bisection on the sublevel sets (§4.2.5) rather than by hunting for \(\nabla f=0\).</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Stationary points that certify nothing</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv2"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#8A91A3"></i> graph of f</span>
+          <span><i style="border-color:#17223B"></i> tangent at x</span>
+          <span><i style="border-color:#2B6CB0"></i> level f(x)</span>
+          <span><i class="sw" style="background:#D7402B"></i> the sublevel set {t | f(t) ≤ f(x)}</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>x</b> along the curve, or slide it. Watch \(f'(x)\), the flatness of the tangent, and whether the marked sublevel set is a single interval.</p>
+        <div class="chips" id="c2"></div>
+        <div class="ctrl"><label>x <span class="val" id="v2x">0.00</span></label><input type="range" id="p2x" min="-4.2" max="4.2" step="0.01" value="0"></div>
+        <div class="readout" id="ro2"></div>
+        <div class="verdict" id="vd2"></div>
+        <p class="hint" id="h2"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>a quasiconvex function with no critical points at all</span><span class="vt">the conditions can hold vacuously</span></div>
+    <div class="exb">
+      <p>Take \(f(t)=\arctan t\). Then \(f'(t)=1/(1+t^{2})&gt;0\) everywhere, so there is no \(t\) with \(f'(t)=0\). The function is monotone, hence quasiconvex (indeed quasilinear), and it is neither convex nor concave. Both second-order conditions below quantify over directions \(y\) with \(y^{T}\nabla f(x)=0\); on \(\mathbb{R}\) that forces \(y=0\) whenever \(f'(x)\neq0\), so for \(\arctan\) the premise never fires and the conditions hold with nothing to check. It is a useful reminder that these are conditions <em>at critical directions</em>, not global curvature requirements.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §4 ============ -->
+<section class="wrap" id="s4">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">second-order necessary condition</span></div>
+  <h2>(3.21) — nonnegative curvature on the gradient's orthogonal complement</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    Now suppose \(f\) is twice differentiable. If \(f\) is quasiconvex, then for all \(x\in\mathrm{dom}\,f\) and all \(y\in\mathbb{R}^{n}\),
+    \[ y^{T}\nabla f(x)=0\quad\Longrightarrow\quad y^{T}\nabla^{2}f(x)\,y\;\ge\;0. \]
+    <span class="src">B&amp;V §3.4.3 · L5177–5188 · (3.21)</span>
+  </div>
+
+  <p>Three readings of the same statement, in increasing generality:</p>
+
+  <ul class="reads">
+    <li><span class="tag">on ℝ</span><div>The condition reduces to \(f'(x)=0\ \Rightarrow\ f''(x)\ge0\): wherever the slope vanishes, the curvature must be nonnegative. A quasiconvex function on \(\mathbb{R}\) may not have a strict local maximum in the interior of its domain.</div></li>
+    <li><span class="tag">at ∇f = 0</span><div>If \(\nabla f(x)=0\) then every \(y\) satisfies the premise, so \(\nabla^{2}f(x)\succeq 0\). At a stationary point the Hessian must be positive semidefinite in full — the same requirement as for convexity, but only there.</div></li>
+    <li><span class="tag">at ∇f ≠ 0</span><div>The premise picks out the hyperplane \(\nabla f(x)^{\perp}\), of dimension \(n-1\). The condition says \(\nabla^{2}f(x)\) is positive semidefinite <em>on that subspace</em>. A symmetric matrix that is PSD on an \((n-1)\)-dimensional subspace can have <strong>at most one negative eigenvalue</strong>.</div></li>
+  </ul>
+
+  <div class="note warn"><div class="ic">!</div><p>"At most one negative eigenvalue" — not zero. This is precisely the slack that separates quasiconvexity from convexity in the second-order picture: a quasiconvex function is allowed one direction of negative curvature, provided that direction is <em>not</em> orthogonal to the gradient. Requiring zero negative eigenvalues would be requiring convexity.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>the eigenvalue count in action</span><span class="vt">f(z) = −z₁z₂ on the positive orthant</span></div>
+    <div class="exb">
+      <p>Take \(f(z)=-z_{1}z_{2}\) on \(\{z\mid z_{1}&gt;0,\ z_{2}&gt;0\}\), the quasiconvex twin of the quasiconcave \(z_1z_2\). Then</p>
+      \[ \nabla f(z)=\begin{bmatrix}-z_{2}\\-z_{1}\end{bmatrix},\qquad
+         \nabla^{2}f(z)=\begin{bmatrix}0&amp;-1\\-1&amp;0\end{bmatrix},\qquad \lambda=\{+1,-1\}. \]
+      <p>The Hessian has one negative eigenvalue, so \(f\) is certainly not convex. But the directions orthogonal to the gradient are the multiples of \(y=(z_{1},-z_{2})\), and</p>
+      \[ y^{T}\nabla^{2}f(z)\,y \;=\; -2y_{1}y_{2} \;=\; 2z_{1}z_{2}\;&gt;\;0 \quad\text{on the positive orthant.} \]
+      <p>Strictly positive, so (3.22) below applies and \(f\) is quasiconvex there. The single negative eigenvalue is invisible to the test because its eigenvector \((1,1)/\sqrt2\) is never orthogonal to \(\nabla f(z)=-(z_{2},z_{1})\) when \(z\succ0\).</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>the disqualifier</span><span class="vt">f(z) = z₁² − z₂², same eigenvalue signature, fails</span></div>
+    <div class="exb">
+      <p>The saddle \(f(z)=z_{1}^{2}-z_{2}^{2}\) has \(\nabla f(z)=(2z_{1},-2z_{2})\) and \(\nabla^{2}f=\mathrm{diag}(2,-2)\), again exactly one negative eigenvalue. Yet the orthogonal direction is \(y=(z_{2},z_{1})\) and</p>
+      \[ y^{T}\nabla^{2}f\,y \;=\; 2z_{2}^{2}-2z_{1}^{2}\;&lt;\;0 \quad\text{whenever } |z_{1}|&gt;|z_{2}|, \]
+      <p>so (3.21) fails and \(f\) is not quasiconvex. Concretely, its sublevel set \(\{z\mid z_{1}^{2}-z_{2}^{2}\le\alpha\}\) for \(\alpha&gt;0\) is the nonconvex region between the two hyperbola branches. The eigenvalue count alone never settles the question — what matters is <em>where</em> the negative direction sits relative to \(\nabla f(x)^{\perp}\).</p>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Curvature restricted to ∇f(x)<sup>⊥</sup></h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:rgba(43,108,176,0.22)"></i> sublevel set {f ≤ f(x)}</span>
+          <span><i style="border-color:#D7402B"></i> ∇f(x)</span>
+          <span><i style="border-color:#2F855A"></i> ∇f(x)<sup>⊥</sup> with yᵀ∇²f y &gt; 0</span>
+          <span><i style="border-color:#C0392B"></i> ∇f(x)<sup>⊥</sup> with yᵀ∇²f y &lt; 0 — (3.21) fails</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>x</b>. The green/red line is the direction \(y\perp\nabla f(x)\); its colour is the sign of \(y^{T}\nabla^{2}f(x)y\). Compare the eigenvalues with the verdict.</p>
+        <div class="chips" id="c3"></div>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+        <p class="hint" id="h3"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §5 ============ -->
+<section class="wrap" id="s5">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">second-order sufficient condition</span></div>
+  <h2>(3.22) — a partial converse, with strict inequality</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    A partial converse of the second-order necessary condition (3.21) is: if \(f\) satisfies
+    \[ y^{T}\nabla f(x)=0\quad\Longrightarrow\quad y^{T}\nabla^{2}f(x)\,y\;&gt;\;0 \]
+    for all \(x\in\mathrm{dom}\,f\) and all \(y\neq0\), then \(f\) is quasiconvex.
+    <span class="src">B&amp;V §3.4.3 · L5189–5195 · (3.22)</span>
+  </div>
+
+  <p>Two differences from (3.21), and both are load-bearing:</p>
+
+  <ul class="reads">
+    <li><span class="tag">strictness</span><div>The conclusion is \(&gt;0\), not \(\ge0\). Strict positive curvature in every critical direction is what powers the proof below.</div></li>
+    <li><span class="tag">y ≠ 0</span><div>The quantifier excludes \(y=0\), which would otherwise make the hypothesis \(0&gt;0\) and impossible to satisfy.</div></li>
+  </ul>
+
+  <div class="note warn"><div class="ic">!</div><p><strong>The gap.</strong> Necessary (3.21) uses \(\ge\); sufficient (3.22) uses \(&gt;\). So the two are <em>not</em> an "if and only if". A function may satisfy (3.21) with equality somewhere and still be quasiconvex — or not; the second-order test simply does not decide those cases. This is unlike the convex second-order condition (3.11), where \(\nabla^{2}f\succeq0\) is exactly equivalent to convexity.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>where the gap bites</span><span class="vt">f(t) = t³ again</span></div>
+    <div class="exb">
+      <p>\(f(t)=t^{3}\) is quasiconvex, and it satisfies (3.21): the only point with \(f'(t)=0\) is \(t=0\), and there \(f''(0)=0\ge0\). But it fails (3.22), which would need \(f''(0)&gt;0\). So (3.22) is genuinely only sufficient — a function can be quasiconvex without passing it. In the other direction, \(f(t)=-t^{2}\) has \(f'(0)=0\) and \(f''(0)=-2&lt;0\), so it fails (3.21) and is therefore <em>not</em> quasiconvex; the necessary condition does have teeth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §6 ============ -->
+<section class="wrap" id="s6">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">proof sketch</span></div>
+  <h2>Why both conditions hold</h2>
+  <hr class="rule">
+
+  <p>Both proofs use the same opening move, the one from §3.4.2: quasiconvexity is decided one line at a time, so restrict \(f\) to an arbitrary line and it suffices to prove the statements for \(f:\mathbb{R}\to\mathbb{R}\).</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;(3.21) is necessary</span><span class="target">a strict local max would disconnect a sublevel set</span></div>
+    <div class="step">
+      <div class="math">\[ \text{restrict to a line: it suffices to prove } f'(c)=0\Rightarrow f''(c)\ge0 \text{ for } f:\mathbb{R}\to\mathbb{R} \]</div>
+      <div class="why"><b>reduction.</b> \(f\) is quasiconvex iff its restriction to every line is; the condition \(y^T\nabla f=0,\ y^T\nabla^2 f y\ge0\) is exactly the one-dimensional condition read along the direction \(y\).</div>
+    </div>
+    <div class="step crux">
+      <div class="math">\[ f'(c)=0,\ f''(c)&lt;0 \;\Longrightarrow\; c \text{ is a strict local maximum} \]</div>
+      <div class="why"><b>contradiction hypothesis.</b> suppose the condition fails at \(c\). zero slope with strictly negative curvature is the second-derivative test for a strict local max.</div>
+    </div>
+    <div class="step">
+      <div class="math">\[ \{x\mid f(x)\le f(c)-\epsilon\}\ \text{is disconnected for small } \epsilon&gt;0 \]</div>
+      <div class="why">near \(c\) the function dips below \(f(c)\) on <em>both</em> sides, so this sublevel set contains points to the left and to the right of \(c\) but not \(c\) itself.</div>
+    </div>
+    <div class="step">
+      <div class="math">\[ \text{disconnected} \;\Longrightarrow\; \text{nonconvex} \;\Longrightarrow\; f \text{ not quasiconvex} \]</div>
+      <div class="why">on \(\mathbb{R}\) a convex set is an interval, hence connected. contradiction, so no such \(c\) exists.</div>
+    </div>
+  </div>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;(3.22) is sufficient</span><span class="target">f′ can cross zero at most once</span></div>
+    <div class="step crux">
+      <div class="math">\[ f'(c)=0 \;\Longrightarrow\; f''(c)&gt;0 \quad\text{(the one-dimensional form of (3.22))} \]</div>
+      <div class="why"><b>the hypothesis.</b> at every zero of \(f'\), the derivative \(f'\) is strictly increasing.</div>
+    </div>
+    <div class="step">
+      <div class="math">\[ \Longrightarrow\ f' \text{ crosses } 0 \text{ at most once, and only upward} \]</div>
+      <div class="why">a function that is strictly increasing at each of its zeros cannot return to zero: after one upward crossing it stays positive.</div>
+    </div>
+    <div class="step">
+      <div class="math">\[ \Longrightarrow\ f \text{ is nonincreasing, then nondecreasing} \]</div>
+      <div class="why">either \(f'\) never vanishes (\(f\) monotone) or it changes sign once from \(-\) to \(+\) (\(f\) valley-shaped).</div>
+    </div>
+    <div class="step">
+      <div class="math">\[ \Longrightarrow\ \text{every sublevel set is an interval} \;\Longrightarrow\; f \text{ quasiconvex} \]</div>
+      <div class="why">monotone and valley-shaped are two of the three shapes in the §3.4.2 trichotomy on \(\mathbb{R}\); both have interval sublevel sets.</div>
+    </div>
+  </div>
+
+  <div class="note build"><div class="ic">!</div><p>Notice where the strictness is spent. With only \(f''(c)\ge0\) the derivative could touch zero, flatten, and dip back below — the argument that \(f'\) crosses zero once would collapse. That is the entire reason (3.22) needs \(&gt;\) while (3.21) only gives \(\ge\).</p></div>
+</section>
+
+<!-- ============ §7 ============ -->
+<section class="wrap" id="s7">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">expert lens · diagnose</span></div>
+  <h2>What to have at your fingertips</h2>
+  <hr class="rule">
+
+  <div class="moves">
+    <div class="move">
+      <p class="mh"><span class="mnum">01</span>The first-order condition, stated exactly</p>
+      <p>(3.20): \(f(y)\le f(x)\Rightarrow\nabla f(x)^{T}(y-x)\le0\). Against (3.2): convexity bounds the value, quasiconvexity only constrains the direction of non-increase.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">02</span>The geometry in one sentence</p>
+      <p>For \(\nabla f(x)\ne0\), \(\nabla f(x)\) is the outward normal of a supporting hyperplane to the sublevel set \(\{y\mid f(y)\le f(x)\}\) at \(x\).</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">03</span>The big contrast</p>
+      <p>\(\nabla f(x)=0\) gives a global minimizer for convex \(f\), but not for quasiconvex \(f\) — witness \(x^{3}\) at \(0\). Stationary points are unreliable for quasiconvex minimization.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">04</span>Second-order necessary</p>
+      <p>(3.21): \(y^{T}\nabla f(x)=0\Rightarrow y^{T}\nabla^{2}f(x)y\ge0\). On \(\mathbb{R}\): \(f'=0\Rightarrow f''\ge0\). On \(\mathbb{R}^{n}\): \(\nabla^{2}f\) is PSD on \(\nabla f(x)^{\perp}\), hence at most one negative eigenvalue.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">05</span>Second-order sufficient</p>
+      <p>(3.22): the same with strict \(&gt;\) for \(y\ne0\). Necessary uses \(\ge\), sufficient uses \(&gt;\) — the two are not identical, and neither is an "iff".</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">06</span>The traps</p>
+      <p>Don't write (3.20) as the convex bound. The hyperplane is <em>supporting</em>, with \(\nabla f\) <em>outward</em>. It is "at most one negative eigenvalue", not zero. And keep the \(\ge\) vs \(&gt;\) gap straight.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ summary ============ -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">summary — main points for quick review</div>
+    <h2>Differentiable quasiconvex functions</h2>
+    <div class="scards">
+      <div class="scard">
+        <h6>first-order (3.20)</h6>
+        <p>\(f\) differentiable quasiconvex \(\iff\) \(\mathrm{dom}\,f\) convex and \(f(y)\le f(x)\Rightarrow\nabla f(x)^{T}(y-x)\le0\). Versus (3.2): \(f(y)\ge f(x)+\nabla f(x)^{T}(y-x)\).</p>
+      </div>
+      <div class="scard">
+        <h6>geometry — fig 3.12</h6>
+        <p>For \(\nabla f(x)\ne0\), \(\nabla f(x)\) is the outward normal of a supporting hyperplane to \(\{y\mid f(y)\le f(x)\}\) at \(x\).</p>
+      </div>
+      <div class="scard">
+        <h6>the big contrast</h6>
+        <p>\(\nabla f(x)=0\Rightarrow\) global minimizer for convex \(f\), but <em>not</em> for quasiconvex \(f\) — \(x^{3}\) at \(0\). Stationarity is unreliable.</p>
+      </div>
+      <div class="scard">
+        <h6>second-order necessary (3.21)</h6>
+        <p>\(y^{T}\nabla f(x)=0\Rightarrow y^{T}\nabla^{2}f(x)y\ge0\). On \(\mathbb{R}\): \(f'=0\Rightarrow f''\ge0\). On \(\mathbb{R}^{n}\): PSD on \(\nabla f(x)^{\perp}\), so at most one negative eigenvalue.</p>
+      </div>
+      <div class="scard">
+        <h6>second-order sufficient (3.22)</h6>
+        <p>The same with strict \(&gt;\) for \(y\ne0\). Necessary \(\ge\) versus sufficient \(&gt;\) — a real gap, not an iff.</p>
+      </div>
+      <div class="scard">
+        <h6>date · tag</h6>
+        <p class="mono">2026-08-04 · bv.3.4.3 · differentiable quasiconvex functions (B&amp;V §3.4.3, p. 99–101)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  B&amp;V §3.4.3 (p. 99–101) · interactive study sheet · drag any handle
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  const step=range>3?1:0.5;
+  for(let i=-range;i<=range+1e-9;i+=step){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawCurve(ctx,view,fn,R,color,wd,lo,hi,dash){
+  const a=(lo===undefined? -R+0.1:lo), b=(hi===undefined? R-0.1:hi);
+  ctx.save(); if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let first=true;
+  for(let x=a;x<=b;x+=0.01){
+    const yv=fn(x);
+    if(yv==null||!isFinite(yv)||yv<-R+0.05||yv>R-0.05){first=true;continue;}
+    const p=view.toS(x,yv);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function arrow(ctx,x0,y0,x1,y1,color,wd,head){
+  const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy);if(L<1e-6)return;
+  const ux=dx/L,uy=dy/L,hw=(head||6.5);
+  ctx.strokeStyle=color;ctx.lineWidth=wd||2.6;
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1-ux*hw*1.6,y1-uy*hw*1.6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-ux*hw*2.1-uy*hw,y1-uy*hw*2.1+ux*hw);
+  ctx.lineTo(x1-ux*hw*2.1+uy*hw,y1-uy*hw*2.1-ux*hw);
+  ctx.closePath();ctx.fillStyle=color;ctx.fill();
+}
+/* clip the line p + t d to the box [-B,B]^2 — keeps every drawn segment inside the frame */
+function clipLine(px,py,dx,dy,B){
+  let lo=-1e9,hi=1e9,dead=false;
+  [[dx,px],[dy,py]].forEach(function(pair){
+    const d=pair[0],p=pair[1];
+    if(Math.abs(d)<1e-12){ if(p<-B||p>B) dead=true; return; }
+    let t1=(-B-p)/d,t2=(B-p)/d; if(t1>t2){const t=t1;t1=t2;t2=t;}
+    lo=Math.max(lo,t1); hi=Math.min(hi,t2);
+  });
+  if(dead||lo>hi) return null;
+  return [[px+lo*dx,py+lo*dy],[px+hi*dx,py+hi*dy]];
+}
+/* arrow length in world units: the requested screen length, capped so the tip stays in the frame */
+function arrowLen(view,p,u,screenPx){
+  const seg=clipLine(p[0],p[1],u[0],u[1],4.25);
+  let tmax=0.35;
+  if(seg){ tmax=Math.max(0,(seg[1][0]-p[0])*u[0]+(seg[1][1]-p[1])*u[1]); }
+  return Math.max(0.2,Math.min(screenPx/view.s(),tmax));
+}
+function genericDrag(canvas,pickables,redraw){
+  let held=null;
+  canvas.addEventListener("pointerdown",function(e){
+    const r=canvas.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;
+    let best=null,bd=26;
+    for(const p of pickables()){const d=Math.hypot(px-p.sx,py-p.sy);if(d<bd){bd=d;best=p;}}
+    if(best){held=best;canvas.setPointerCapture(e.pointerId);}
+  });
+  canvas.addEventListener("pointermove",function(e){
+    if(!held)return;
+    const r=canvas.getBoundingClientRect();
+    held.set(e.clientX-r.left,e.clientY-r.top);redraw();
+  });
+  canvas.addEventListener("pointerup",function(e){held=null;try{canvas.releasePointerCapture(e.pointerId);}catch(err){}});
+  canvas.addEventListener("pointercancel",function(){held=null;});
+}
+function mkChips(host,items,initial,onPick){
+  host.innerHTML="";
+  const els={};
+  items.forEach(function(it){
+    const b=document.createElement("button");
+    b.className="chip"+(it.k===initial?" on":"");
+    b.textContent=it.t;
+    b.addEventListener("click",function(){
+      Object.keys(els).forEach(function(k){els[k].classList.remove("on");});
+      b.classList.add("on");onPick(it.k);
+    });
+    els[it.k]=b;host.appendChild(b);
+  });
+  return els;
+}
+
+/* ===== LAB 1 — (3.20): the sublevel set inside the gradient halfspace ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=4.4,view=makeView(canvas,R);
+  const ro=document.getElementById("ro1"),vd=document.getElementById("vd1"),
+        chips=document.getElementById("c1"),hint=document.getElementById("h1");
+  const FN={
+    lf:{name:"f(z) = (z₁+2)/(z₂+4)", cls:"quasilinear",
+        dom:z=>z[1]>-3.5,
+        f:z=>(z[0]+2)/(z[1]+4),
+        g:z=>[1/(z[1]+4), -(z[0]+2)/((z[1]+4)*(z[1]+4))],
+        note:"Linear-fractional: every sublevel set is a halfspace, so the supporting hyperplane at x is the sublevel set's own boundary. (3.20) holds with the tightest possible geometry."},
+    nrm:{name:"f(z) = ‖z − c‖₂,  c = (0.4, −0.6)", cls:"convex, hence quasiconvex",
+        dom:z=>true,
+        f:z=>Math.hypot(z[0]-0.4,z[1]+0.6),
+        g:function(z){const d=[z[0]-0.4,z[1]+0.6],n=Math.hypot(d[0],d[1]);return n<1e-7?[0,0]:[d[0]/n,d[1]/n];},
+        note:"Sublevel sets are disks. The gradient is the outward unit radial direction and the hyperplane is the tangent line to the disk at x — the textbook supporting hyperplane."},
+    qrt:{name:"f(z) = (0.5z₁² + 1.5z₂²)^{1/4}", cls:"quasiconvex, not convex",
+        dom:z=>true,
+        f:z=>Math.pow(0.5*z[0]*z[0]+1.5*z[1]*z[1],0.25),
+        g:function(z){const q=0.5*z[0]*z[0]+1.5*z[1]*z[1];if(q<1e-9)return [0,0];
+                      const c=0.25*Math.pow(q,-0.75);return [c*z[0],c*3*z[1]];},
+        note:"Along any ray this grows like √r, which is concave — so f is not convex. Its sublevel sets are still ellipses, so it is quasiconvex and (3.20) holds."},
+    sad:{name:"f(z) = z₁² − z₂²", cls:"NOT quasiconvex",
+        dom:z=>true,
+        f:z=>z[0]*z[0]-z[1]*z[1],
+        g:z=>[2*z[0],-2*z[1]],
+        note:"The sublevel set is the nonconvex region between two hyperbola branches. Points of it escape the halfspace, in red — a direct violation of (3.20)."}
+  };
+  let key="nrm", x=[-1.6,1.7], y=[1.4,-0.9];
+  mkChips(chips,[{k:"nrm",t:"norm"},{k:"qrt",t:"quartic root"},{k:"lf",t:"linear-fractional"},{k:"sad",t:"saddle"}],key,function(k){
+    key=k;
+    if(k==="lf"){x=[-1.2,0.6];y=[1.1,1.9];}
+    if(k==="sad"){x=[2.2,0.6];y=[-2.2,0.4];}
+    draw();
+  });
+
+  function pickables(){
+    const a=view.toS(x[0],x[1]),b=view.toS(y[0],y[1]);
+    return [
+      {sx:a[0],sy:a[1],set:(px,py)=>{const w=view.toW(px,py);x=[clamp(w[0],-4.0,4.0),clamp(w[1],-4.0,4.0)];}},
+      {sx:b[0],sy:b[1],set:(px,py)=>{const w=view.toW(px,py);y=[clamp(w[0],-4.0,4.0),clamp(w[1],-4.0,4.0)];}}
+    ];
+  }
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const {w,h}=view.dims();
+    ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const F=FN[key];
+    if(!F.dom(x)) x=[clamp(x[0],-4,4),Math.max(x[1],-3.2)];
+    const fx=F.f(x), gx=F.g(x);
+    const step=5; let viol=0, tot=0;
+    for(let px=0;px<w;px+=step){
+      for(let py=0;py<h;py+=step){
+        const z=view.toW(px+step/2,py+step/2);
+        if(Math.abs(z[0])>R||Math.abs(z[1])>R) continue;
+        if(!F.dom(z)) continue;
+        const v=F.f(z);
+        if(!isFinite(v)||v>fx) continue;
+        tot++;
+        const ip=gx[0]*(z[0]-x[0])+gx[1]*(z[1]-x[1]);
+        if(ip>1e-9){viol++;ctx.fillStyle="rgba(192,57,43,0.35)";}
+        else ctx.fillStyle="rgba(43,108,176,0.20)";
+        ctx.fillRect(px,py,step,step);
+      }
+    }
+    // the hyperplane through x, normal gx
+    const gn=Math.hypot(gx[0],gx[1]);
+    if(gn>1e-8){
+      const seg=clipLine(x[0],x[1],-gx[1]/gn,gx[0]/gn,4.3);
+      if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
+        ctx.strokeStyle="#17223B";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();}
+      const sx=view.toS(x[0],x[1]);
+      const t=arrowLen(view,x,[gx[0]/gn,gx[1]/gn],54);
+      const tip=view.toS(x[0]+gx[0]/gn*t, x[1]+gx[1]/gn*t);
+      arrow(ctx,sx[0],sx[1],tip[0],tip[1],"#D7402B",2.6,6);
+      label(ctx,"∇f(x)",clamp(tip[0]+8,10,w-64),clamp(tip[1]-10,14,h-14),"#D7402B",12);
+    }
+    // the segment x -> y
+    const sx=view.toS(x[0],x[1]), sy=view.toS(y[0],y[1]);
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle="#46506A";ctx.lineWidth=1.6;
+    ctx.beginPath();ctx.moveTo(sx[0],sx[1]);ctx.lineTo(sy[0],sy[1]);ctx.stroke();ctx.restore();
+    dot(ctx,sy[0],sy[1],6,"#17223B","#fff");
+    dot(ctx,sx[0],sx[1],6.5,"#D7402B","#fff");
+    label(ctx,"x",sx[0]+11,sx[1]+13,"#D7402B",13);
+    label(ctx,"y",sy[0]+11,sy[1]+13,"#17223B",13);
+    label(ctx,F.name,14,h-40,"#46506A",12.5);
+    label(ctx,F.cls,14,h-21,key==="sad"?"#C0392B":"#2F855A",12);
+
+    const fy=F.dom(y)?F.f(y):NaN;
+    const ip=gx[0]*(y[0]-x[0])+gx[1]*(y[1]-x[1]);
+    ro.innerHTML='<span class="k">f(x)</span> <b>'+fx.toFixed(3)+'</b> &nbsp; <span class="k">f(y)</span> <b>'+(isFinite(fy)?fy.toFixed(3):"—")+'</b><br>'+
+      '<span class="k">∇f(x)</span> <b>('+gx[0].toFixed(3)+', '+gx[1].toFixed(3)+')</b><br>'+
+      '<span class="k">∇f(x)ᵀ(y−x)</span> <b>'+ip.toFixed(3)+'</b><br>'+
+      '<span class="k">sublevel samples outside</span> <b>'+viol+' / '+tot+'</b>';
+    let cls,msg;
+    if(!isFinite(fy)){cls="mid";msg="y is outside dom f";}
+    else if(fy>fx){cls="mid";msg="f(y) > f(x) — premise off, (3.20) says nothing";}
+    else if(ip<=1e-9){cls="in";msg="f(y) ≤ f(x) and ∇f(x)ᵀ(y−x) ≤ 0 ✓";}
+    else {cls="out";msg="f(y) ≤ f(x) but ∇f(x)ᵀ(y−x) > 0 ✗";}
+    vd.className="verdict "+cls;vd.textContent=msg;
+    hint.innerHTML=F.note+(viol>0? " <b>"+viol+"</b> sampled points of the sublevel set sit outside the halfspace." : "");
+  }
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+
+/* ===== LAB 2 — stationary points that certify nothing ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=4.4,view=makeView(canvas,R);
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2"),
+        chips=document.getElementById("c2"),hint=document.getElementById("h2"),
+        sl=document.getElementById("p2x"),vx=document.getElementById("v2x");
+  const FN={
+    cube:{name:"f(t) = 0.05 t³",   cls:"quasiconvex (monotone)", qc:true,
+          f:t=>0.05*t*t*t, d1:t=>0.15*t*t, d2:t=>0.3*t,
+          note:"The scaled cube. f′(0)=0 and f″(0)=0: (3.21) holds with equality, (3.22) fails, and 0 is not a minimizer — f falls without bound to the left."},
+    atan:{name:"f(t) = 2·arctan t", cls:"quasilinear (monotone)", qc:true,
+          f:t=>2*Math.atan(t), d1:t=>2/(1+t*t), d2:t=>-4*t/((1+t*t)*(1+t*t)),
+          note:"No critical points at all: f′>0 everywhere. Both second-order conditions hold vacuously — there is never a nonzero y with y·f′(x)=0."},
+    conv:{name:"f(t) = 0.3 t² − 2", cls:"convex", qc:true,
+          f:t=>0.3*t*t-2, d1:t=>0.6*t, d2:t=>0.6,
+          note:"The convex baseline: here f′(x)=0 really does certify a global minimizer, because (3.2) turns into f(y) ≥ f(x) for every y."},
+    bad:{name:"f(t) = 0.08 t³ − 0.8 t", cls:"NOT quasiconvex", qc:false,
+          f:t=>0.08*t*t*t-0.8*t, d1:t=>0.24*t*t-0.8, d2:t=>0.48*t,
+          note:"A strict interior local maximum at t ≈ −1.826, where f′=0 and f″<0. (3.21) fails there, and the sublevel set at that level splits into two pieces."}
+  };
+  let key="cube", x=0;
+  mkChips(chips,[{k:"cube",t:"t³"},{k:"atan",t:"arctan"},{k:"conv",t:"convex"},{k:"bad",t:"local max"}],key,function(k){
+    key=k; if(k==="bad")x=-1.83; if(k==="cube"||k==="conv")x=0;
+    sl.value=x.toFixed(2); draw();
+  });
+  sl.addEventListener("input",function(){x=parseFloat(sl.value);draw();});
+
+  function pickables(){
+    const f=FN[key].f, p=view.toS(x,f(x)), q=view.toS(x,0);
+    const set=(px,py)=>{x=clamp(view.toW(px,py)[0],-4.2,4.2);sl.value=x.toFixed(2);};
+    return [{sx:p[0],sy:p[1],set},{sx:q[0],sy:q[1],set}];
+  }
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const {w,h}=view.dims();
+    ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const F=FN[key],fx=F.f(x),d1=F.d1(x),d2=F.d2(x);
+    vx.textContent=x.toFixed(2);
+
+    // sublevel set on the axis + component count
+    const N=1200,lo=-4.3,hi=4.3;let comps=0,inRun=false,runs=[];
+    for(let i=0;i<=N;i++){
+      const t=lo+(hi-lo)*i/N, inSet=F.f(t)<=fx+1e-9;
+      if(inSet&&!inRun){comps++;runs.push([t,t]);inRun=true;}
+      else if(inSet){runs[runs.length-1][1]=t;}
+      else inRun=false;
+    }
+    ctx.lineCap="round";
+    runs.forEach(function(r){
+      const a=view.toS(r[0],0),b=view.toS(r[1],0);
+      ctx.strokeStyle=comps>1?"#C0392B":"#D7402B";ctx.lineWidth=6;
+      ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    });
+    ctx.lineCap="butt";
+
+    // level line f(x)
+    if(Math.abs(fx)<R-0.1){
+      ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.7;
+      const a=view.toS(-4.3,fx),b=view.toS(4.3,fx);
+      ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ctx.restore();
+    }
+    drawCurve(ctx,view,F.f,R,"#8A91A3",2.7);
+
+    // tangent at x, clipped to the frame
+    const seg=clipLine(x,fx,1/Math.hypot(1,d1),d1/Math.hypot(1,d1),4.3);
+    if(seg){const a=view.toS(seg[0][0],seg[0][1]),b=view.toS(seg[1][0],seg[1][1]);
+      ctx.strokeStyle="#17223B";ctx.lineWidth=1.9;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+
+    const p=view.toS(x,fx),q=view.toS(x,0);
+    ctx.save();ctx.setLineDash([3,3]);ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();ctx.restore();
+    dot(ctx,p[0],p[1],6.5,"#D7402B","#fff");
+    dot(ctx,q[0],q[1],4.5,"#D7402B");
+    label(ctx,"x",q[0]+10,q[1]+15,"#D7402B",13);
+    label(ctx,F.name,14,h-40,"#46506A",12.5);
+    label(ctx,F.cls,14,h-21,F.qc?"#2F855A":"#C0392B",12);
+
+    // the minimum over the drawn window
+    let mn=Infinity,mnAt=0;
+    for(let i=0;i<=N;i++){const t=lo+(hi-lo)*i/N,v=F.f(t);if(v<mn){mn=v;mnAt=t;}}
+    const stat=Math.abs(d1)<0.02;
+
+    ro.innerHTML='<span class="k">f(x)</span> <b>'+fx.toFixed(3)+'</b><br>'+
+      '<span class="k">f′(x)</span> <b>'+d1.toFixed(3)+'</b> &nbsp; <span class="k">f″(x)</span> <b>'+d2.toFixed(3)+'</b><br>'+
+      '<span class="k">min over the window</span> <b>'+mn.toFixed(3)+'</b> at t = '+mnAt.toFixed(2)+'<br>'+
+      '<span class="k">sublevel components</span> <b>'+comps+'</b>';
+    let cls,msg;
+    if(!stat){cls="mid";msg="f′(x) ≠ 0 — not a stationary point";}
+    else if(fx<=mn+1e-3){cls="in";msg="∇f(x)=0 and x is the minimizer ✓";}
+    else {cls="out";msg="∇f(x)=0 but f dips to "+mn.toFixed(2)+" elsewhere ✗";}
+    vd.className="verdict "+cls;vd.textContent=msg;
+    let extra="";
+    if(stat&&d2<-1e-6) extra=" Here f′(x)=0 and f″(x)&lt;0, so (3.21) fails outright — this f is not quasiconvex.";
+    else if(stat&&Math.abs(d2)<1e-6) extra=" Here f′(x)=0 and f″(x)=0: (3.21) holds with equality, (3.22) does not — the ≥ / &gt; gap, exactly.";
+    if(comps>1) extra+=" The sublevel set has "+comps+" components, so it is not an interval.";
+    hint.innerHTML=F.note+extra;
+  }
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+
+/* ===== LAB 3 — curvature on the orthogonal complement of the gradient ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=4.4,view=makeView(canvas,R);
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3"),
+        chips=document.getElementById("c3"),hint=document.getElementById("h3");
+  const FN={
+    mxy:{name:"f(z) = −z₁z₂   on z₁>0, z₂>0", cls:"quasiconvex on the positive orthant", qc:true,
+         dom:z=>z[0]>0.02&&z[1]>0.02,
+         f:z=>-z[0]*z[1], g:z=>[-z[1],-z[0]], H:z=>[[0,-1],[-1,0]],
+         note:"The Hessian has eigenvalues ±1 — one negative — yet on ∇f(x)⊥ the form is 2z₁z₂ > 0. (3.22) applies, so f is quasiconvex here. Drag x out of the positive orthant and the sign flips."},
+    sad:{name:"f(z) = z₁² − z₂²", cls:"NOT quasiconvex", qc:false,
+         dom:z=>true,
+         f:z=>z[0]*z[0]-z[1]*z[1], g:z=>[2*z[0],-2*z[1]], H:z=>[[2,0],[0,-2]],
+         note:"Same eigenvalue signature as −z₁z₂ — exactly one negative — but the negative direction now lies inside ∇f(x)⊥ whenever |z₁|>|z₂|, so (3.21) fails and f is not quasiconvex."},
+    cvx:{name:"f(z) = 0.5z₁² + 0.3z₂²", cls:"convex, hence quasiconvex", qc:true,
+         dom:z=>true,
+         f:z=>0.5*z[0]*z[0]+0.3*z[1]*z[1], g:z=>[z[0],0.6*z[1]], H:z=>[[1,0],[0,0.6]],
+         note:"Positive definite everywhere, so the restriction to ∇f(x)⊥ is positive too. Convexity is the case with zero negative eigenvalues — strictly stronger than what (3.21) asks."}
+  };
+  let key="mxy", x=[1.8,1.4];
+  mkChips(chips,[{k:"mxy",t:"−z₁z₂"},{k:"sad",t:"z₁²−z₂²"},{k:"cvx",t:"convex"}],key,function(k){
+    key=k; if(k==="mxy")x=[1.8,1.4]; if(k==="sad")x=[2.4,0.9]; if(k==="cvx")x=[1.6,2.0];
+    draw();
+  });
+  function pickables(){
+    const a=view.toS(x[0],x[1]);
+    return [{sx:a[0],sy:a[1],set:(px,py)=>{const w=view.toW(px,py);x=[clamp(w[0],-4.0,4.0),clamp(w[1],-4.0,4.0)];}}];
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const {w,h}=view.dims();
+    ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const F=FN[key],inDom=F.dom(x);
+    const fx=F.f(x),g=F.g(x),H=F.H(x);
+    // sublevel set, for orientation
+    const step=6;
+    for(let px=0;px<w;px+=step) for(let py=0;py<h;py+=step){
+      const z=view.toW(px+step/2,py+step/2);
+      if(Math.abs(z[0])>R||Math.abs(z[1])>R) continue;
+      if(!F.dom(z)) continue;
+      if(F.f(z)<=fx){ctx.fillStyle="rgba(43,108,176,0.22)";ctx.fillRect(px,py,step,step);}
+    }
+    const gn=Math.hypot(g[0],g[1]);
+    let yv=[0,0],qf=0;
+    if(gn>1e-8){
+      yv=[-g[1]/gn,g[0]/gn];
+      qf=H[0][0]*yv[0]*yv[0]+2*H[0][1]*yv[0]*yv[1]+H[1][1]*yv[1]*yv[1];
+      const col=qf>1e-9?"#2F855A":(qf<-1e-9?"#C0392B":"#B7791F");
+      const seg=clipLine(x[0],x[1],yv[0],yv[1],4.3);
+      if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
+        ctx.strokeStyle=col;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();
+        label(ctx,"∇f(x)⊥",clamp(B[0]-58,10,w-70),clamp(B[1]-14,14,h-14),col,12);}
+      const sx=view.toS(x[0],x[1]);
+      const t=arrowLen(view,x,[g[0]/gn,g[1]/gn],54);
+      const tip=view.toS(x[0]+g[0]/gn*t, x[1]+g[1]/gn*t);
+      arrow(ctx,sx[0],sx[1],tip[0],tip[1],"#D7402B",2.6,6);
+      label(ctx,"∇f(x)",clamp(tip[0]+8,10,w-64),clamp(tip[1]-10,14,h-14),"#D7402B",12);
+    }
+    const sx=view.toS(x[0],x[1]);
+    dot(ctx,sx[0],sx[1],6.5,"#D7402B","#fff");
+    label(ctx,"x",sx[0]+11,sx[1]+14,"#D7402B",13);
+    label(ctx,F.name,14,h-40,"#46506A",12.5);
+    label(ctx,F.cls,14,h-21,F.qc?"#2F855A":"#C0392B",12);
+
+    // eigenvalues of the symmetric 2x2 Hessian
+    const tr=H[0][0]+H[1][1],det=H[0][0]*H[1][1]-H[0][1]*H[1][0];
+    const disc=Math.sqrt(Math.max(0,tr*tr-4*det));
+    const l1=(tr+disc)/2,l2=(tr-disc)/2,neg=(l1<-1e-9?1:0)+(l2<-1e-9?1:0);
+    // how often (3.21) fails over the visible domain
+    let bad=0,tot=0;
+    for(let i=-42;i<=42;i+=3) for(let j=-42;j<=42;j+=3){
+      const z=[i/10,j/10]; if(!F.dom(z)) continue;
+      const gg=F.g(z),n=Math.hypot(gg[0],gg[1]); if(n<1e-8) continue;
+      const yy=[-gg[1]/n,gg[0]/n],HH=F.H(z);
+      const q=HH[0][0]*yy[0]*yy[0]+2*HH[0][1]*yy[0]*yy[1]+HH[1][1]*yy[1]*yy[1];
+      tot++; if(q<-1e-9) bad++;
+    }
+    ro.innerHTML='<span class="k">∇f(x)</span> <b>('+g[0].toFixed(2)+', '+g[1].toFixed(2)+')</b><br>'+
+      '<span class="k">∇²f eigenvalues</span> <b>'+l1.toFixed(2)+', '+l2.toFixed(2)+'</b> &nbsp;('+neg+' negative)<br>'+
+      '<span class="k">y ⊥ ∇f(x)</span> <b>('+yv[0].toFixed(2)+', '+yv[1].toFixed(2)+')</b><br>'+
+      '<span class="k">yᵀ∇²f(x)y</span> <b>'+qf.toFixed(3)+'</b><br>'+
+      '<span class="k">(3.21) fails at</span> <b>'+bad+' / '+tot+'</b> sampled points';
+    let cls,msg;
+    if(!inDom){cls="mid";msg="x is outside dom f for this example";}
+    else if(qf>1e-9){cls="in";msg="yᵀ∇²f(x)y > 0 — (3.21) and (3.22) both hold here";}
+    else if(qf<-1e-9){cls="out";msg="yᵀ∇²f(x)y < 0 — (3.21) fails, f is not quasiconvex";}
+    else {cls="mid";msg="yᵀ∇²f(x)y = 0 — (3.21) holds, (3.22) does not";}
+    vd.className="verdict "+cls;vd.textContent=msg;
+    hint.innerHTML=F.note+(bad>0?" Across the window, (3.21) already fails at <b>"+bad+"</b> of "+tot+" sampled points.":"");
+  }
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+</script>
+</body>
+</html>
