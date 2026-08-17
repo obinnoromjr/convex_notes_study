@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.4.4 — Operations that Preserve Quasiconvexity</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.rtab{width:100%;border-collapse:collapse;margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;font-size:16px}
+.rtab th,.rtab td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.rtab thead th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rtab tbody tr:last-child td,.rtab tr:last-child td{border-bottom:none}
+.rtab .rn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal);font-weight:600}
+.rtab .res{font-weight:600;color:var(--ink)}
+.rtab td .mono{font-size:14px}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.4.4</div>
+    <h1>Operations that preserve <em>quasiconvexity</em></h1>
+    <p class="sub">Three constructions — nonnegative weighted max/sup, composition with a nondecreasing map, and minimization over a convex set — and the one operation conspicuously missing from the list: addition.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> max / sup · sublevel sets intersect</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> \(h\circ g\), \(h\) nondecreasing (not convex)</span>
+      <span><span class="dot" style="background:var(--inside)"></span> \(\inf_{y\in C} f(x,y)\), \(f\) <em>jointly</em> quasiconvex</span>
+      <span>p.&nbsp;101–103 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 250" role="img" aria-label="Left: two sublevel sets — a disk from a norm and a halfspace from a linear-fractional function — with their overlap shaded green; the overlap is the sublevel set of the maximum of the two functions, and it is convex. Right: the graph of x cubed minus x, with a horizontal level line at alpha equals zero and the resulting sublevel set drawn on a band below as two disjoint segments, showing that the sum of two quasiconvex functions need not be quasiconvex.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="250" fill="url(#dots)"/>
+
+        <!-- ===== panel A: {max f1, f2 <= a} = intersection of sublevel sets ===== -->
+        <polygon points="30.0,62.0 261.0,62.0 79.8,206.0 30.0,206.0" fill="rgba(43,108,176,0.13)" stroke="none"/>
+        <polygon points="218.0,132.0 218.0,133.7 217.9,135.3 217.8,137.0 217.6,138.6 217.4,140.3 217.2,141.9 216.8,143.5 216.5,145.1 216.1,146.7 215.7,148.3 215.2,149.9 214.6,151.5 214.0,153.0 213.4,154.6 212.8,156.1 212.0,157.6 211.3,159.1 210.5,160.5 209.7,162.0 208.8,163.4 207.9,164.7 206.9,166.1 205.9,167.4 204.9,168.7 203.8,170.0 202.7,171.2 201.6,172.4 200.4,173.6 199.2,174.7 198.0,175.8 196.7,176.9 195.4,177.9 194.1,178.9 192.7,179.9 191.4,180.8 190.0,181.7 188.5,182.5 187.1,183.3 185.6,184.0 184.1,184.8 182.6,185.4 181.0,186.0 179.5,186.6 177.9,187.2 176.3,187.7 174.7,188.1 173.1,188.5 171.5,188.8 169.9,189.2 168.3,189.4 166.6,189.6 165.0,189.8 163.3,189.9 161.7,190.0 160.0,190.0 158.3,190.0 156.7,189.9 155.0,189.8 153.4,189.6 151.7,189.4 150.1,189.2 148.5,188.8 146.9,188.5 145.3,188.1 143.7,187.7 142.1,187.2 140.5,186.6 139.0,186.0 137.4,185.4 135.9,184.8 134.4,184.0 132.9,183.3 131.5,182.5 130.0,181.7 128.6,180.8 127.3,179.9 125.9,178.9 124.6,177.9 123.3,176.9 122.0,175.8 120.8,174.7 119.6,173.6 118.4,172.4 117.3,171.2 116.2,170.0 115.1,168.7 114.1,167.4 113.1,166.1 112.1,164.7 111.2,163.4 110.3,162.0 109.5,160.5 108.7,159.1 108.0,157.6 107.2,156.1 106.6,154.6 106.0,153.0 105.4,151.5 104.8,149.9 104.3,148.3 103.9,146.7 103.5,145.1 103.2,143.5 102.8,141.9 102.6,140.3 102.4,138.6 102.2,137.0 102.1,135.3 102.0,133.7 102.0,132.0 102.0,130.3 102.1,128.7 102.2,127.0 102.4,125.4 102.6,123.7 102.8,122.1 103.2,120.5 103.5,118.9 103.9,117.3 104.3,115.7 104.8,114.1 105.4,112.5 106.0,111.0 106.6,109.4 107.2,107.9 108.0,106.4 108.7,104.9 109.5,103.5 110.3,102.0 111.2,100.6 112.1,99.3 113.1,97.9 114.1,96.6 115.1,95.3 116.2,94.0 117.3,92.8 118.4,91.6 119.6,90.4 120.8,89.3 122.0,88.2 123.3,87.1 124.6,86.1 125.9,85.1 127.3,84.1 128.6,83.2 130.0,82.3 131.5,81.5 132.9,80.7 134.4,80.0 135.9,79.2 137.4,78.6 139.0,78.0 140.5,77.4 142.1,76.8 143.7,76.3 145.3,75.9 146.9,75.5 148.5,75.2 150.1,74.8 151.7,74.6 153.4,74.4 155.0,74.2 156.7,74.1 158.3,74.0 160.0,74.0 161.7,74.0 163.3,74.1 165.0,74.2 166.6,74.4 168.3,74.6 169.9,74.8 171.5,75.2 173.1,75.5 174.7,75.9 176.3,76.3 177.9,76.8 179.5,77.4 181.0,78.0 182.6,78.6 184.1,79.2 185.6,80.0 187.1,80.7 188.5,81.5 190.0,82.3 191.4,83.2 192.7,84.1 194.1,85.1 195.4,86.1 196.7,87.1 198.0,88.2 199.2,89.3 200.4,90.4 201.6,91.6 202.7,92.8 203.8,94.0 204.9,95.3 205.9,96.6 206.9,97.9 207.9,99.3 208.8,100.6 209.7,102.0 210.5,103.5 211.3,104.9 212.0,106.4 212.8,107.9 213.4,109.4 214.0,111.0 214.6,112.5 215.2,114.1 215.7,115.7 216.1,117.3 216.5,118.9 216.8,120.5 217.2,122.1 217.4,123.7 217.6,125.4 217.8,127.0 217.9,128.7 218.0,130.3" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <polygon points="120.0,174.0 119.6,173.6 118.4,172.4 117.3,171.2 116.2,170.0 115.1,168.7 114.1,167.4 113.1,166.1 112.1,164.7 111.2,163.4 110.3,162.0 109.5,160.5 108.7,159.1 108.0,157.6 107.2,156.1 106.6,154.6 106.0,153.0 105.4,151.5 104.8,149.9 104.3,148.3 103.9,146.7 103.5,145.1 103.2,143.5 102.8,141.9 102.6,140.3 102.4,138.6 102.2,137.0 102.1,135.3 102.0,133.7 102.0,132.0 102.0,130.3 102.1,128.7 102.2,127.0 102.4,125.4 102.6,123.7 102.8,122.1 103.2,120.5 103.5,118.9 103.9,117.3 104.3,115.7 104.8,114.1 105.4,112.5 106.0,111.0 106.6,109.4 107.2,107.9 108.0,106.4 108.7,104.9 109.5,103.5 110.3,102.0 111.2,100.6 112.1,99.3 113.1,97.9 114.1,96.6 115.1,95.3 116.2,94.0 117.3,92.8 118.4,91.6 119.6,90.4 120.8,89.3 122.0,88.2 123.3,87.1 124.6,86.1 125.9,85.1 127.3,84.1 128.6,83.2 130.0,82.3 131.5,81.5 132.9,80.7 134.4,80.0 135.9,79.2 137.4,78.6 139.0,78.0 140.5,77.4 142.1,76.8 143.7,76.3 145.3,75.9 146.9,75.5 148.5,75.2 150.1,74.8 151.7,74.6 153.4,74.4 155.0,74.2 156.7,74.1 158.3,74.0 160.0,74.0 161.7,74.0 163.3,74.1 165.0,74.2 166.6,74.4 168.3,74.6 169.9,74.8 171.5,75.2 173.1,75.5 174.7,75.9 176.3,76.3 177.9,76.8 179.5,77.4 181.0,78.0 182.6,78.6 184.1,79.2 185.6,80.0 187.1,80.7 188.5,81.5 190.0,82.3 191.4,83.2 192.7,84.1 194.1,85.1 195.4,86.1 196.7,87.1 198.0,88.2 199.2,89.3 200.4,90.4 201.6,91.6 202.7,92.8 203.8,94.0 204.9,95.3 205.9,96.6 206.9,97.9 207.9,99.3 208.8,100.6 209.7,102.0 210.0,102.5" fill="rgba(47,133,90,0.34)" stroke="#2F855A" stroke-width="2"/>
+        <line x1="261.0" y1="62.0" x2="79.8" y2="206.0" stroke="#2B6CB0" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="30" y="46" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">{max wᵢfᵢ ≤ α} = ∩ᵢ {wᵢfᵢ ≤ α}</text>
+        <text x="222" y="120" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11">{w₁f₁ ≤ α}</text>
+        <text x="36" y="196" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11">{w₂f₂ ≤ α}</text>
+        <text x="104" y="150" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">convex</text>
+        <text x="30" y="230" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11">an intersection of convex sets — quasiconvex</text>
+
+        <!-- ===== panel B: the sum x³ − x is not quasiconvex ===== -->
+        <polyline fill="none" stroke="#C9C2B2" stroke-width="1.6" stroke-dasharray="4 4" points="371.0,206.0 371.9,204.2 372.9,202.4 373.8,200.7 374.7,198.9 375.6,197.2 376.6,195.6 377.5,194.0 378.4,192.4 379.3,190.8 380.3,189.2 381.2,187.7 382.1,186.2 383.0,184.8 384.0,183.3 384.9,181.9 385.8,180.5 386.7,179.2 387.7,177.8 388.6,176.5 389.5,175.2 390.4,174.0 391.4,172.8 392.3,171.6 393.2,170.4 394.1,169.2 395.1,168.1 396.0,167.0 396.9,165.9 397.8,164.8 398.8,163.8 399.7,162.8 400.6,161.8 401.5,160.8 402.5,159.9 403.4,158.9 404.3,158.0 405.2,157.2 406.2,156.3 407.1,155.5 408.0,154.6 408.9,153.8 409.9,153.0 410.8,152.3 411.7,151.5 412.6,150.8 413.6,150.1 414.5,149.4 415.4,148.8 416.3,148.1 417.3,147.5 418.2,146.9 419.1,146.3 420.0,145.7 421.0,145.1 421.9,144.6 422.8,144.1 423.7,143.6 424.7,143.1 425.6,142.6 426.5,142.1 427.4,141.7 428.4,141.2 429.3,140.8 430.2,140.4 431.1,140.0 432.1,139.7 433.0,139.3 433.9,138.9 434.8,138.6 435.8,138.3 436.7,138.0 437.6,137.7 438.5,137.4 439.5,137.1 440.4,136.8 441.3,136.6 442.2,136.4 443.2,136.1 444.1,135.9 445.0,135.7 445.9,135.5 446.9,135.3 447.8,135.1 448.7,135.0 449.6,134.8 450.6,134.7 451.5,134.5 452.4,134.4 453.3,134.3 454.3,134.1 455.2,134.0 456.1,133.9 457.0,133.8 458.0,133.7 458.9,133.7 459.8,133.6 460.7,133.5 461.7,133.4 462.6,133.4 463.5,133.3 464.4,133.3 465.4,133.2 466.3,133.2 467.2,133.2 468.1,133.1 469.1,133.1 470.0,133.1 470.9,133.1 471.8,133.1 472.8,133.0 473.7,133.0 474.6,133.0 475.5,133.0 476.5,133.0 477.4,133.0 478.3,133.0 479.2,133.0 480.2,133.0 481.1,133.0 482.0,133.0 482.9,133.0 483.8,133.0 484.8,133.0 485.7,133.0 486.6,133.0 487.5,133.0 488.5,133.0 489.4,133.0 490.3,133.0 491.2,133.0 492.2,132.9 493.1,132.9 494.0,132.9 494.9,132.9 495.9,132.9 496.8,132.8 497.7,132.8 498.6,132.8 499.6,132.7 500.5,132.7 501.4,132.6 502.3,132.6 503.3,132.5 504.2,132.4 505.1,132.3 506.0,132.3 507.0,132.2 507.9,132.1 508.8,132.0 509.7,131.9 510.7,131.7 511.6,131.6 512.5,131.5 513.4,131.3 514.4,131.2 515.3,131.0 516.2,130.9 517.1,130.7 518.1,130.5 519.0,130.3 519.9,130.1 520.8,129.9 521.8,129.6 522.7,129.4 523.6,129.2 524.5,128.9 525.5,128.6 526.4,128.3 527.3,128.0 528.2,127.7 529.2,127.4 530.1,127.1 531.0,126.7 531.9,126.3 532.9,126.0 533.8,125.6 534.7,125.2 535.6,124.8 536.6,124.3 537.5,123.9 538.4,123.4 539.3,122.9 540.3,122.4 541.2,121.9 542.1,121.4 543.0,120.9 544.0,120.3 544.9,119.7 545.8,119.1 546.7,118.5 547.7,117.9 548.6,117.2 549.5,116.6 550.4,115.9 551.4,115.2 552.3,114.5 553.2,113.7 554.1,113.0 555.1,112.2 556.0,111.4 556.9,110.5 557.8,109.7 558.8,108.8 559.7,108.0 560.6,107.1 561.5,106.1 562.5,105.2 563.4,104.2 564.3,103.2 565.2,102.2 566.2,101.2 567.1,100.1 568.0,99.0 568.9,97.9 569.9,96.8 570.8,95.6 571.7,94.4 572.6,93.2 573.6,92.0 574.5,90.8 575.4,89.5 576.3,88.2 577.3,86.8 578.2,85.5 579.1,84.1 580.0,82.7 581.0,81.2 581.9,79.8 582.8,78.3 583.7,76.8 584.7,75.2 585.6,73.6 586.5,72.0 587.4,70.4 588.4,68.8 589.3,67.1 590.2,65.3 591.1,63.6 592.1,61.8 593.0,60.0"/>
+        <line x1="352.0" y1="80.9" x2="612.0" y2="185.1" stroke="#C9C2B2" stroke-width="1.6" stroke-dasharray="2 4"/>
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.6" stroke-linejoin="round" points="352.0,198.2 353.1,195.7 354.2,193.3 355.2,190.9 356.3,188.6 357.4,186.3 358.5,184.1 359.6,181.9 360.7,179.7 361.8,177.6 362.8,175.6 363.9,173.6 365.0,171.6 366.1,169.7 367.2,167.8 368.2,166.0 369.3,164.2 370.4,162.4 371.5,160.7 372.6,159.1 373.7,157.4 374.8,155.9 375.8,154.3 376.9,152.8 378.0,151.4 379.1,149.9 380.2,148.5 381.2,147.2 382.3,145.9 383.4,144.6 384.5,143.4 385.6,142.2 386.7,141.0 387.8,139.9 388.8,138.8 389.9,137.8 391.0,136.7 392.1,135.8 393.2,134.8 394.2,133.9 395.3,133.0 396.4,132.1 397.5,131.3 398.6,130.5 399.7,129.8 400.8,129.1 401.8,128.4 402.9,127.7 404.0,127.1 405.1,126.4 406.2,125.9 407.2,125.3 408.3,124.8 409.4,124.3 410.5,123.8 411.6,123.4 412.7,123.0 413.8,122.6 414.8,122.2 415.9,121.9 417.0,121.6 418.1,121.3 419.2,121.0 420.2,120.8 421.3,120.6 422.4,120.4 423.5,120.2 424.6,120.1 425.7,120.0 426.8,119.8 427.8,119.8 428.9,119.7 430.0,119.7 431.1,119.6 432.2,119.6 433.2,119.6 434.3,119.7 435.4,119.7 436.5,119.8 437.6,119.9 438.7,120.0 439.8,120.1 440.8,120.2 441.9,120.4 443.0,120.5 444.1,120.7 445.2,120.9 446.2,121.1 447.3,121.3 448.4,121.6 449.5,121.8 450.6,122.1 451.7,122.3 452.8,122.6 453.8,122.9 454.9,123.2 456.0,123.5 457.1,123.8 458.2,124.2 459.2,124.5 460.3,124.9 461.4,125.2 462.5,125.6 463.6,125.9 464.7,126.3 465.8,126.7 466.8,127.1 467.9,127.5 469.0,127.9 470.1,128.3 471.2,128.7 472.2,129.1 473.3,129.6 474.4,130.0 475.5,130.4 476.6,130.8 477.7,131.3 478.8,131.7 479.8,132.1 480.9,132.6 482.0,133.0 483.1,133.4 484.2,133.9 485.2,134.3 486.3,134.7 487.4,135.2 488.5,135.6 489.6,136.0 490.7,136.4 491.8,136.9 492.8,137.3 493.9,137.7 495.0,138.1 496.1,138.5 497.2,138.9 498.2,139.3 499.3,139.7 500.4,140.1 501.5,140.4 502.6,140.8 503.7,141.1 504.8,141.5 505.8,141.8 506.9,142.2 508.0,142.5 509.1,142.8 510.2,143.1 511.2,143.4 512.3,143.7 513.4,143.9 514.5,144.2 515.6,144.4 516.7,144.7 517.8,144.9 518.8,145.1 519.9,145.3 521.0,145.5 522.1,145.6 523.2,145.8 524.2,145.9 525.3,146.0 526.4,146.1 527.5,146.2 528.6,146.3 529.7,146.3 530.8,146.4 531.8,146.4 532.9,146.4 534.0,146.3 535.1,146.3 536.2,146.2 537.2,146.2 538.3,146.0 539.4,145.9 540.5,145.8 541.6,145.6 542.7,145.4 543.8,145.2 544.8,145.0 545.9,144.7 547.0,144.4 548.1,144.1 549.2,143.8 550.2,143.4 551.3,143.0 552.4,142.6 553.5,142.2 554.6,141.7 555.7,141.2 556.8,140.7 557.8,140.1 558.9,139.6 560.0,138.9 561.1,138.3 562.2,137.6 563.2,136.9 564.3,136.2 565.4,135.5 566.5,134.7 567.6,133.9 568.7,133.0 569.8,132.1 570.8,131.2 571.9,130.2 573.0,129.3 574.1,128.2 575.2,127.2 576.2,126.1 577.3,125.0 578.4,123.8 579.5,122.6 580.6,121.4 581.7,120.1 582.8,118.8 583.8,117.5 584.9,116.1 586.0,114.6 587.1,113.2 588.2,111.7 589.2,110.1 590.3,108.6 591.4,106.9 592.5,105.3 593.6,103.6 594.7,101.8 595.8,100.0 596.8,98.2 597.9,96.3 599.0,94.4 600.1,92.4 601.2,90.4 602.2,88.4 603.3,86.3 604.4,84.1 605.5,81.9 606.6,79.7 607.7,77.4 608.8,75.1 609.8,72.7 610.9,70.3 612.0,67.8"/>
+        <line x1="352.0" y1="133.0" x2="612.0" y2="133.0" stroke="#17223B" stroke-width="1.6" stroke-dasharray="7 4"/>
+        <line x1="352.0" y1="192.8" x2="395.3" y2="192.8" stroke="#C0392B" stroke-width="7" stroke-linecap="butt"/>
+        <line x1="482.0" y1="192.8" x2="568.7" y2="192.8" stroke="#C0392B" stroke-width="7" stroke-linecap="butt"/>
+        <circle cx="432.0" cy="119.6" r="4.2" fill="#C0392B"/>
+        <text x="352" y="46" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">x³ and −x quasiconvex · x³ − x not</text>
+        <text x="358.0" y="125.0" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="11">α = 0</text>
+        <text x="352" y="230" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="11">{x³ − x ≤ 0} = (−∞, −1] ∪ [0, 1] — not an interval</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ §0 ============ -->
+<section class="wrap" id="s0">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <h2>The quasiconvex calculus</h2>
+  <hr class="rule">
+  <p>§3.4.1–§3.4.3 defined quasiconvexity and gave its calculus conditions — the modified Jensen inequality (3.19), the first-order condition (3.20), the second-order conditions (3.21)–(3.22). This subsection is the <em>quasiconvex calculus</em>: the analog of §3.2 for convexity, listing which operations keep a function quasiconvex. There are three of them — nonnegative weighted maximum and supremum, composition, and minimization — and the requirements are notably <strong>weaker</strong> than in the convex case. One entry from the convex list is missing, and its absence is the sharpest thing to learn here: sums are dropped.</p>
+</section>
+
+<!-- ============ §1 ============ -->
+<section class="wrap" id="s1">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">operation 1 · max and sup</span></div>
+  <h2>Nonnegative weighted maximum and supremum</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    A nonnegative weighted maximum of quasiconvex functions,
+    \[ f \;=\; \max\{\,w_1 f_1,\ \dots,\ w_m f_m\,\},\qquad w_i\ge 0,\quad f_i\ \text{quasiconvex}, \]
+    is quasiconvex. The property extends to the general pointwise supremum
+    \[ f(x)\;=\;\sup_{y\in C}\ \bigl(\,w(y)\,g(x,y)\,\bigr), \]
+    where \(w(y)\ge 0\) and \(g(\cdot,y)\) is quasiconvex in \(x\) for each \(y\in C\).
+    <span class="src">B&amp;V §3.4.4 · L5218–5237</span>
+  </div>
+
+  <p>The proof is the sublevel-set argument, and it is worth memorizing in the form below because every other statement in this subsection is a variant of it.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim — the \(\alpha\)-sublevel set of a sup is an intersection of sublevel sets</span><span class="target">so it is convex</span></div>
+    <div class="step crux"><div class="math">\[ f(x)\le\alpha \iff w(y)\,g(x,y)\le\alpha \quad\text{for all } y\in C \]</div><div class="why"><b>why</b> a supremum is \(\le\alpha\) exactly when <em>every</em> member of the family is \(\le\alpha\). This single equivalence turns one condition on \(f\) into a family of conditions, one per \(y\).</div></div>
+    <div class="step"><div class="math">\[ \{x\mid f(x)\le\alpha\}\;=\;\bigcap_{y\in C}\ \{x\mid w(y)g(x,y)\le\alpha\} \]</div><div class="why"><b>why</b> "for all \(y\)" is set intersection. The \(\alpha\)-sublevel set of \(f\) is the intersection of the \(\alpha\)-sublevel sets of the individual functions \(w(y)g(\cdot,y)\).</div></div>
+    <div class="step"><div class="math">\[ \text{each } \{x\mid w(y)g(x,y)\le\alpha\} \text{ is convex} \]</div><div class="why"><b>why</b> \(g(\cdot,y)\) is quasiconvex and \(w(y)\ge 0\), so \(w(y)g(\cdot,y)\) is quasiconvex too (scaling by a nonnegative constant just relabels which \(\alpha\) you are looking at), and quasiconvex functions have convex sublevel sets.</div></div>
+    <div class="step"><div class="math">\[ \text{an intersection of convex sets is convex}\ \Rightarrow\ f \text{ quasiconvex} \]</div><div class="why"><b>why</b> §2.3.1. Every sublevel set of \(f\) is convex, which is the definition of quasiconvexity (§3.4.1). Note that the index set \(C\) may be infinite — intersection does not care.</div></div>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p>Compare the convex version (§3.2.3): there, the pointwise supremum of convex functions is convex because <em>epigraphs</em> intersect, \(\operatorname{epi} f=\bigcap_y \operatorname{epi} g(\cdot,y)\). Here the same move is made one level down, on <em>sublevel sets</em>. Same argument, different object — and that is why the hypotheses can be weakened from convex to quasiconvex.</p></div>
+
+  <div class="note warn"><div class="ic">!</div><p>The weights must be <strong>nonnegative</strong>. A negative \(w_i\) turns \(\{w_if_i\le\alpha\}\) into a <em>super</em>level set of \(f_i\), which quasiconvexity says nothing about. And it is a maximum, not a sum — see §5.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The sublevel set of a max is the intersection of sublevel sets</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:rgba(43,108,176,0.16)"></i> \(\{w_if_i\le\alpha\}\) — one member's sublevel set</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> the intersection \(=\{\max_i w_if_i\le\alpha\}\)</span>
+          <span><i style="border-color:#D7402B"></i> the test point \(z\) — drag it</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>z</b>. In <b>max of two</b> the family is \(w_1\|z-p\|_2\) (a disk) and \(w_2\,(a^Tz+b)/(c^Tz+d)\) (a halfspace — the function is quasilinear). In <b>sup over a family</b> the family is \(g(z,y)=y^Tz\) over twelve unit directions \(y\), whose sup is \(\|z\|_2\): infinitely many halfspaces would give the disk exactly.</p>
+        <div class="chips" id="c1"></div>
+        <div class="ctrl"><label>α <span class="val" id="v1a">2.00</span></label><input type="range" id="p1a" min="0.3" max="4.2" step="0.02" value="2"></div>
+        <div class="ctrl"><label>w₁ <span class="val" id="v1w1">1.00</span></label><input type="range" id="p1w1" min="0" max="2" step="0.01" value="1"></div>
+        <div class="ctrl"><label>w₂ <span class="val" id="v1w2">1.00</span></label><input type="range" id="p1w2" min="0" max="2" step="0.01" value="1"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+        <p class="hint" id="h1"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §2 ============ -->
+<section class="wrap" id="s2">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">example 3.37</span></div>
+  <h2>Maximum generalized eigenvalue</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    <b>Example 3.37</b> Generalized eigenvalues. The maximum generalized eigenvalue of a symmetric-matrix pair \((X,Y)\), with \(Y\succ 0\), is defined as
+    \[ \lambda_{\max}(X,Y)\;=\;\sup_{u\neq 0}\ \frac{u^{T}Xu}{u^{T}Yu}\;=\;\sup\{\lambda\mid \det(\lambda Y-X)=0\}. \]
+    This function is quasiconvex on \(\mathbf{S}^n\times\mathbf{S}^n_{++}\).
+    <span class="src">B&amp;V §3.4.4 · L5239–5261 · example 3.37</span>
+  </div>
+
+  <p>The verification is §1 applied verbatim, and the family is indexed by the direction \(u\):</p>
+
+  <ul class="reads">
+    <li><span class="tag">each member</span><div>Fix \(u\neq0\). Both \(u^TXu\) and \(u^TYu\) are <em>linear</em> functions of the pair \((X,Y)\), so \((X,Y)\mapsto (u^TXu)/(u^TYu)\) is <strong>linear-fractional</strong> in \((X,Y)\), with denominator positive on the domain \(Y\succ0\). Linear-fractional functions are quasilinear (§3.4.1) — every sublevel set, and every superlevel set, is a halfspace.</div></li>
+    <li><span class="tag">the sup</span><div>\(\lambda_{\max}\) is the pointwise supremum of that family over \(u\neq0\), with weights \(w(u)\equiv1\). By §1 it is quasiconvex.</div></li>
+    <li><span class="tag">the domain</span><div>\(Y\succ 0\) is exactly what makes \(u^TYu&gt;0\) for every \(u\neq0\); without it the ratio is undefined or changes sign and the linear-fractional structure is lost. Quasiconvexity is asserted <em>jointly</em> in \((X,Y)\) on \(\mathbf{S}^n\times\mathbf{S}^n_{++}\), not just in \(X\).</div></li>
+  </ul>
+
+  <p>The second expression, \(\sup\{\lambda\mid\det(\lambda Y-X)=0\}\), says the same thing algebraically: \(\lambda\) is a generalized eigenvalue of the pair exactly when \(\lambda Y-X\) is singular, and the largest such \(\lambda\) is the largest value of the Rayleigh-type ratio. It is also the largest ordinary eigenvalue of \(Y^{-1}X\).</p>
+
+  <div class="note key"><div class="ic">!</div><p>This is a clean case where a supremum of <em>quasi</em>linear functions is quasiconvex but <strong>not convex</strong>. Contrast the special case \(Y=I\): then \(u^TXu\) is linear in \(X\), and a pointwise sup of linear functions is convex — \(\lambda_{\max}(X)\) really is a convex function of \(X\) (§3.2.3). It is the dependence on \(Y\) that costs convexity and leaves only quasiconvexity.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>\(\lambda_{\max}(X,Y)\) as a supremum over directions</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv2"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#17223B"></i> \(r(\theta)=u^TXu/u^TYu\), \(u=(\cos\theta,\sin\theta)\)</span>
+          <span><i style="border-color:#D7402B"></i> \(\lambda_{\max}(X,Y)\) — the supremum</span>
+          <span><i style="border-color:#2B6CB0"></i> \(\lambda_{\min}(X,Y)\) — the other root of \(\det(\lambda Y-X)=0\)</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag the navy handle to sweep the direction \(u\). Slide the entries of \(X=\begin{bmatrix}x_{11}&amp;x_{12}\\x_{12}&amp;x_{22}\end{bmatrix}\) and of \(Y=\mathrm{diag}(y_{11},y_{22})\succ0\). The red line is the value the sup attains; the curve never crosses it.</p>
+        <div class="ctrl"><label>x₁₁ <span class="val" id="v2x11">2.00</span></label><input type="range" id="p2x11" min="-3" max="3" step="0.05" value="2"></div>
+        <div class="ctrl"><label>x₁₂ <span class="val" id="v2x12">0.80</span></label><input type="range" id="p2x12" min="-3" max="3" step="0.05" value="0.8"></div>
+        <div class="ctrl"><label>x₂₂ <span class="val" id="v2x22">-0.50</span></label><input type="range" id="p2x22" min="-3" max="3" step="0.05" value="-0.5"></div>
+        <div class="ctrl"><label>y₁₁ <span class="val" id="v2y11">1.00</span></label><input type="range" id="p2y11" min="0.3" max="3" step="0.05" value="1"></div>
+        <div class="ctrl"><label>y₂₂ <span class="val" id="v2y22">0.60</span></label><input type="range" id="p2y22" min="0.3" max="3" step="0.05" value="0.6"></div>
+        <div class="readout" id="ro2"></div>
+        <div class="verdict" id="vd2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>the diagonal case, by hand</span><span class="vt">\(\lambda_{\max}=\max_i x_{ii}/y_{ii}\)</span></div>
+    <div class="exb">
+      <p>Take \(X=\mathrm{diag}(x_1,x_2)\) and \(Y=\mathrm{diag}(y_1,y_2)\succ0\). Then \(\det(\lambda Y-X)=(\lambda y_1-x_1)(\lambda y_2-x_2)\), whose roots are \(x_1/y_1\) and \(x_2/y_2\), so \(\lambda_{\max}(X,Y)=\max\{x_1/y_1,\ x_2/y_2\}\) — literally a maximum of two linear-fractional functions of \((x_1,x_2,y_1,y_2)\), which is §1 with \(m=2\). Its \(\alpha\)-sublevel set is \(\{x_1\le\alpha y_1\}\cap\{x_2\le\alpha y_2\}\), an intersection of two halfspaces. The Rayleigh form gives the same answer: \((u^TXu)/(u^TYu)=(u_1^2x_1+u_2^2x_2)/(u_1^2y_1+u_2^2y_2)\) is a weighted average of \(x_1/y_1\) and \(x_2/y_2\) with weights \(u_1^2y_1\) and \(u_2^2y_2\), and an average is largest when all the weight sits on the larger ratio.</p>
+    </div>
+  </div>
+
+  <div class="note build"><div class="ic">!</div><p>Dual remark, worth carrying: \(\lambda_{\min}(X,Y)=\inf_{u\ne0}(u^TXu)/(u^TYu)\) is an infimum of the same quasilinear family, hence <em>quasiconcave</em> on \(\mathbf{S}^n\times\mathbf{S}^n_{++}\). Minimizing \(\lambda_{\max}\) and maximizing \(\lambda_{\min}\) are therefore both quasiconvex problems — the reason generalized-eigenvalue minimization is solvable by bisection (§4.2.5).</p></div>
+</section>
+
+<!-- ============ §3 ============ -->
+<section class="wrap" id="s3">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">operation 2 · composition</span></div>
+  <h2>Composition</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    If \(g:\mathbb{R}^n\to\mathbb{R}\) is quasiconvex and \(h:\mathbb{R}\to\mathbb{R}\) is <em>nondecreasing</em>, then \(f=h\circ g\) is quasiconvex.
+    <span class="src">B&amp;V §3.4.4 · L5264–5267</span>
+  </div>
+
+  <p>Read the hypothesis on \(h\) carefully: <strong>monotone, nothing more</strong>. It need not be convex, need not be differentiable, need not even be continuous.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim — \(\{x\mid h(g(x))\le\alpha\}\) is a sublevel set of \(g\)</span><span class="target">so it is convex</span></div>
+    <div class="step crux"><div class="math">\[ \{t\in\mathbb{R}\mid h(t)\le\alpha\}\ \text{is an interval unbounded below} \]</div><div class="why"><b>why</b> \(h\) is nondecreasing: if \(h(t)\le\alpha\) and \(s\le t\) then \(h(s)\le h(t)\le\alpha\). So the set is \((-\infty,\beta]\) or \((-\infty,\beta)\) with \(\beta=\sup\{t\mid h(t)\le\alpha\}\) (possibly empty, possibly all of \(\mathbb{R}\)).</div></div>
+    <div class="step"><div class="math">\[ \{x\mid f(x)\le\alpha\}=\{x\mid g(x)\le\beta\}\ \ \text{or}\ \ \{x\mid g(x)&lt;\beta\} \]</div><div class="why"><b>why</b> composing the two: \(f(x)\le\alpha\) iff \(g(x)\) lands in that interval. Both a sublevel set and a strict sublevel set of a quasiconvex \(g\) are convex.</div></div>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p>The contrast with the convex composition rule (§3.2.4) is the point. There you need \(g\) convex <em>and</em> \(h\) convex <em>and</em> \(h\) nondecreasing. Here you need \(g\) quasiconvex and \(h\) merely nondecreasing. Convexity of \(h\) is used, in the convex rule, to bound values; quasiconvexity only ever asks about sublevel sets, and monotonicity alone is enough to pull one back to another.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>worked — \(f(x)=\arctan\|x\|_2\)</span><span class="vt">\(h\) nondecreasing but <em>not</em> convex</span></div>
+    <div class="exb">
+      <p>Take \(g(x)=\|x\|_2\) (convex, hence quasiconvex) and \(h(t)=\arctan t\), which is nondecreasing on \(\mathbb{R}\) but concave for \(t\ge0\) and therefore not convex. The composition rule gives \(f=h\circ g\) quasiconvex, and the sublevel sets confirm it directly: for \(0\le\alpha&lt;\pi/2\),</p>
+      \[ \{x\mid \arctan\|x\|_2\le\alpha\}=\{x\mid \|x\|_2\le\tan\alpha\}, \]
+      <p>a Euclidean ball — convex. But \(f\) is <strong>not</strong> convex, and a two-point witness settles it: with \(x=0\) and \(y=(4,0)\),</p>
+      \[ f\!\left(\tfrac{x+y}{2}\right)=\arctan 2\approx 1.1071\ \;&gt;\;\ \tfrac{f(x)+f(y)}{2}=\tfrac{0+\arctan 4}{2}\approx 0.6629. \]
+      <p>Had the convex rule been applied it would have failed at the hypothesis "\(h\) convex" and delivered nothing. The quasiconvex rule is strictly stronger here because it asks for less.</p>
+    </div>
+  </div>
+
+  <div class="bv">
+    Composition with an affine or linear-fractional map also preserves quasiconvexity. If \(f\) is quasiconvex then \(f(Ax+b)\) is quasiconvex, and
+    \[ \tilde f(x)=f\!\left(\frac{Ax+b}{c^{T}x+d}\right) \]
+    is quasiconvex on \(\ \{x\mid c^{T}x+d&gt;0,\ (Ax+b)/(c^{T}x+d)\in\operatorname{\mathbf{dom}} f\}\).
+    <span class="src">B&amp;V §3.4.4 · L5268–5271</span>
+  </div>
+
+  <p>Both follow from the sublevel-set picture again: \(\{x\mid \tilde f(x)\le\alpha\}\) is the inverse image, under an affine or linear-fractional map, of the convex set \(\{z\mid f(z)\le\alpha\}\) — and inverse images of convex sets under those maps are convex (§2.3.2, §2.3.3). Note the domain restriction \(c^Tx+d&gt;0\) is not cosmetic: it is what makes the linear-fractional map convexity-preserving on that piece.</p>
+</section>
+
+<!-- ============ §4 ============ -->
+<section class="wrap" id="s4">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">operation 3 · minimization</span></div>
+  <h2>Minimization</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    If \(f(x,y)\) is quasiconvex <em>jointly</em> in \((x,y)\) and \(C\) is a convex set, then the function
+    \[ g(x)\;=\;\inf_{y\in C}\ f(x,y) \]
+    is quasiconvex.
+    <span class="src">B&amp;V §3.4.4 · L5273–5279</span>
+  </div>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim — \(\{x\mid g(x)\le\alpha\}\) is convex</span><span class="target">the \(\varepsilon\)-argument, because an inf need not be attained</span></div>
+    <div class="step"><div class="math">\[ g(x_1)\le\alpha,\quad g(x_2)\le\alpha,\quad \theta\in[0,1],\quad \varepsilon&gt;0 \]</div><div class="why"><b>why</b> take two points of the \(\alpha\)-sublevel set of \(g\) and a convex combination; the goal is \(g(\theta x_1+(1-\theta)x_2)\le\alpha\).</div></div>
+    <div class="step crux"><div class="math">\[ \exists\, y_1,y_2\in C:\quad f(x_i,y_i)\le\alpha+\varepsilon \]</div><div class="why"><b>why</b> definition of infimum. The \(\varepsilon\) is load-bearing: \(g(x_i)\le\alpha\) does <em>not</em> give a \(y_i\) with \(f(x_i,y_i)\le\alpha\), because the infimum may not be attained. Everything after this is done at level \(\alpha+\varepsilon\).</div></div>
+    <div class="step"><div class="math">\[ f\bigl(\theta x_1+(1-\theta)x_2,\ \theta y_1+(1-\theta)y_2\bigr)\ \le\ \alpha+\varepsilon \]</div><div class="why"><b>why</b> the points \((x_1,y_1)\) and \((x_2,y_2)\) both lie in the \((\alpha+\varepsilon)\)-sublevel set of \(f\), which is convex by <em>joint</em> quasiconvexity — so the whole segment between them lies in it too.</div></div>
+    <div class="step"><div class="math">\[ \theta y_1+(1-\theta)y_2\in C\ \Rightarrow\ g\bigl(\theta x_1+(1-\theta)x_2\bigr)\le\alpha+\varepsilon \]</div><div class="why"><b>why</b> \(C\) convex, so that combination is an admissible \(y\); the infimum over \(C\) is at most the value at this particular one. This is where convexity of \(C\) is used, and the only place.</div></div>
+    <div class="step"><div class="math">\[ \varepsilon&gt;0 \text{ arbitrary}\ \Rightarrow\ g\bigl(\theta x_1+(1-\theta)x_2\bigr)\le\alpha \]</div><div class="why"><b>why</b> letting \(\varepsilon\downarrow0\). The sublevel set is convex for every \(\alpha\), so \(g\) is quasiconvex.</div></div>
+  </div>
+
+  <div class="note warn"><div class="ic">!</div><p><strong>Joint</strong> quasiconvexity in \((x,y)\) is essential — quasiconvex in \(x\) for each fixed \(y\), and in \(y\) for each fixed \(x\), is <em>not</em> enough. The proof needs the segment from \((x_1,y_1)\) to \((x_2,y_2)\), which moves in both arguments at once; separate quasiconvexity says nothing about such a segment. Exactly the same warning attaches to the convex version, §3.2.5.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>worked — distance to a convex set</span><span class="vt">the archetype of the construction</span></div>
+    <div class="exb">
+      <p>Let \(C\subseteq\mathbb{R}^n\) be convex and put \(f(x,y)=\|x-y\|_2\). As a function of the pair \((x,y)\in\mathbb{R}^{2n}\) this is a norm composed with the linear map \((x,y)\mapsto x-y\), so it is convex jointly, hence quasiconvex jointly. The rule then gives</p>
+      \[ \operatorname{dist}(x,C)=\inf_{y\in C}\|x-y\|_2 \quad\text{quasiconvex}, \]
+      <p>with \(\{x\mid \operatorname{dist}(x,C)\le\alpha\}=C+\alpha B\), the \(\alpha\)-neighbourhood of \(C\) — visibly convex. Two things to notice. First, the hypothesis really is used jointly: had we only known that \(\|x-y\|\) is quasiconvex in \(x\) for each \(y\), the argument would not run. Second, the infimum is attained here when \(C\) is closed, but the proof never needed that — which is exactly why the \(\varepsilon\) appears.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §5 ============ -->
+<section class="wrap" id="s5">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">the key contrast</span></div>
+  <h2>Sums do <em>not</em> preserve quasiconvexity</h2>
+  <hr class="rule">
+
+  <p>B&amp;V's list is max/sup, composition, minimization — conspicuously <strong>not</strong> addition. Nonnegative weighted sums head the convex list (§3.2.1); they are absent here, and not by oversight. Quasiconvexity is not preserved under sums.</p>
+
+  <div class="note key"><div class="ic">!</div><p>Structurally, the reason is the same sublevel-set identity that made §1 work. For a maximum, \(\{\max_i w_if_i\le\alpha\}=\bigcap_i\{w_if_i\le\alpha\}\) — the condition decomposes across the family. For a sum there is no such decomposition: knowing \(f(x)+g(x)\le\alpha\) tells you nothing about \(f(x)\) and \(g(x)\) separately, so the sublevel set of \(f+g\) is not built out of the sublevel sets of \(f\) and \(g\), and their convexity buys nothing.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>counterexample — \(x^3\) and \(-x\)</span><span class="vt">both quasiconvex, sum is not</span></div>
+    <div class="exb">
+      <ul class="reads">
+        <li><span class="tag">\(f(x)=x^3\)</span><div>Monotone (increasing) on \(\mathbb{R}\), and every monotone function on \(\mathbb{R}\) is quasiconvex — its sublevel sets \(\{x\mid x^3\le\alpha\}=(-\infty,\alpha^{1/3}]\) are intervals.</div></li>
+        <li><span class="tag">\(g(x)=-x\)</span><div>Affine, hence quasilinear: both its sublevel sets and superlevel sets are intervals.</div></li>
+        <li><span class="tag">\(f+g=x^3-x\)</span><div>Not quasiconvex.</div></li>
+      </ul>
+      <p>Two independent certificates of failure:</p>
+      \[ (x^3-x)'=3x^2-1=0 \ \text{ at } \ x=\pm\tfrac{1}{\sqrt3},\qquad (x^3-x)''\big|_{x=-1/\sqrt3}=6\left(-\tfrac{1}{\sqrt3}\right)=-\tfrac{6}{\sqrt3}\approx-3.464&lt;0. \]
+      <p>So at \(x=-1/\sqrt3\) the derivative vanishes and the second derivative is strictly negative — a strict local maximum. That violates the second-order necessary condition (3.21) of §3.4.3, which on \(\mathbb{R}\) reads \(f'(x)=0\Rightarrow f''(x)\ge0\). Directly, in terms of sublevel sets,</p>
+      \[ \{x\mid x^3-x\le 0\}=\{x\mid x(x-1)(x+1)\le0\}=(-\infty,-1]\ \cup\ [0,1], \]
+      <p>which is not an interval, hence not convex — quasiconvexity fails at \(\alpha=0\).</p>
+    </div>
+  </div>
+
+  <div class="note build"><div class="ic">!</div><p>Practical consequence: when a model needs an objective that is a <em>sum</em> of terms, quasiconvexity of the pieces is worthless and you must establish convexity (or reformulate). Quasiconvexity is a good property to have for a single objective you intend to minimize by bisection on \(\alpha\) (§4.2.5), and a poor one to try to build compositionally out of sums.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Watching the sublevel set split in two</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> \(s(x)=x^3-tx\) — the sum</span>
+          <span><i style="border-color:#8A91A3"></i> \(x^3\) and \(-tx\), each quasiconvex</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> \(\{s\le\alpha\}\) — one interval</span>
+          <span><i class="sw" style="background:rgba(192,57,43,0.35)"></i> \(\{s\le\alpha\}\) — two pieces, not convex</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag the navy \(\alpha\) line up and down. Slide \(t\) from \(0\) (where \(s=x^3\) is monotone, so quasiconvex) upward and watch the sublevel set on the axis break into two pieces.</p>
+        <div class="ctrl"><label>t <span class="val" id="v3t">1.00</span></label><input type="range" id="p3t" min="0" max="1.6" step="0.02" value="1"></div>
+        <div class="ctrl"><label>α <span class="val" id="v3a">0.00</span></label><input type="range" id="p3a" min="-2" max="2" step="0.01" value="0"></div>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+        <p class="hint" id="h3"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §6 ============ -->
+<section class="wrap" id="s6">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">expert lens · diagnose</span></div>
+  <h2>What to have on instant recall</h2>
+  <hr class="rule">
+
+  <div class="moves">
+    <div class="move">
+      <p class="mh"><span class="mnum">01</span>Max / sup</p>
+      <p>\(\max\{w_if_i\}\) with \(w_i\ge0\), and \(\sup_{y\in C}w(y)g(x,y)\) with \(w(y)\ge0\), are quasiconvex. The reason in one line: the \(\alpha\)-sublevel set is the <em>intersection</em> of the members' \(\alpha\)-sublevel sets, each convex.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">02</span>Generalized eigenvalue (Ex 3.37)</p>
+      <p>\(\lambda_{\max}(X,Y)=\sup_{u\ne0}(u^TXu)/(u^TYu)=\sup\{\lambda\mid\det(\lambda Y-X)=0\}\) is quasiconvex on \(\mathbf{S}^n\times\mathbf{S}^n_{++}\): each ratio is linear-fractional in \((X,Y)\), and a sup of quasiconvex functions is quasiconvex.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">03</span>Composition</p>
+      <p>\(h\circ g\) is quasiconvex if \(g\) is quasiconvex and \(h\) is nondecreasing — \(h\) need <strong>not</strong> be convex. Affine and linear-fractional precompositions preserve quasiconvexity, the latter on \(\{c^Tx+d&gt;0\}\).</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">04</span>Minimization</p>
+      <p>\(\inf_{y\in C}f(x,y)\) is quasiconvex if \(f\) is <em>jointly</em> quasiconvex and \(C\) is convex. The proof runs at level \(\alpha+\varepsilon\) because the infimum need not be attained.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">05</span>The big trap</p>
+      <p>Sums do <strong>not</strong> preserve quasiconvexity: \(x^3\) and \(-x\) are quasiconvex, \(x^3-x\) is not. Sharpest contrast with the convex calculus (§3.2.1), where nonnegative weighted sums are the first entry on the list.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">06</span>The two weakened hypotheses</p>
+      <p>Where the convex rules demand convexity, these demand less: \(h\) nondecreasing suffices (not convex). But one hypothesis is <em>not</em> weakened — minimization still needs <em>joint</em> quasiconvexity, not separate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ summary ============ -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">summary — main points for quick review</div>
+    <h2>Operations that preserve quasiconvexity</h2>
+    <div class="scards">
+      <div class="scard">
+        <h6>max / sup</h6>
+        <p>\(\max\{w_if_i\}\) (\(w_i\ge0\)) and \(\sup_{y}w(y)g(x,y)\) are quasiconvex — the \(\alpha\)-sublevel set is the intersection of convex sublevel sets.</p>
+      </div>
+      <div class="scard">
+        <h6>generalized eigenvalue (Ex 3.37)</h6>
+        <p>\(\lambda_{\max}(X,Y)=\sup_{u\ne0}(u^TXu)/(u^TYu)\) quasiconvex on \(\mathbf{S}^n\times\mathbf{S}^n_{++}\); each ratio linear-fractional in \((X,Y)\), sup of quasiconvex.</p>
+      </div>
+      <div class="scard">
+        <h6>composition</h6>
+        <p>\(h\circ g\) quasiconvex if \(g\) quasiconvex and \(h\) nondecreasing (not necessarily convex); affine and linear-fractional precompositions preserve quasiconvexity.</p>
+      </div>
+      <div class="scard">
+        <h6>minimization</h6>
+        <p>\(\inf_{y\in C}f(x,y)\) quasiconvex if \(f\) jointly quasiconvex and \(C\) convex.</p>
+      </div>
+      <div class="scard">
+        <h6>contrast</h6>
+        <p>Quasiconvexity is <em>not</em> preserved under sums: \(x^3\) and \(-x\) are quasiconvex, \(x^3-x\) is not — unlike convexity.</p>
+      </div>
+      <div class="scard">
+        <h6>date · tag</h6>
+        <p class="mono">2026-08-04 · bv.3.4.4 · operations that preserve quasiconvexity (B&amp;V §3.4.4, p. 101–103)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  B&amp;V §3.4.4 (p. 101–103) · interactive study sheet · drag any handle
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  const step=range>3?1:0.5;
+  for(let i=-range;i<=range+1e-9;i+=step){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function drawCurve(ctx,view,fn,R,color,wd,lo,hi,dash){
+  const a=(lo===undefined? -R+0.1:lo), b=(hi===undefined? R-0.1:hi);
+  ctx.save(); if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let first=true;
+  for(let x=a;x<=b;x+=0.01){
+    const yv=fn(x);
+    if(yv==null||!isFinite(yv)||yv<-R+0.05||yv>R-0.05){first=true;continue;}
+    const p=view.toS(x,yv);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function arrow(ctx,x0,y0,x1,y1,color,wd,head){
+  const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy);if(L<1e-6)return;
+  const ux=dx/L,uy=dy/L,hw=(head||6.5);
+  ctx.strokeStyle=color;ctx.lineWidth=wd||2.6;
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1-ux*hw*1.6,y1-uy*hw*1.6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-ux*hw*2.1-uy*hw,y1-uy*hw*2.1+ux*hw);
+  ctx.lineTo(x1-ux*hw*2.1+uy*hw,y1-uy*hw*2.1-ux*hw);
+  ctx.closePath();ctx.fillStyle=color;ctx.fill();
+}
+/* clip the line p + t d to the box [-B,B]^2 — keeps every drawn segment inside the frame */
+function clipLine(px,py,dx,dy,B){
+  let lo=-1e9,hi=1e9,dead=false;
+  [[dx,px],[dy,py]].forEach(function(pair){
+    const d=pair[0],p=pair[1];
+    if(Math.abs(d)<1e-12){ if(p<-B||p>B) dead=true; return; }
+    let t1=(-B-p)/d,t2=(B-p)/d; if(t1>t2){const t=t1;t1=t2;t2=t;}
+    lo=Math.max(lo,t1); hi=Math.min(hi,t2);
+  });
+  if(dead||lo>hi) return null;
+  return [[px+lo*dx,py+lo*dy],[px+hi*dx,py+hi*dy]];
+}
+/* arrow length in world units: the requested screen length, capped so the tip stays in the frame */
+function arrowLen(view,p,u,screenPx){
+  const seg=clipLine(p[0],p[1],u[0],u[1],4.25);
+  let tmax=0.35;
+  if(seg){ tmax=Math.max(0,(seg[1][0]-p[0])*u[0]+(seg[1][1]-p[1])*u[1]); }
+  return Math.max(0.2,Math.min(screenPx/view.s(),tmax));
+}
+function genericDrag(canvas,pickables,redraw){
+  let held=null;
+  canvas.addEventListener("pointerdown",function(e){
+    const r=canvas.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;
+    let best=null,bd=26;
+    for(const p of pickables()){const d=Math.hypot(px-p.sx,py-p.sy);if(d<bd){bd=d;best=p;}}
+    if(best){held=best;canvas.setPointerCapture(e.pointerId);}
+  });
+  canvas.addEventListener("pointermove",function(e){
+    if(!held)return;
+    const r=canvas.getBoundingClientRect();
+    held.set(e.clientX-r.left,e.clientY-r.top);redraw();
+  });
+  canvas.addEventListener("pointerup",function(e){held=null;try{canvas.releasePointerCapture(e.pointerId);}catch(err){}});
+  canvas.addEventListener("pointercancel",function(){held=null;});
+}
+function mkChips(host,items,initial,onPick){
+  host.innerHTML="";
+  const els={};
+  items.forEach(function(it){
+    const b=document.createElement("button");
+    b.className="chip"+(it.k===initial?" on":"");
+    b.textContent=it.t;
+    b.addEventListener("click",function(){
+      Object.keys(els).forEach(function(k){els[k].classList.remove("on");});
+      b.classList.add("on");onPick(it.k);
+    });
+    els[it.k]=b;host.appendChild(b);
+  });
+  return els;
+}
+
+/* a margined line plot — every drawn element is clipped to the interior box */
+function makePlot(canvas){
+  let X0=0,X1=1,Y0=0,Y1=1;
+  const ml=48,mr=16,mt=16,mb=32;
+  function dims(){const r=canvas.getBoundingClientRect();return{w:r.width,h:r.height};}
+  return {
+    setRange:function(x0,x1,y0,y1){X0=x0;X1=x1;Y0=y0;Y1=y1;},
+    rng:function(){return[X0,X1,Y0,Y1];},
+    toS:function(x,y){const d=dims();return[ml+(x-X0)/(X1-X0)*(d.w-ml-mr), d.h-mb-(y-Y0)/(Y1-Y0)*(d.h-mt-mb)];},
+    toWx:function(px){const d=dims();return X0+(px-ml)/(d.w-ml-mr)*(X1-X0);},
+    toWy:function(py){const d=dims();return Y0+(d.h-mb-py)/(d.h-mt-mb)*(Y1-Y0);},
+    box:function(){const d=dims();return{x:ml,y:mt,w:Math.max(1,d.w-ml-mr),h:Math.max(1,d.h-mt-mb)};},
+    dims:dims
+  };
+}
+function plotFrame(ctx,plot,xt,yt,fx,fy){
+  const b=plot.box(),r=plot.rng();
+  ctx.save();
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;ctx.fillStyle="#8A91A3";
+  ctx.font="11px 'JetBrains Mono', monospace";ctx.textBaseline="middle";
+  xt.forEach(function(v){const p=plot.toS(v,r[2]);
+    ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();
+    ctx.textAlign="center";ctx.fillText(fx(v),p[0],b.y+b.h+13);});
+  yt.forEach(function(v){const p=plot.toS(r[0],v);
+    ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();
+    ctx.textAlign="right";ctx.fillText(fy(v),b.x-7,p[1]);});
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  ctx.strokeRect(b.x,b.y,b.w,b.h);
+  ctx.restore();
+}
+function clipBox(ctx,plot){const b=plot.box();ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();}
+function plotCurve(ctx,plot,fn,color,wd,dash,N){
+  const r=plot.rng(),n=N||600;
+  clipBox(ctx,plot);
+  if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.lineJoin="round";ctx.beginPath();
+  let first=true;
+  for(let i=0;i<=n;i++){
+    const x=r[0]+(r[1]-r[0])*i/n,y=fn(x);
+    if(y==null||!isFinite(y)){first=true;continue;}
+    const p=plot.toS(x,y);
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function fillRegion(ctx,view,test,color,R,step){
+  const st=step||0.085;
+  ctx.save();ctx.fillStyle=color;
+  const s=view.s(),px=Math.ceil(st*s)+1;
+  for(let x=-R;x<=R+1e-9;x+=st){
+    for(let y=-R;y<=R+1e-9;y+=st){
+      if(test(x,y)){const p=view.toS(x,y);ctx.fillRect(p[0]-px/2,p[1]-px/2,px,px);}
+    }
+  }
+  ctx.restore();
+}
+
+/* ===== LAB 1 — the sublevel set of a max is an intersection ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=4.4,view=makeView(canvas,R);
+  const p1=[-1.2,0.6], av=[1,0.5], bv=0.4, cv=[0.15,-0.10], dv=2.0;
+  const K=12, dirs=[];
+  for(let k=0;k<K;k++){const a=2*Math.PI*k/K;dirs.push([Math.cos(a),Math.sin(a)]);}
+  let mode="max2", alpha=2.0, w1=1.0, w2=1.0, z=[1.1,-1.2];
+
+  function f1(x,y){return Math.hypot(x-p1[0],y-p1[1]);}
+  function f2(x,y){return (av[0]*x+av[1]*y+bv)/(cv[0]*x+cv[1]*y+dv);}
+  function members(x,y){
+    if(mode==="max2") return [w1*f1(x,y), w2*f2(x,y)];
+    return dirs.map(function(u){return u[0]*x+u[1]*y;});
+  }
+  function fval(x,y){const m=members(x,y);let s=-Infinity;for(const v of m)if(v>s)s=v;return s;}
+
+  const chipHost=document.getElementById("c1");
+  mkChips(chipHost,[{k:"max2",t:"max of two"},{k:"sup",t:"sup over a family"}],"max2",function(k){mode=k;draw();});
+  const els={a:document.getElementById("p1a"),w1:document.getElementById("p1w1"),w2:document.getElementById("p1w2")};
+  const vals={a:document.getElementById("v1a"),w1:document.getElementById("v1w1"),w2:document.getElementById("v1w2")};
+  els.a.addEventListener("input",function(){alpha=+this.value;draw();});
+  els.w1.addEventListener("input",function(){w1=+this.value;draw();});
+  els.w2.addEventListener("input",function(){w2=+this.value;draw();});
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const d=view.dims();
+    ctx.clearRect(0,0,d.w,d.h);drawGrid(ctx,view,R);
+    vals.a.textContent=alpha.toFixed(2);vals.w1.textContent=w1.toFixed(2);vals.w2.textContent=w2.toFixed(2);
+    els.w1.disabled=(mode!=="max2");els.w2.disabled=(mode!=="max2");
+
+    const m0=members(0,0);
+    for(let i=0;i<m0.length;i++){
+      fillRegion(ctx,view,function(x,y){return members(x,y)[i]<=alpha;},"rgba(43,108,176,0.10)",R);
+    }
+    fillRegion(ctx,view,function(x,y){return fval(x,y)<=alpha;},"rgba(47,133,90,0.30)",R);
+
+    /* boundaries, each clipped to the frame */
+    ctx.save();
+    if(mode==="max2"){
+      if(w1>0.02){
+        const rad=alpha/w1;
+        if(rad<=4.3){const c=view.toS(p1[0],p1[1]);ctx.beginPath();ctx.arc(c[0],c[1],rad*view.s(),0,7);
+          ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);}
+      }
+      if(w2>0.02){
+        const be=alpha/w2, n=[av[0]-be*cv[0], av[1]-be*cv[1]], rr=be*dv-bv, nn=n[0]*n[0]+n[1]*n[1];
+        if(nn>1e-9){
+          const z0=[n[0]*rr/nn,n[1]*rr/nn], dr=[-n[1]/Math.sqrt(nn),n[0]/Math.sqrt(nn)];
+          const seg=clipLine(z0[0],z0[1],dr[0],dr[1],4.25);
+          if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
+            ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);
+            ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);}
+        }
+      }
+    }else{
+      dirs.forEach(function(u){
+        const z0=[u[0]*alpha,u[1]*alpha], dr=[-u[1],u[0]];
+        const seg=clipLine(z0[0],z0[1],dr[0],dr[1],4.25);
+        if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
+          ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);
+          ctx.strokeStyle="rgba(43,108,176,0.55)";ctx.lineWidth=1.2;ctx.stroke();}
+      });
+    }
+    ctx.restore();
+
+    const zs=view.toS(z[0],z[1]);
+    dot(ctx,zs[0],zs[1],5.5,"#D7402B","#FBFAF7");
+    label(ctx,"z",zs[0]+10,zs[1]-10,"#D7402B",13);
+
+    const mm=members(z[0],z[1]), fv=fval(z[0],z[1]);
+    let txt;
+    if(mode==="max2"){
+      txt="w₁f₁(z) = "+mm[0].toFixed(3)+"   ·   w₂f₂(z) = "+mm[1].toFixed(3)+"\n"+
+          "max = "+fv.toFixed(3)+"   ·   α = "+alpha.toFixed(2)+"\n"+
+          "z = ("+z[0].toFixed(2)+", "+z[1].toFixed(2)+")";
+    }else{
+      let arg=0;for(let i=1;i<mm.length;i++)if(mm[i]>mm[arg])arg=i;
+      txt="max over 12 directions = "+fv.toFixed(3)+"   (‖z‖₂ = "+Math.hypot(z[0],z[1]).toFixed(3)+")\n"+
+          "argmax direction y = ("+dirs[arg][0].toFixed(2)+", "+dirs[arg][1].toFixed(2)+")\n"+
+          "α = "+alpha.toFixed(2)+"   ·   z = ("+z[0].toFixed(2)+", "+z[1].toFixed(2)+")";
+    }
+    document.getElementById("ro1").textContent=txt;
+
+    const vd=document.getElementById("vd1");
+    const inAll=mm.every(function(v){return v<=alpha;});
+    vd.className="verdict "+(fv<=alpha?"in":"out");
+    vd.textContent=fv<=alpha
+      ? "z is in every member's sublevel set — so it is in the intersection"
+      : "z fails at least one member — so it is out of the intersection";
+    document.getElementById("h1").textContent = (fv<=alpha)===inAll
+      ? "The green region is exactly the overlap of the blue ones: {max ≤ α} = ∩ᵢ{wᵢfᵢ ≤ α}. Convex, for every α."
+      : "";
+  }
+
+  function pickables(){const s=view.toS(z[0],z[1]);
+    return [{sx:s[0],sy:s[1],set:function(px,py){const w=view.toW(px,py);z=[clamp(w[0],-4.25,4.25),clamp(w[1],-4.25,4.25)];}}];}
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+
+/* ===== LAB 2 — λmax(X,Y) as a sup over directions ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),plot=makePlot(canvas);
+  let x11=2,x12=0.8,x22=-0.5,y11=1,y22=0.6,th=0.6;
+  const ids=["x11","x12","x22","y11","y22"];
+  const P={},V={};
+  ids.forEach(function(k){P[k]=document.getElementById("p2"+k);V[k]=document.getElementById("v2"+k);
+    P[k].addEventListener("input",function(){
+      const v=+this.value;
+      if(k==="x11")x11=v;else if(k==="x12")x12=v;else if(k==="x22")x22=v;else if(k==="y11")y11=v;else y22=v;
+      draw();});});
+
+  function ratio(t){const c=Math.cos(t),s=Math.sin(t);
+    const num=x11*c*c+2*x12*c*s+x22*s*s, den=y11*c*c+y22*s*s;
+    return num/den;}
+  function roots(){
+    const A=y11*y22, B=x11*y22+x22*y11, C=x11*x22-x12*x12;
+    const disc=Math.max(0,B*B-4*A*C), sq=Math.sqrt(disc);
+    return [(B-sq)/(2*A),(B+sq)/(2*A)];
+  }
+  function det(l){return (l*y11-x11)*(l*y22-x22)-x12*x12;}
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const d=plot.dims();
+    ctx.clearRect(0,0,d.w,d.h);
+    ids.forEach(function(k){const v=(k==="x11"?x11:k==="x12"?x12:k==="x22"?x22:k==="y11"?y11:y22);V[k].textContent=v.toFixed(2);});
+
+    const rt=roots(), lmin=rt[0], lmax=rt[1];
+    let lo=Infinity,hi=-Infinity;
+    for(let i=0;i<=400;i++){const v=ratio(Math.PI*i/400);if(v<lo)lo=v;if(v>hi)hi=v;}
+    const pad=Math.max(0.4,0.18*(hi-lo));
+    plot.setRange(0,Math.PI,lo-pad,hi+pad);
+    const r=plot.rng();
+    const yt=[];for(let i=0;i<=4;i++)yt.push(r[2]+(r[3]-r[2])*i/4);
+    plotFrame(ctx,plot,[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI],yt,
+      function(v){return (v/Math.PI).toFixed(2)+"π";},function(v){return v.toFixed(2);});
+
+    /* the sup and inf levels */
+    clipBox(ctx,plot);
+    [[lmax,"#D7402B",2.2],[lmin,"#2B6CB0",1.6]].forEach(function(L){
+      const p0=plot.toS(r[0],L[0]),p1=plot.toS(r[1],L[0]);
+      ctx.setLineDash([6,4]);ctx.strokeStyle=L[1];ctx.lineWidth=L[2];
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();ctx.setLineDash([]);});
+    ctx.restore();
+
+    plotCurve(ctx,plot,ratio,"#17223B",2.6,null,500);
+
+    const rv=ratio(th),hp=plot.toS(th,rv);
+    clipBox(ctx,plot);
+    ctx.strokeStyle="rgba(23,34,59,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(hp[0],plot.box().y+plot.box().h);ctx.lineTo(hp[0],hp[1]);ctx.stroke();ctx.setLineDash([]);
+    dot(ctx,hp[0],hp[1],5.5,"#17223B","#FBFAF7");
+    ctx.restore();
+
+    const b=plot.box();
+    label(ctx,"λmax = "+lmax.toFixed(3),b.x+10,plot.toS(0,lmax)[1]-12,"#D7402B",12);
+    label(ctx,"θ",b.x+b.w-16,b.y+b.h+13,"#8A91A3",11);
+
+    const c=Math.cos(th),s=Math.sin(th);
+    document.getElementById("ro2").textContent=
+      "u = ("+c.toFixed(3)+", "+s.toFixed(3)+")   ·   θ = "+(th/Math.PI).toFixed(3)+"π\n"+
+      "uᵀXu = "+(x11*c*c+2*x12*c*s+x22*s*s).toFixed(4)+"   ·   uᵀYu = "+(y11*c*c+y22*s*s).toFixed(4)+"   ·   ratio = "+rv.toFixed(4)+"\n"+
+      "λmax(X,Y) = "+lmax.toFixed(4)+"   ·   λmin(X,Y) = "+lmin.toFixed(4)+"   ·   det(λmax·Y − X) = "+det(lmax).toExponential(2);
+
+    const gap=lmax-rv, vd=document.getElementById("vd2");
+    vd.className="verdict "+(gap<1e-3?"in":"mid");
+    vd.textContent=gap<1e-3
+      ? "at the supremum — this u attains λmax, and det(λmaxY − X) = 0"
+      : "ratio ≤ λmax, gap = "+gap.toFixed(4)+" — every member of the family sits under the sup";
+  }
+
+  function pickables(){const p=plot.toS(th,ratio(th));
+    return [{sx:p[0],sy:p[1],set:function(px){th=clamp(plot.toWx(px),0,Math.PI-1e-4);}}];}
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+
+/* ===== LAB 3 — sums do not preserve quasiconvexity ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),plot=makePlot(canvas);
+  let t=1.0, alpha=0.0;
+  const Pt=document.getElementById("p3t"),Pa=document.getElementById("p3a"),
+        Vt=document.getElementById("v3t"),Va=document.getElementById("v3a");
+  Pt.addEventListener("input",function(){t=+this.value;draw();});
+  Pa.addEventListener("input",function(){alpha=+this.value;draw();});
+
+  const XLO=-2.4,XHI=2.4,YLO=-3,YHI=3;
+  function s(x){return x*x*x-t*x;}
+
+  function runs(){
+    const N=2400,out=[];let start=null;
+    for(let i=0;i<=N;i++){
+      const x=XLO+(XHI-XLO)*i/N, inside=s(x)<=alpha;
+      if(inside&&start===null)start=x;
+      if((!inside||i===N)&&start!==null){out.push([start,x]);start=null;}
+    }
+    return out;
+  }
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    const d=plot.dims();
+    ctx.clearRect(0,0,d.w,d.h);
+    Vt.textContent=t.toFixed(2);Va.textContent=alpha.toFixed(2);
+    plot.setRange(XLO,XHI,YLO,YHI);
+    plotFrame(ctx,plot,[-2,-1,0,1,2],[-3,-1.5,0,1.5,3],
+      function(v){return v.toFixed(0);},function(v){return v.toFixed(1);});
+
+    plotCurve(ctx,plot,function(x){return x*x*x;},"#8A91A3",1.8,[5,4],400);
+    plotCurve(ctx,plot,function(x){return -t*x;},"#8A91A3",1.8,[2,4],400);
+    plotCurve(ctx,plot,s,"#D7402B",2.8,null,600);
+
+    const R=runs(), bad=R.length>1;
+    const bandY=YLO+0.22, hband=0.26;
+    clipBox(ctx,plot);
+    R.forEach(function(seg){
+      const A=plot.toS(seg[0],bandY+hband/2),B=plot.toS(seg[1],bandY-hband/2);
+      ctx.fillStyle=bad?"rgba(192,57,43,0.35)":"rgba(47,133,90,0.34)";
+      ctx.fillRect(A[0],A[1],Math.max(2,B[0]-A[0]),Math.max(2,B[1]-A[1]));
+      ctx.strokeStyle=bad?"#C0392B":"#2F855A";ctx.lineWidth=1.4;
+      ctx.strokeRect(A[0],A[1],Math.max(2,B[0]-A[0]),Math.max(2,B[1]-A[1]));
+    });
+    const a0=plot.toS(XLO,alpha),a1=plot.toS(XHI,alpha);
+    ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.setLineDash([7,4]);
+    ctx.beginPath();ctx.moveTo(a0[0],a0[1]);ctx.lineTo(a1[0],a1[1]);ctx.stroke();ctx.setLineDash([]);
+    if(t>1e-6){
+      const xm=-Math.sqrt(t/3),pm=plot.toS(xm,s(xm));
+      dot(ctx,pm[0],pm[1],4.5,"#C0392B","#FBFAF7");
+    }
+    const hp=plot.toS(XHI-0.22,alpha);
+    dot(ctx,hp[0],hp[1],6,"#17223B","#FBFAF7");
+    ctx.restore();
+
+    label(ctx,"α",plot.box().x+8,a0[1]-11,"#17223B",12);
+
+    const xm=-Math.sqrt(t/3);
+    let txt="t = "+t.toFixed(2)+"   ·   α = "+alpha.toFixed(2)+"\n";
+    txt+="{x | x³ − tx ≤ α} ∩ [−2.4, 2.4] = "+R.map(function(g){return "["+g[0].toFixed(2)+", "+g[1].toFixed(2)+"]";}).join(" ∪ ")+"\n";
+    txt+= t>1e-6
+      ? "s′ = 0 at x = ±"+Math.sqrt(t/3).toFixed(3)+"   ·   s″("+xm.toFixed(3)+") = "+(6*xm).toFixed(3)+" < 0 — a strict local max"
+      : "t = 0: s(x) = x³ is monotone, so every sublevel set is an interval";
+    document.getElementById("ro3").textContent=txt;
+
+    const vd=document.getElementById("vd3");
+    vd.className="verdict "+(bad?"out":"in");
+    vd.textContent=bad
+      ? R.length+" disjoint pieces — the sublevel set is not convex, so x³ − tx is not quasiconvex"
+      : "one interval — this α is consistent with quasiconvexity";
+    document.getElementById("h3").textContent=bad
+      ? "Both summands are quasiconvex; the sum is not. Compare §3.2.1, where nonnegative sums of convex functions are always convex."
+      : (t>1e-6 ? "Keep dragging α into the band between the local max and the local min — the interval splits there." : "");
+  }
+
+  function pickables(){const p=plot.toS(XHI-0.22,alpha);
+    return [{sx:p[0],sy:p[1],set:function(px,py){alpha=clamp(plot.toWy(py),-2,2);Pa.value=alpha;}}];}
+  genericDrag(canvas,pickables,draw);
+  new ResizeObserver(draw).observe(canvas);
+  draw();
+})();
+</script>
+</body>
+</html>
