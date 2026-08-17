@@ -155,8 +155,8 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     <p class="sub">Three constructions — nonnegative weighted max/sup, composition with a nondecreasing map, and minimization over a convex set — and the one operation conspicuously missing from the list: addition.</p>
     <div class="meta">
       <span><span class="dot" style="background:var(--normal)"></span> max / sup · sublevel sets intersect</span>
-      <span><span class="dot" style="background:var(--halfspace)"></span> \(h\circ g\), \(h\) nondecreasing (not convex)</span>
-      <span><span class="dot" style="background:var(--inside)"></span> \(\inf_{y\in C} f(x,y)\), \(f\) <em>jointly</em> quasiconvex</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> h ∘ g quasiconvex · h merely nondecreasing</span>
+      <span><span class="dot" style="background:var(--inside)"></span> inf<sub>y∈C</sub> f(x,y) · f jointly quasiconvex</span>
       <span>p.&nbsp;101–103 · mastery: diagnose</span>
     </div>
 
@@ -239,9 +239,9 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
       <div class="canvas-col">
         <canvas id="cv1"></canvas>
         <div class="legend">
-          <span><i class="sw" style="background:rgba(43,108,176,0.16)"></i> \(\{w_if_i\le\alpha\}\) — one member's sublevel set</span>
-          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> the intersection \(=\{\max_i w_if_i\le\alpha\}\)</span>
-          <span><i style="border-color:#D7402B"></i> the test point \(z\) — drag it</span>
+          <span><i class="sw" style="background:rgba(43,108,176,0.16)"></i> {wᵢfᵢ ≤ α} — one member's sublevel set</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> the intersection = {max wᵢfᵢ ≤ α}</span>
+          <span><i style="border-color:#D7402B"></i> the test point z — drag it</span>
         </div>
       </div>
       <div class="panel-col">
@@ -285,14 +285,14 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
   <div class="note key"><div class="ic">!</div><p>This is a clean case where a supremum of <em>quasi</em>linear functions is quasiconvex but <strong>not convex</strong>. Contrast the special case \(Y=I\): then \(u^TXu\) is linear in \(X\), and a pointwise sup of linear functions is convex — \(\lambda_{\max}(X)\) really is a convex function of \(X\) (§3.2.3). It is the dependence on \(Y\) that costs convexity and leaves only quasiconvexity.</p></div>
 
   <div class="lab">
-    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>\(\lambda_{\max}(X,Y)\) as a supremum over directions</h4></div>
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>λ<sub>max</sub>(X, Y) as a supremum over directions</h4></div>
     <div class="lab-body">
       <div class="canvas-col">
         <canvas id="cv2"></canvas>
         <div class="legend">
-          <span><i style="border-color:#17223B"></i> \(r(\theta)=u^TXu/u^TYu\), \(u=(\cos\theta,\sin\theta)\)</span>
-          <span><i style="border-color:#D7402B"></i> \(\lambda_{\max}(X,Y)\) — the supremum</span>
-          <span><i style="border-color:#2B6CB0"></i> \(\lambda_{\min}(X,Y)\) — the other root of \(\det(\lambda Y-X)=0\)</span>
+          <span><i style="border-color:#17223B"></i> r(θ) = uᵀXu / uᵀYu,  u = (cos θ, sin θ)</span>
+          <span><i style="border-color:#D7402B"></i> λmax(X, Y) — the supremum</span>
+          <span><i style="border-color:#2B6CB0"></i> λmin(X, Y) — the other root of det(λY − X) = 0</span>
         </div>
       </div>
       <div class="panel-col">
@@ -429,10 +429,10 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
       <div class="canvas-col">
         <canvas id="cv3"></canvas>
         <div class="legend">
-          <span><i style="border-color:#D7402B"></i> \(s(x)=x^3-tx\) — the sum</span>
-          <span><i style="border-color:#8A91A3"></i> \(x^3\) and \(-tx\), each quasiconvex</span>
-          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> \(\{s\le\alpha\}\) — one interval</span>
-          <span><i class="sw" style="background:rgba(192,57,43,0.35)"></i> \(\{s\le\alpha\}\) — two pieces, not convex</span>
+          <span><i style="border-color:#D7402B"></i> s(x) = x³ − tx — the sum</span>
+          <span><i style="border-color:#8A91A3"></i> x³ and −tx, each quasiconvex</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.34)"></i> {s ≤ α} — one interval</span>
+          <span><i class="sw" style="background:rgba(192,57,43,0.35)"></i> {s ≤ α} — two pieces, not convex</span>
         </div>
       </div>
       <div class="panel-col">
@@ -667,31 +667,20 @@ function plotCurve(ctx,plot,fn,color,wd,dash,N){
   let first=true;
   for(let i=0;i<=n;i++){
     const x=r[0]+(r[1]-r[0])*i/n,y=fn(x);
-    if(y==null||!isFinite(y)){first=true;continue;}
+    if(y==null||!isFinite(y)||y<r[2]||y>r[3]){first=true;continue;}
     const p=plot.toS(x,y);
     if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
   }
   ctx.stroke();ctx.restore();
 }
-function fillRegion(ctx,view,test,color,R,step){
-  const st=step||0.085;
-  ctx.save();ctx.fillStyle=color;
-  const s=view.s(),px=Math.ceil(st*s)+1;
-  for(let x=-R;x<=R+1e-9;x+=st){
-    for(let y=-R;y<=R+1e-9;y+=st){
-      if(test(x,y)){const p=view.toS(x,y);ctx.fillRect(p[0]-px/2,p[1]-px/2,px,px);}
-    }
-  }
-  ctx.restore();
-}
 
 /* ===== LAB 1 — the sublevel set of a max is an intersection ===== */
 (function(){
-  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=4.4,view=makeView(canvas,R);
-  const p1=[-1.2,0.6], av=[1,0.5], bv=0.4, cv=[0.15,-0.10], dv=2.0;
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=4.4,B=4.34,view=makeView(canvas,R);
+  const p1=[-1.2,0.6], av=[1,0.5], bv=1.6, cv=[0.12,-0.08], dv=1.2;
   const K=12, dirs=[];
   for(let k=0;k<K;k++){const a=2*Math.PI*k/K;dirs.push([Math.cos(a),Math.sin(a)]);}
-  let mode="max2", alpha=2.0, w1=1.0, w2=1.0, z=[1.1,-1.2];
+  let mode="max2", alpha=2.0, w1=1.0, w2=1.0, z=[2.3,-1.7];
 
   function f1(x,y){return Math.hypot(x-p1[0],y-p1[1]);}
   function f2(x,y){return (av[0]*x+av[1]*y+bv)/(cv[0]*x+cv[1]*y+dv);}
@@ -700,6 +689,48 @@ function fillRegion(ctx,view,test,color,R,step){
     return dirs.map(function(u){return u[0]*x+u[1]*y;});
   }
   function fval(x,y){const m=members(x,y);let s=-Infinity;for(const v of m)if(v>s)s=v;return s;}
+
+  /* --- exact convex-polygon geometry: no pixel sampling, nothing outside the frame --- */
+  function boxPoly(){return [[-B,-B],[B,-B],[B,B],[-B,B]];}
+  function clipHalf(P,n,r){          /* keep {z : n·z ≤ r} */
+    const out=[];
+    for(let i=0;i<P.length;i++){
+      const a=P[i],b=P[(i+1)%P.length];
+      const fa=n[0]*a[0]+n[1]*a[1]-r, fb=n[0]*b[0]+n[1]*b[1]-r;
+      if(fa<=0)out.push(a);
+      if((fa<0&&fb>0)||(fa>0&&fb<0)){const t=fa/(fa-fb);out.push([a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1])]);}
+    }
+    return out;
+  }
+  function clipToBox(P){
+    return clipHalf(clipHalf(clipHalf(clipHalf(P,[1,0],B),[-1,0],B),[0,1],B),[0,-1],B);
+  }
+  function circlePoly(c,rad,N){
+    const P=[];for(let i=0;i<N;i++){const a=2*Math.PI*i/N;P.push([c[0]+rad*Math.cos(a),c[1]+rad*Math.sin(a)]);}
+    return P;
+  }
+  function frameEdge(a,b){   /* true only for edges lying ALONG a side of the frame */
+    return (Math.abs(a[0]-B)<1e-6&&Math.abs(b[0]-B)<1e-6)||(Math.abs(a[0]+B)<1e-6&&Math.abs(b[0]+B)<1e-6)
+         ||(Math.abs(a[1]-B)<1e-6&&Math.abs(b[1]-B)<1e-6)||(Math.abs(a[1]+B)<1e-6&&Math.abs(b[1]+B)<1e-6);}
+  function pathPoly(P){
+    if(!P.length)return false;
+    ctx.beginPath();
+    P.forEach(function(p,i){const s=view.toS(p[0],p[1]);if(i)ctx.lineTo(s[0],s[1]);else ctx.moveTo(s[0],s[1]);});
+    ctx.closePath();return true;
+  }
+  function fillPoly(P,color){if(pathPoly(P)){ctx.fillStyle=color;ctx.fill();}}
+  function strokeShape(P,color,wd,dash){   /* skip edges that lie along the frame */
+    if(P.length<2)return;
+    ctx.save();if(dash)ctx.setLineDash(dash);
+    ctx.strokeStyle=color;ctx.lineWidth=wd;
+    for(let i=0;i<P.length;i++){
+      const a=P[i],b=P[(i+1)%P.length];
+      if(frameEdge(a,b))continue;
+      const A=view.toS(a[0],a[1]),C=view.toS(b[0],b[1]);
+      ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(C[0],C[1]);ctx.stroke();
+    }
+    ctx.restore();
+  }
 
   const chipHost=document.getElementById("c1");
   mkChips(chipHost,[{k:"max2",t:"max of two"},{k:"sup",t:"sup over a family"}],"max2",function(k){mode=k;draw();});
@@ -716,40 +747,29 @@ function fillRegion(ctx,view,test,color,R,step){
     vals.a.textContent=alpha.toFixed(2);vals.w1.textContent=w1.toFixed(2);vals.w2.textContent=w2.toFixed(2);
     els.w1.disabled=(mode!=="max2");els.w2.disabled=(mode!=="max2");
 
-    const m0=members(0,0);
-    for(let i=0;i<m0.length;i++){
-      fillRegion(ctx,view,function(x,y){return members(x,y)[i]<=alpha;},"rgba(43,108,176,0.10)",R);
-    }
-    fillRegion(ctx,view,function(x,y){return fval(x,y)<=alpha;},"rgba(47,133,90,0.30)",R);
-
-    /* boundaries, each clipped to the frame */
-    ctx.save();
+    let inter;
     if(mode==="max2"){
-      if(w1>0.02){
-        const rad=alpha/w1;
-        if(rad<=4.3){const c=view.toS(p1[0],p1[1]);ctx.beginPath();ctx.arc(c[0],c[1],rad*view.s(),0,7);
-          ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);}
-      }
-      if(w2>0.02){
-        const be=alpha/w2, n=[av[0]-be*cv[0], av[1]-be*cv[1]], rr=be*dv-bv, nn=n[0]*n[0]+n[1]*n[1];
-        if(nn>1e-9){
-          const z0=[n[0]*rr/nn,n[1]*rr/nn], dr=[-n[1]/Math.sqrt(nn),n[0]/Math.sqrt(nn)];
-          const seg=clipLine(z0[0],z0[1],dr[0],dr[1],4.25);
-          if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
-            ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);
-            ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);}
-        }
-      }
+      const rad=w1>0.02?alpha/w1:Infinity;
+      const A=(rad>=9)?boxPoly():clipToBox(circlePoly(p1,rad,120));
+      const be=alpha/w2, n=[av[0]-be*cv[0],av[1]-be*cv[1]], r=be*dv-bv;
+      const Hp=(w2<=0.02)?boxPoly():clipHalf(boxPoly(),n,r);
+      inter=(w2<=0.02)?A:clipHalf(A,n,r);
+      fillPoly(A,"rgba(43,108,176,0.13)");
+      fillPoly(Hp,"rgba(43,108,176,0.13)");
+      fillPoly(inter,"rgba(47,133,90,0.30)");
+      strokeShape(A,"#2B6CB0",1.8,[5,4]);
+      strokeShape(Hp,"#2B6CB0",1.8,[5,4]);
     }else{
+      inter=boxPoly();
       dirs.forEach(function(u){
-        const z0=[u[0]*alpha,u[1]*alpha], dr=[-u[1],u[0]];
-        const seg=clipLine(z0[0],z0[1],dr[0],dr[1],4.25);
-        if(seg){const A=view.toS(seg[0][0],seg[0][1]),B=view.toS(seg[1][0],seg[1][1]);
-          ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);
-          ctx.strokeStyle="rgba(43,108,176,0.55)";ctx.lineWidth=1.2;ctx.stroke();}
+        const Hk=clipHalf(boxPoly(),u,alpha);
+        fillPoly(Hk,"rgba(43,108,176,0.022)");
+        strokeShape(Hk,"rgba(43,108,176,0.32)",1,null);
+        inter=clipHalf(inter,u,alpha);
       });
+      fillPoly(inter,"rgba(47,133,90,0.30)");
     }
-    ctx.restore();
+    strokeShape(inter,"#2F855A",2.2,null);
 
     const zs=view.toS(z[0],z[1]);
     dot(ctx,zs[0],zs[1],5.5,"#D7402B","#FBFAF7");
@@ -758,26 +778,25 @@ function fillRegion(ctx,view,test,color,R,step){
     const mm=members(z[0],z[1]), fv=fval(z[0],z[1]);
     let txt;
     if(mode==="max2"){
-      txt="w₁f₁(z) = "+mm[0].toFixed(3)+"   ·   w₂f₂(z) = "+mm[1].toFixed(3)+"\n"+
-          "max = "+fv.toFixed(3)+"   ·   α = "+alpha.toFixed(2)+"\n"+
-          "z = ("+z[0].toFixed(2)+", "+z[1].toFixed(2)+")";
+      txt='<span class="k">w₁f₁(z)</span> <b>'+mm[0].toFixed(3)+'</b> &nbsp; <span class="k">w₂f₂(z)</span> <b>'+mm[1].toFixed(3)+'</b><br>'+
+          '<span class="k">max</span> <b>'+fv.toFixed(3)+'</b> &nbsp; <span class="k">α</span> <b>'+alpha.toFixed(2)+'</b><br>'+
+          '<span class="k">z</span> <b>('+z[0].toFixed(2)+', '+z[1].toFixed(2)+')</b>';
     }else{
       let arg=0;for(let i=1;i<mm.length;i++)if(mm[i]>mm[arg])arg=i;
-      txt="max over 12 directions = "+fv.toFixed(3)+"   (‖z‖₂ = "+Math.hypot(z[0],z[1]).toFixed(3)+")\n"+
-          "argmax direction y = ("+dirs[arg][0].toFixed(2)+", "+dirs[arg][1].toFixed(2)+")\n"+
-          "α = "+alpha.toFixed(2)+"   ·   z = ("+z[0].toFixed(2)+", "+z[1].toFixed(2)+")";
+      txt='<span class="k">max over 12 directions</span> <b>'+fv.toFixed(3)+'</b> &nbsp; <span class="k">‖z‖₂</span> <b>'+Math.hypot(z[0],z[1]).toFixed(3)+'</b><br>'+
+          '<span class="k">argmax y</span> <b>('+dirs[arg][0].toFixed(2)+', '+dirs[arg][1].toFixed(2)+')</b><br>'+
+          '<span class="k">α</span> <b>'+alpha.toFixed(2)+'</b> &nbsp; <span class="k">z</span> <b>('+z[0].toFixed(2)+', '+z[1].toFixed(2)+')</b>';
     }
-    document.getElementById("ro1").textContent=txt;
+    document.getElementById("ro1").innerHTML=txt;
 
     const vd=document.getElementById("vd1");
-    const inAll=mm.every(function(v){return v<=alpha;});
     vd.className="verdict "+(fv<=alpha?"in":"out");
     vd.textContent=fv<=alpha
       ? "z is in every member's sublevel set — so it is in the intersection"
       : "z fails at least one member — so it is out of the intersection";
-    document.getElementById("h1").textContent = (fv<=alpha)===inAll
+    document.getElementById("h1").textContent = mode==="max2"
       ? "The green region is exactly the overlap of the blue ones: {max ≤ α} = ∩ᵢ{wᵢfᵢ ≤ α}. Convex, for every α."
-      : "";
+      : "Twelve halfspaces, one per direction y. Their intersection is the α-sublevel set of the sup; with infinitely many it would be the disk ‖z‖₂ ≤ α exactly.";
   }
 
   function pickables(){const s=view.toS(z[0],z[1]);
@@ -844,13 +863,14 @@ function fillRegion(ctx,view,test,color,R,step){
 
     const b=plot.box();
     label(ctx,"λmax = "+lmax.toFixed(3),b.x+10,plot.toS(0,lmax)[1]-12,"#D7402B",12);
-    label(ctx,"θ",b.x+b.w-16,b.y+b.h+13,"#8A91A3",11);
+    label(ctx,"θ  (direction u)",b.x+10,b.y+b.h-12,"#8A91A3",11);
 
     const c=Math.cos(th),s=Math.sin(th);
-    document.getElementById("ro2").textContent=
-      "u = ("+c.toFixed(3)+", "+s.toFixed(3)+")   ·   θ = "+(th/Math.PI).toFixed(3)+"π\n"+
-      "uᵀXu = "+(x11*c*c+2*x12*c*s+x22*s*s).toFixed(4)+"   ·   uᵀYu = "+(y11*c*c+y22*s*s).toFixed(4)+"   ·   ratio = "+rv.toFixed(4)+"\n"+
-      "λmax(X,Y) = "+lmax.toFixed(4)+"   ·   λmin(X,Y) = "+lmin.toFixed(4)+"   ·   det(λmax·Y − X) = "+det(lmax).toExponential(2);
+    document.getElementById("ro2").innerHTML=
+      '<span class="k">u</span> <b>('+c.toFixed(3)+', '+s.toFixed(3)+')</b> &nbsp; <span class="k">θ</span> <b>'+(th/Math.PI).toFixed(3)+'π</b><br>'+
+      '<span class="k">uᵀXu</span> <b>'+(x11*c*c+2*x12*c*s+x22*s*s).toFixed(4)+'</b> &nbsp; <span class="k">uᵀYu</span> <b>'+(y11*c*c+y22*s*s).toFixed(4)+'</b> &nbsp; <span class="k">ratio</span> <b>'+rv.toFixed(4)+'</b><br>'+
+      '<span class="k">λmax</span> <b>'+lmax.toFixed(4)+'</b> &nbsp; <span class="k">λmin</span> <b>'+lmin.toFixed(4)+'</b><br>'+
+      '<span class="k">det(λmax·Y − X)</span> <b>'+det(lmax).toExponential(2)+'</b>';
 
     const gap=lmax-rv, vd=document.getElementById("vd2");
     vd.className="verdict "+(gap<1e-3?"in":"mid");
@@ -902,7 +922,7 @@ function fillRegion(ctx,view,test,color,R,step){
     plotCurve(ctx,plot,s,"#D7402B",2.8,null,600);
 
     const R=runs(), bad=R.length>1;
-    const bandY=YLO+0.22, hband=0.26;
+    const bandY=YLO+0.42, hband=0.28;
     clipBox(ctx,plot);
     R.forEach(function(seg){
       const A=plot.toS(seg[0],bandY+hband/2),B=plot.toS(seg[1],bandY-hband/2);
@@ -918,19 +938,19 @@ function fillRegion(ctx,view,test,color,R,step){
       const xm=-Math.sqrt(t/3),pm=plot.toS(xm,s(xm));
       dot(ctx,pm[0],pm[1],4.5,"#C0392B","#FBFAF7");
     }
-    const hp=plot.toS(XHI-0.22,alpha);
+    const hp=plot.toS(XHI-0.34,alpha);
     dot(ctx,hp[0],hp[1],6,"#17223B","#FBFAF7");
     ctx.restore();
 
     label(ctx,"α",plot.box().x+8,a0[1]-11,"#17223B",12);
 
     const xm=-Math.sqrt(t/3);
-    let txt="t = "+t.toFixed(2)+"   ·   α = "+alpha.toFixed(2)+"\n";
-    txt+="{x | x³ − tx ≤ α} ∩ [−2.4, 2.4] = "+R.map(function(g){return "["+g[0].toFixed(2)+", "+g[1].toFixed(2)+"]";}).join(" ∪ ")+"\n";
+    let txt='<span class="k">t</span> <b>'+t.toFixed(2)+'</b> &nbsp; <span class="k">α</span> <b>'+alpha.toFixed(2)+'</b><br>';
+    txt+='<span class="k">{s ≤ α} ∩ [−2.4, 2.4]</span> <b>'+R.map(function(g){return "["+g[0].toFixed(2)+", "+g[1].toFixed(2)+"]";}).join(" ∪ ")+'</b><br>';
     txt+= t>1e-6
-      ? "s′ = 0 at x = ±"+Math.sqrt(t/3).toFixed(3)+"   ·   s″("+xm.toFixed(3)+") = "+(6*xm).toFixed(3)+" < 0 — a strict local max"
-      : "t = 0: s(x) = x³ is monotone, so every sublevel set is an interval";
-    document.getElementById("ro3").textContent=txt;
+      ? '<span class="k">s′ = 0 at</span> <b>x = ±'+Math.sqrt(t/3).toFixed(3)+'</b> &nbsp; <span class="k">s″('+xm.toFixed(3)+')</span> <b>'+(6*xm).toFixed(3)+'</b> &lt; 0 — a strict local max'
+      : '<span class="k">t = 0</span> s(x) = x³ is monotone, so every sublevel set is an interval';
+    document.getElementById("ro3").innerHTML=txt;
 
     const vd=document.getElementById("vd3");
     vd.className="verdict "+(bad?"out":"in");
@@ -942,7 +962,7 @@ function fillRegion(ctx,view,test,color,R,step){
       : (t>1e-6 ? "Keep dragging α into the band between the local max and the local min — the interval splits there." : "");
   }
 
-  function pickables(){const p=plot.toS(XHI-0.22,alpha);
+  function pickables(){const p=plot.toS(XHI-0.34,alpha);
     return [{sx:p[0],sy:p[1],set:function(px,py){alpha=clamp(plot.toWy(py),-2,2);Pa.value=alpha;}}];}
   genericDrag(canvas,pickables,draw);
   new ResizeObserver(draw).observe(canvas);
