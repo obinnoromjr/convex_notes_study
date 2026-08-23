@@ -244,8 +244,8 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
       <div class="panel-col">
         <h5>controls</h5>
         <p class="hint">Slide <b>t</b> and drag <b>x₀</b> along the axis. The vermilion test \(f(x_0)\le t\) and the blue test \(\varphi_t(x_0)\le 0\) always give the same answer — that is (3.23).</p>
-        <div class="ctrl"><label>level t <span class="val" id="v1t">1.30</span></label><input type="range" id="s1t" min="0.1" max="2.0" step="0.01" value="1.3"></div>
-        <div class="ctrl"><label>x₀ <span class="val" id="v1x">1.00</span></label><input type="range" id="s1x" min="-4.2" max="4.2" step="0.01" value="1.0"></div>
+        <div class="ctrl"><label>level t <span class="val" id="v1t">1.00</span></label><input type="range" id="s1t" min="0.2" max="1.6" step="0.01" value="1.0"></div>
+        <div class="ctrl"><label>x₀ <span class="val" id="v1x">0.70</span></label><input type="range" id="s1x" min="-3.1" max="3.1" step="0.01" value="0.7"></div>
         <div class="readout" id="ro1"></div>
         <div class="verdict" id="vd1"></div>
         <p class="hint">Note that \(f\) itself is <em>not</em> convex — its graph bulges above its chords near the origin. Only the \(\varphi_t\) are required to be convex.</p>
@@ -298,9 +298,9 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
         <h5>family</h5>
         <div class="chips" id="ch2"></div>
         <p class="hint">Both families represent \(f(x)=|x|\). Watch the curve: family <b>B</b> climbs before it falls, so it is not nonincreasing — yet it still crosses zero once, downward, at \(t=|x_0|\). That is all nesting asks for.</p>
-        <div class="ctrl"><label>x₀ <span class="val" id="v2x">2.40</span></label><input type="range" id="s2x" min="0" max="4.4" step="0.01" value="2.4"></div>
-        <div class="ctrl"><label>t <span class="val" id="v2t">1.60</span></label><input type="range" id="s2t" min="0" max="5" step="0.01" value="1.6"></div>
-        <div class="ctrl"><label>s ≥ t <span class="val" id="v2s">3.40</span></label><input type="range" id="s2s" min="0" max="5" step="0.01" value="3.4"></div>
+        <div class="ctrl"><label>x₀ <span class="val" id="v2x">4.20</span></label><input type="range" id="s2x" min="0" max="4.4" step="0.01" value="4.2"></div>
+        <div class="ctrl"><label>t <span class="val" id="v2t">0.10</span></label><input type="range" id="s2t" min="0" max="5" step="0.01" value="0.1"></div>
+        <div class="ctrl"><label>s ≥ t <span class="val" id="v2s">1.20</span></label><input type="range" id="s2s" min="0" max="5" step="0.01" value="1.2"></div>
         <div class="readout" id="ro2"></div>
         <div class="verdict" id="vd2"></div>
       </div>
@@ -562,6 +562,24 @@ function plotHLine(ctx,P,y,color,wd,dash){
   ctx.save();if(dash)ctx.setLineDash(dash);
   ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();ctx.restore();
 }
+function tag(ctx,text,px,py,color,size,align,box,bg){
+  ctx.save();
+  ctx.font=(size||12)+"px 'JetBrains Mono', monospace";
+  ctx.textBaseline="middle";ctx.textAlign=align||"left";
+  const w=ctx.measureText(text).width, pad=6;
+  if(box){
+    if(align==="center"){px=clamp(px,box.x+w/2+pad,box.x+box.w-w/2-pad);}
+    else if(align==="right"){px=clamp(px,box.x+w+pad,box.x+box.w-pad);}
+    else {px=clamp(px,box.x+pad,box.x+box.w-w-pad);}
+    py=clamp(py,box.y+9,box.y+box.h-9);
+  }
+  if(bg){
+    const x0=(align==="center")?px-w/2:(align==="right")?px-w:px, hh=(size||12)+7;
+    ctx.fillStyle="rgba(251,250,247,0.90)";
+    ctx.fillRect(x0-5,py-hh/2,w+10,hh);
+  }
+  ctx.fillStyle=color;ctx.fillText(text,px,py);ctx.restore();
+}
 function plotVLine(ctx,P,x,color,wd,dash){
   const r=P.rng(),b=P.box();if(x<r[0]||x>r[1])return;
   const p=P.toS(x,r[2]);
@@ -573,46 +591,53 @@ function plotVLine(ctx,P,x,color,wd,dash){
 (function(){
   const cv=document.getElementById("cv1");if(!cv)return;
   const ctx=cv.getContext("2d"),P=makePlot(cv);
-  let t=1.3,x0=1.0;
+  let t=1.00,x0=0.70;
   const f=function(x){return Math.sqrt(Math.abs(x));};
   const phi=function(x,tt){return Math.abs(x)-tt*tt;};
+  const XR=3.4, YLO=-2.9, YHI=3.3;
   function draw(){
     fitCanvas(cv,ctx);
-    const b0=cv.getBoundingClientRect();
-    ctx.clearRect(0,0,b0.width,b0.height);
-    P.setRange(-4.6,4.6,-4.6,4.6);
-    plotFrame(ctx,P,[-4,-2,0,2,4],[-4,-2,0,2,4]);
+    const bb=cv.getBoundingClientRect();
+    ctx.clearRect(0,0,bb.width,bb.height);
+    P.setRange(-XR,XR,YLO,YHI);
+    plotFrame(ctx,P,[-3,-2,-1,0,1,2,3],[-2,-1,0,1,2,3]);
     const b=P.box(),r=P.rng();
-    const w=t*t;                       /* {f<=t} = [-w,w] */
-    /* the common set, shaded as a vertical band */
-    if(w>0){
-      const pA=P.toS(Math.max(-w,r[0]),r[2]),pB=P.toS(Math.min(w,r[1]),r[3]);
-      ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();
-      ctx.fillStyle="rgba(47,133,90,0.16)";
-      ctx.fillRect(Math.min(pA[0],pB[0]),b.y,Math.abs(pB[0]-pA[0]),b.h);
-      ctx.strokeStyle="rgba(47,133,90,0.55)";ctx.lineWidth=1.4;
-      ctx.beginPath();ctx.moveTo(pA[0],b.y);ctx.lineTo(pA[0],b.y+b.h);ctx.moveTo(pB[0],b.y);ctx.lineTo(pB[0],b.y+b.h);ctx.stroke();
-      ctx.restore();
-    }
-    plotHLine(ctx,P,0,"#C9C2B2",1.4);
-    plotVLine(ctx,P,0,"#C9C2B2",1.4);
-    plotHLine(ctx,P,t,"#D7402B",1.6,[7,4]);
-    plotCurve(ctx,P,f,"#D7402B",2.8);
-    plotCurve(ctx,P,function(x){return phi(x,t);},"#2B6CB0",2.8);
-    /* markers */
-    const fv=f(x0),pv=phi(x0,t);
-    const px=P.toS(x0,0);
+    const w=t*t;                                   /* {f<=t} = {phi_t<=0} = [-w,w] */
+    /* the common set: a soft band plus a solid bar along the foot of the frame */
+    const pA=P.toS(-w,0),pB=P.toS(w,0);
+    ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();
+    ctx.fillStyle="rgba(47,133,90,0.13)";
+    ctx.fillRect(pA[0],b.y,Math.max(0,pB[0]-pA[0]),b.h);
+    ctx.strokeStyle="rgba(47,133,90,0.45)";ctx.lineWidth=1.2;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(pA[0],b.y);ctx.lineTo(pA[0],b.y+b.h);
+    ctx.moveTo(pB[0],b.y);ctx.lineTo(pB[0],b.y+b.h);ctx.stroke();ctx.restore();
+    plotVLine(ctx,P,0,"#E0DACC",1.4);
+    const bar=P.toS(0,YLO+0.30)[1];
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=7;ctx.lineCap="butt";
+    ctx.beginPath();ctx.moveTo(pA[0],bar);ctx.lineTo(pB[0],bar);ctx.stroke();ctx.lineWidth=1;
+    tag(ctx,"{ f ≤ t } = { φ_t ≤ 0 }",(pA[0]+pB[0])/2,bar-16,"#D7402B",11.5,"center",b,true);
+    plotHLine(ctx,P,0,"#17223B",1.5,[7,4]);        /* the level 0 — for phi_t */
+    plotHLine(ctx,P,t,"#D7402B",1.6,[7,4]);        /* the level t — for f     */
+    plotCurve(ctx,P,f,"#D7402B",2.8,null,-XR,XR);
+    plotCurve(ctx,P,function(x){return phi(x,t);},"#2B6CB0",2.8,null,-XR,XR);
+
+    /* level tags, parked at the left gutter inside the frame */
+    tag(ctx,"t",b.x+8,P.toS(0,t)[1]-11,"#D7402B",12,"left",b);
+    tag(ctx,"0",b.x+8,P.toS(0,0)[1]-11,"#17223B",12,"left",b);
+    /* curve tags, parked in the empty band along the top */
+    tag(ctx,"f(x) = √|x|",b.x+10,P.toS(0,YHI-0.30)[1],"#D7402B",12,"left",b);
+    tag(ctx,"φ_t(x) = |x| − t²",b.x+b.w-10,P.toS(0,YHI-0.30)[1],"#2B6CB0",12,"right",b);
+
+    /* the test point */
+    const fv=f(x0),pv=phi(x0,t),px0=P.toS(x0,0);
     ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();
     ctx.setLineDash([3,3]);ctx.strokeStyle="#8A91A3";ctx.lineWidth=1.2;
-    ctx.beginPath();ctx.moveTo(px[0],b.y);ctx.lineTo(px[0],b.y+b.h);ctx.stroke();ctx.restore();
+    ctx.beginPath();ctx.moveTo(px0[0],b.y);ctx.lineTo(px0[0],b.y+b.h);ctx.stroke();ctx.restore();
     const pf=P.toS(x0,clamp(fv,r[2],r[3])),pp=P.toS(x0,clamp(pv,r[2],r[3]));
     dot(ctx,pf[0],pf[1],5.5,"#D7402B","#fff");
     dot(ctx,pp[0],pp[1],5.5,"#2B6CB0","#fff");
-    dot(ctx,px[0],px[1],6,"#17223B","#fff");
-    label(ctx,"x₀",px[0]+9,px[1]+15,"#17223B",12);
-    label(ctx,"t",P.toS(r[1],t)[0]-16,P.toS(r[1],t)[1]-11,"#D7402B",12);
-    label(ctx,"φ_t",P.toS(4.1,phi(4.1,t))[0]-30,P.toS(4.1,phi(4.1,t))[1]-13,"#2B6CB0",12);
-    label(ctx,"f",P.toS(4.2,f(4.2))[0]-14,P.toS(4.2,f(4.2))[1]-13,"#D7402B",12);
+    dot(ctx,px0[0],px0[1],5,"#17223B","#fff");
+    tag(ctx,"x₀",px0[0]+10,px0[1]+16,"#17223B",12,"left",b);
 
     document.getElementById("v1t").textContent=t.toFixed(2);
     document.getElementById("v1x").textContent=x0.toFixed(2);
@@ -623,15 +648,15 @@ function plotVLine(ctx,P,x,color,wd,dash){
       '<span class="k">{f ≤ t} = {φ_t ≤ 0} =</span> <b>[−'+w.toFixed(2)+', '+w.toFixed(2)+']</b>';
     const vd=document.getElementById("vd1");
     const a1=(fv<=t+1e-12),a2=(pv<=1e-12);
-    vd.className="verdict "+(a1?"in":"out");
-    vd.textContent=a1?"both tests pass — x₀ is in the set":"both tests fail — x₀ is outside";
     if(a1!==a2){vd.className="verdict mid";vd.textContent="tests disagree (numerical edge)";}
+    else{vd.className="verdict "+(a1?"in":"out");
+      vd.textContent=a1?"f(x₀) ≤ t  and  φ_t(x₀) ≤ 0 — both hold":"f(x₀) > t  and  φ_t(x₀) > 0 — both fail";}
   }
   const st=document.getElementById("s1t"),sx=document.getElementById("s1x");
   st.addEventListener("input",function(){t=parseFloat(st.value);draw();});
   sx.addEventListener("input",function(){x0=parseFloat(sx.value);draw();});
   genericDrag(cv,function(){const p=P.toS(x0,0);return [{sx:p[0],sy:p[1],set:function(px){
-    x0=clamp(P.toWx(px),-4.2,4.2);sx.value=x0;}}];},draw);
+    x0=clamp(P.toWx(px),-3.1,3.1);sx.value=x0;}}];},draw);
   new ResizeObserver(draw).observe(cv);
   draw();
 })();
@@ -640,7 +665,8 @@ function plotVLine(ctx,P,x,color,wd,dash){
 (function(){
   const cv=document.getElementById("cv2");if(!cv)return;
   const ctx=cv.getContext("2d"),P=makePlot(cv);
-  let fam="B",x0=2.4,t=1.6,s=3.4;
+  let fam="B",x0=4.20,t=0.10,s=1.20;
+  const TMAX=5, YLO=-6, YHI=10.6;
   function phi(tt,x){
     const base=Math.abs(x)-tt;
     return fam==="A"? base : (2+Math.sin(tt))*base;
@@ -649,18 +675,34 @@ function plotVLine(ctx,P,x,color,wd,dash){
     fitCanvas(cv,ctx);
     const bb=cv.getBoundingClientRect();
     ctx.clearRect(0,0,bb.width,bb.height);
-    P.setRange(0,5,-8,10);
-    plotFrame(ctx,P,[0,1,2,3,4,5],[-8,-4,0,4,8]);
+    P.setRange(0,TMAX,YLO,YHI);
+    plotFrame(ctx,P,[0,1,2,3,4,5],[-4,0,4,8]);
     const b=P.box(),r=P.rng();
-    /* the set of t with phi_t(x0) <= 0 is [|x0|, 5] — shade it */
-    const lo=Math.min(Math.abs(x0),r[1]);
-    const pA=P.toS(lo,0),pB=P.toS(r[1],0);
+    /* {t : phi_t(x0) <= 0} = [|x0|, TMAX] */
+    const cross=Math.min(Math.abs(x0),TMAX);
+    const pA=P.toS(cross,0),pB=P.toS(TMAX,0);
     ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();
-    ctx.fillStyle="rgba(47,133,90,0.16)";
+    ctx.fillStyle="rgba(47,133,90,0.13)";
     ctx.fillRect(pA[0],b.y,Math.max(0,pB[0]-pA[0]),b.h);
     ctx.restore();
+    ctx.strokeStyle="rgba(47,133,90,0.55)";ctx.lineWidth=1.4;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(pA[0],b.y);ctx.lineTo(pA[0],b.y+b.h);ctx.stroke();ctx.setLineDash([]);
+    tag(ctx,"φ ≤ 0 for t ≥ |x₀| = "+Math.abs(x0).toFixed(2),pA[0]-9,b.y+b.h-16,"#2F855A",11,"right",b,true);
+
     plotHLine(ctx,P,0,"#17223B",1.6,[7,4]);
+    tag(ctx,"0",b.x+8,P.toS(0,0)[1]-11,"#17223B",12,"left",b);
     plotCurve(ctx,P,function(tt){return phi(tt,x0);},"#D7402B",2.8);
+
+    /* the peak of family B — the whole point of the lab */
+    if(fam==="B"){
+      let bt=0,bv=-1e9;
+      for(let k=0;k<=500;k++){const tt=TMAX*k/500,v=phi(tt,x0);if(v>bv){bv=v;bt=tt;}}
+      if(bt>0.02&&bv<=r[3]){
+        const pk=P.toS(bt,bv);
+        dot(ctx,pk[0],pk[1],4,"#B7791F");
+        tag(ctx,"φ rises before it falls",pk[0]+11,pk[1]-19,"#B7791F",11,"left",b,true);
+      }
+    }
     /* markers at t and s */
     const vt=phi(t,x0),vs=phi(s,x0);
     plotVLine(ctx,P,t,"#8A91A3",1.2,[3,3]);
@@ -668,30 +710,26 @@ function plotVLine(ctx,P,x,color,wd,dash){
     const pt=P.toS(t,clamp(vt,r[2],r[3])),ps=P.toS(s,clamp(vs,r[2],r[3]));
     dot(ctx,pt[0],pt[1],6,vt<=0?"#2F855A":"#C0392B","#fff");
     dot(ctx,ps[0],ps[1],6,vs<=0?"#2F855A":"#C0392B","#fff");
-    label(ctx,"t",pt[0]-4,P.toS(0,r[2])[1]+0,"#17223B",12);
-    label(ctx,"φ_t(x₀)",pt[0]+10,pt[1]-13,"#17223B",11);
-    label(ctx,"φ_s(x₀)",ps[0]+10,ps[1]-13,"#17223B",11);
-    label(ctx,"|x₀| = "+Math.abs(x0).toFixed(2),pA[0]+8,b.y+16,"#2F855A",11);
-    ctx.save();ctx.textAlign="center";
-    ctx.fillStyle="#8A91A3";ctx.font="11px 'JetBrains Mono', monospace";
-    ctx.fillText("t",(b.x+b.w/2),b.y+b.h+22);
-    ctx.restore();
+    tag(ctx,"φ_t(x₀)",pt[0]-11,pt[1]+16,"#17223B",11,"right",b,true);
+    tag(ctx,"φ_s(x₀)",ps[0]+11,ps[1]+16,"#17223B",11,"left",b,true);
+    label(ctx,"t",pt[0]-3,b.y+b.h+20,"#17223B",11);
+    label(ctx,"s",ps[0]-3,b.y+b.h+20,"#17223B",11);
 
     document.getElementById("v2x").textContent=x0.toFixed(2);
     document.getElementById("v2t").textContent=t.toFixed(2);
     document.getElementById("v2s").textContent=s.toFixed(2);
-    const nest=(vt>0)||(vs<=0);            /* phi_t<=0  =>  phi_s<=0 */
+    const nest=(vt>0)||(vs<=1e-12);          /* phi_t<=0  =>  phi_s<=0 */
     const mono=(vs<=vt+1e-12);
     document.getElementById("ro2").innerHTML=
       '<span class="k">family</span> <b>'+(fam==="A"?"A: |x| − t":"B: (2+sin t)(|x| − t)")+'</b><br>'+
       '<span class="k">φ_t(x₀)</span> <b>'+vt.toFixed(3)+'</b> &nbsp; <span class="k">φ_s(x₀)</span> <b>'+vs.toFixed(3)+'</b><br>'+
       '<span class="k">{φ_t ≤ 0}</span> <b>[−'+t.toFixed(2)+', '+t.toFixed(2)+']</b> ⊆ <span class="k">{φ_s ≤ 0}</span> <b>[−'+s.toFixed(2)+', '+s.toFixed(2)+']</b><br>'+
-      '<span class="k">nesting (required)</span> <b>'+(nest?"holds":"FAILS")+'</b> &nbsp; <span class="k">nonincreasing (sufficient)</span> <b>'+(mono?"holds":"fails")+'</b>';
+      '<span class="k">nesting (required)</span> <b>'+(nest?"holds":"FAILS")+'</b><br>'+
+      '<span class="k">nonincreasing (sufficient)</span> <b>'+(mono?"holds":"fails")+'</b>';
     const vd=document.getElementById("vd2");
-    if(s<t){vd.className="verdict mid";vd.textContent="set s ≥ t to test nesting";}
-    else if(nest&&!mono){vd.className="verdict in";vd.textContent="nesting holds — yet φ rose with t: monotone is not necessary";}
-    else if(nest&&mono){vd.className="verdict in";vd.textContent="nesting holds · nonincreasing also holds here";}
-    else {vd.className="verdict out";vd.textContent="nesting fails — not a valid family";}
+    if(!nest){vd.className="verdict out";vd.textContent="nesting fails — not a valid family";}
+    else if(!mono){vd.className="verdict in";vd.textContent="nesting holds — but φ rose with t: monotone is not necessary";}
+    else {vd.className="verdict in";vd.textContent="nesting holds · nonincreasing happens to hold too";}
   }
   mkChips(document.getElementById("ch2"),
     [{k:"A",t:"A · |x| − t"},{k:"B",t:"B · (2+sin t)(|x| − t)"}],"B",
@@ -707,32 +745,44 @@ function plotVLine(ctx,P,x,color,wd,dash){
 /* ================= LAB 3 — p/q, sublevel sets are disks ================= */
 (function(){
   const cv=document.getElementById("cv3");if(!cv)return;
-  const ctx=cv.getContext("2d"),view=makeView(cv,5);
-  let t=1.2,X=[1.6,1.1];
+  const R0=4.6, CAP=4.2;
+  const ctx=cv.getContext("2d"),view=makeView(cv,R0);
+  let t=1.20,X=[1.00,0.80];
   const p=function(x){return x[0]*x[0]+x[1]*x[1];};
   const q=function(x){return 3-x[0];};
   function draw(){
     fitCanvas(cv,ctx);
     const bb=cv.getBoundingClientRect();
     ctx.clearRect(0,0,bb.width,bb.height);
-    drawGrid(ctx,view,5);
-    /* boundary of C : q = 0  <=> x1 = 3 (drawn inside the frame) */
-    const c0=view.toS(3,-4.4),c1=view.toS(3,4.4);
+    drawGrid(ctx,view,R0);
+    /* axis ticks — the plain grid alone reads as an empty field */
+    ctx.save();ctx.font="11px 'JetBrains Mono', monospace";ctx.fillStyle="#A9A292";
+    ctx.textAlign="center";ctx.textBaseline="top";
+    [-4,-3,-2,-1,1,2,4].forEach(function(v){const s=view.toS(v,0);ctx.fillText(String(v),s[0],s[1]+5);});
+    ctx.textAlign="right";ctx.textBaseline="middle";
+    [-4,-3,-2,-1,1,2,3,4].forEach(function(v){const s=view.toS(0,v);ctx.fillText(String(v),s[0]-6,s[1]);});
+    ctx.restore();
+    label(ctx,"x₁",view.toS(4.35,0)[0],view.toS(4.35,0)[1]-14,"#8A91A3",12);
+    label(ctx,"x₂",view.toS(0,4.45)[0]+9,view.toS(0,4.45)[1],"#8A91A3",12);
+    /* boundary of C : q = 0  <=>  x1 = 3 */
+    const c0=view.toS(3,-4.3),c1=view.toS(3,4.3);
     ctx.save();ctx.setLineDash([6,5]);ctx.strokeStyle="#8A91A3";ctx.lineWidth=1.6;
     ctx.beginPath();ctx.moveTo(c0[0],c0[1]);ctx.lineTo(c1[0],c1[1]);ctx.stroke();ctx.restore();
-    label(ctx,"q = 0",view.toS(3.05,4.0)[0]+4,view.toS(3.05,4.0)[1],"#8A91A3",11);
-    /* the sublevel disk: centre (-t/2,0), radius sqrt(t^2/4 + 3t)  (<= 3.9 for t <= 2.2) */
-    const cx=-t/2, R=Math.sqrt(t*t/4+3*t);
-    const pc=view.toS(cx,0),sc=view.s();
+    label(ctx,"q = 0",view.toS(3.12,-3.9)[0],view.toS(3.12,-3.9)[1],"#8A91A3",11);
+    /* the sublevel disk: centre (-t/2,0), radius sqrt(t^2/4 + 3t) */
+    const cx=-t/2, R=Math.sqrt(t*t/4+3*t), sc=view.s(), pc=view.toS(cx,0);
     ctx.beginPath();ctx.arc(pc[0],pc[1],R*sc,0,Math.PI*2);
-    ctx.fillStyle="rgba(43,108,176,0.20)";ctx.fill();
-    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.2;ctx.stroke();
+    ctx.fillStyle="rgba(43,108,176,0.18)";ctx.fill();
+    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.4;ctx.stroke();
     dot(ctx,pc[0],pc[1],3,"#2B6CB0");
-    label(ctx,"{ f ≤ t }",view.toS(cx-0.5,0.35)[0],view.toS(cx-0.5,0.35)[1],"#2B6CB0",12);
+    /* tag the disk above its rim, never on top of the centre dot */
+    const ly=Math.min(R+0.95,4.15), lp=view.toS(cx,ly);
+    tag(ctx,"{ f ≤ t } = { φ_t ≤ 0 }",lp[0],lp[1],"#2B6CB0",12,"center",
+        {x:6,y:6,w:bb.width-12,h:bb.height-12},true);
     /* the test point */
     const px=view.toS(X[0],X[1]);
     dot(ctx,px[0],px[1],7,"#D7402B","#fff");
-    label(ctx,"x",px[0]+12,px[1]-12,"#D7402B",13);
+    label(ctx,"x",px[0]+13,px[1]-13,"#D7402B",13);
 
     const pv=p(X),qv=q(X),fv=(qv>1e-9)?pv/qv:Infinity,ph=pv-t*qv;
     document.getElementById("v3t").textContent=t.toFixed(2);
@@ -741,7 +791,7 @@ function plotVLine(ctx,P,x,color,wd,dash){
       '<span class="k">p(x)</span> <b>'+pv.toFixed(3)+'</b> &nbsp; <span class="k">q(x)</span> <b>'+qv.toFixed(3)+'</b><br>'+
       '<span class="k">f(x) = p/q</span> <b>'+(isFinite(fv)?fv.toFixed(3):"∞")+'</b> &nbsp; <span class="k">≤ t ?</span> <b>'+(fv<=t+1e-12?"yes":"no")+'</b><br>'+
       '<span class="k">φ_t(x) = p − t q</span> <b>'+ph.toFixed(3)+'</b> &nbsp; <span class="k">≤ 0 ?</span> <b>'+(ph<=1e-12?"yes":"no")+'</b><br>'+
-      '<span class="k">disk</span> <b>centre (−'+(t/2).toFixed(2)+', 0) · r = '+Math.sqrt(t*t/4+3*t).toFixed(3)+'</b>';
+      '<span class="k">disk</span> <b>centre (−'+(t/2).toFixed(2)+', 0) · r = '+R.toFixed(3)+'</b>';
     const vd=document.getElementById("vd3");
     if(qv<=0){vd.className="verdict mid";vd.textContent="x is outside C — q(x) ≤ 0, the example does not apply";}
     else if(ph<=1e-12){vd.className="verdict in";vd.textContent="f(x) ≤ t  and  φ_t(x) ≤ 0 — both hold";}
@@ -750,7 +800,7 @@ function plotVLine(ctx,P,x,color,wd,dash){
   const st=document.getElementById("s3t");
   st.addEventListener("input",function(){t=parseFloat(st.value);draw();});
   genericDrag(cv,function(){const s=view.toS(X[0],X[1]);return [{sx:s[0],sy:s[1],set:function(px,py){
-    const w=view.toW(px,py);X=[clamp(w[0],-4.4,4.4),clamp(w[1],-4.4,4.4)];}}];},draw);
+    const w=view.toW(px,py);X=[clamp(w[0],-CAP,CAP),clamp(w[1],-CAP,CAP)];}}];},draw);
   new ResizeObserver(draw).observe(cv);
   draw();
 })();
