@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.5.1 — Log-concave and Log-convex Functions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.rtab{width:100%;border-collapse:collapse;margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;font-size:16px}
+.rtab th,.rtab td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.rtab thead th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rtab tbody tr:last-child td,.rtab tr:last-child td{border-bottom:none}
+.rtab .rn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal);font-weight:600}
+.rtab .res{font-weight:600;color:var(--ink)}
+.rtab td .mono{font-size:14px}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+</style><style>
+.badges{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px}
+.bdg{font-family:"JetBrains Mono",monospace;font-size:11.5px;border-radius:8px;padding:6px 9px;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bdg b{font-weight:600;color:var(--ink-soft)}
+.bdg .m{font-weight:700}
+.bdg.yes{background:var(--inside-fill);border-color:rgba(47,133,90,.3);color:var(--inside)}
+.bdg.yes b{color:var(--inside)}
+.bdg.no{background:#fff;color:#B0B6C4}
+.bdg.no b{color:#B0B6C4}
+.slabel{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.5.1</div>
+    <h1>Log-concave and <em>log-convex</em> functions</h1>
+    <p class="sub">Take the logarithm first, then ask about curvature. The class you get is the natural one for probability densities and for \(\det X\) — and its chord inequality compares the value at the average with a <em>geometric</em> mean, not an arithmetic one.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> log-concave: \(f&gt;0\), \(\log f\) concave</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> \(f(\theta x+(1-\theta)y)\ge f(x)^{\theta}f(y)^{1-\theta}\)</span>
+      <span><span class="dot" style="background:var(--inside)"></span> \(f\) log-convex \(\iff 1/f\) log-concave</span>
+      <span>p.&nbsp;104–105 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 250" role="img" aria-label="Left panel: the Gaussian bump f of x equals e to the minus x squared over two, drawn in vermilion, with two marked points x and y. A blue curve joins the two endpoint values — the weighted geometric mean of the endpoint values — and lies below the vermilion graph. A green vertical gap at the averaged point shows f at the average exceeding the geometric mean. Right panel: log f, the downward parabola minus x squared over two in vermilion, with a straight blue chord joining the same two endpoints lying below the curve; the same green gap appears. Caption: Jensen downstairs, exponentiate upstairs.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="250" fill="url(#dots)"/>
+
+        <!-- ===== panel A: f and the geometric chord ===== -->
+        <line x1="42" y1="200" x2="288" y2="200" stroke="#C9C2B2" stroke-width="1.4"/>
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.8" stroke-linejoin="round" points="42.0,196.0 44.7,195.3 47.5,194.6 50.2,193.8 52.9,192.9 55.7,191.8 58.4,190.7 61.1,189.4 63.9,188.0 66.6,186.4 69.3,184.7 72.1,182.8 74.8,180.8 77.5,178.6 80.3,176.2 83.0,173.7 85.7,170.9 88.5,168.0 91.2,165.0 93.9,161.7 96.7,158.3 99.4,154.8 102.1,151.1 104.9,147.3 107.6,143.4 110.3,139.3 113.1,135.3 115.8,131.1 118.5,127.0 121.3,122.9 124.0,118.8 126.7,114.7 129.5,110.8 132.2,107.0 134.9,103.4 137.7,99.9 140.4,96.7 143.1,93.7 145.9,91.0 148.6,88.6 151.3,86.6 154.1,84.9 156.8,83.5 159.5,82.5 162.3,81.9 165.0,81.7 167.7,81.9 170.5,82.5 173.2,83.5 175.9,84.9 178.7,86.6 181.4,88.6 184.1,91.0 186.9,93.7 189.6,96.7 192.3,99.9 195.1,103.4 197.8,107.0 200.5,110.8 203.3,114.7 206.0,118.8 208.7,122.9 211.5,127.0 214.2,131.1 216.9,135.3 219.7,139.3 222.4,143.4 225.1,147.3 227.9,151.1 230.6,154.8 233.3,158.3 236.1,161.7 238.8,165.0 241.5,168.0 244.3,170.9 247.0,173.7 249.7,176.2 252.5,178.6 255.2,180.8 257.9,182.8 260.7,184.7 263.4,186.4 266.1,188.0 268.9,189.4 271.6,190.7 274.3,191.8 277.1,192.9 279.8,193.8 282.5,194.6 285.3,195.3 288.0,196.0"/>
+        <polyline fill="none" stroke="#2B6CB0" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="6 4" points="240.7,167.1 237.9,167.4 235.2,167.7 232.4,168.0 229.7,168.3 226.9,168.5 224.1,168.8 221.4,169.1 218.6,169.3 215.9,169.6 213.1,169.9 210.3,170.1 207.6,170.4 204.8,170.7 202.1,170.9 199.3,171.2 196.5,171.4 193.8,171.7 191.0,171.9 188.3,172.2 185.5,172.4 182.7,172.6 180.0,172.9 177.2,173.1 174.5,173.3 171.7,173.6 168.9,173.8 166.2,174.0 163.4,174.3 160.7,174.5 157.9,174.7 155.1,174.9 152.4,175.1 149.6,175.4 146.9,175.6 144.1,175.8 141.3,176.0 138.6,176.2 135.8,176.4 133.1,176.6 130.3,176.8 127.5,177.0 124.8,177.2 122.0,177.4 119.3,177.6 116.5,177.8 113.7,178.0 111.0,178.2 108.2,178.4 105.5,178.6 102.7,178.8 100.0,179.0 97.2,179.1 94.4,179.3 91.7,179.5 88.9,179.7 86.2,179.9 83.4,180.0 80.6,180.2 77.9,180.4 75.1,180.5"/>
+        <line x1="157.9" y1="83.1" x2="157.9" y2="174.7" stroke="#2F855A" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="75.1" cy="180.5" r="4.4" fill="#D7402B"/>
+        <circle cx="240.7" cy="167.1" r="4.4" fill="#D7402B"/>
+        <circle cx="157.9" cy="83.1" r="4.4" fill="#17223B"/>
+        <circle cx="157.9" cy="174.7" r="4.0" fill="#2B6CB0"/>
+        <text x="42" y="42" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">f = e^(−x²/2)</text>
+        <text x="66" y="192" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">x</text>
+        <text x="248" y="162" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">y</text>
+        <text x="168" y="72" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="11">f(θx+(1−θ)y)</text>
+        <text x="112" y="222" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">geom. chord f(x)^θf(y)^(1−θ)</text>
+        <text x="42" y="240" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11">the gap: log-concavity</text>
+
+        <!-- ===== panel B: log f and the straight chord ===== -->
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.8" stroke-linejoin="round" points="352.0,192.4 354.7,187.3 357.5,182.3 360.2,177.4 362.9,172.7 365.7,168.0 368.4,163.5 371.1,159.0 373.9,154.7 376.6,150.5 379.3,146.5 382.1,142.5 384.8,138.6 387.5,134.9 390.3,131.3 393.0,127.8 395.7,124.4 398.5,121.1 401.2,117.9 403.9,114.9 406.7,112.0 409.4,109.2 412.1,106.5 414.9,103.9 417.6,101.4 420.3,99.0 423.1,96.8 425.8,94.7 428.5,92.7 431.3,90.8 434.0,89.0 436.7,87.3 439.5,85.8 442.2,84.3 444.9,83.0 447.7,81.8 450.4,80.7 453.1,79.7 455.9,78.9 458.6,78.1 461.3,77.5 464.1,77.0 466.8,76.6 469.5,76.3 472.3,76.1 475.0,76.1 477.7,76.1 480.5,76.3 483.2,76.6 485.9,77.0 488.7,77.5 491.4,78.1 494.1,78.9 496.9,79.7 499.6,80.7 502.3,81.8 505.1,83.0 507.8,84.3 510.5,85.8 513.3,87.3 516.0,89.0 518.7,90.8 521.5,92.7 524.2,94.7 526.9,96.8 529.7,99.0 532.4,101.4 535.1,103.9 537.9,106.5 540.6,109.2 543.3,112.0 546.1,114.9 548.8,117.9 551.5,121.1 554.3,124.4 557.0,127.8 559.7,131.3 562.5,134.9 565.2,138.6 567.9,142.5 570.7,146.5 573.4,150.5 576.1,154.7 578.9,159.0 581.6,163.5 584.3,168.0 587.1,172.7 589.8,177.4 592.5,182.3 595.3,187.3 598.0,192.4"/>
+        <line x1="385.1" y1="138.2" x2="550.7" y2="120.1" stroke="#2B6CB0" stroke-width="2.4" stroke-dasharray="6 4"/>
+        <line x1="467.9" y1="76.4" x2="467.9" y2="129.2" stroke="#2F855A" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="385.1" cy="138.2" r="4.4" fill="#D7402B"/>
+        <circle cx="550.7" cy="120.1" r="4.4" fill="#D7402B"/>
+        <circle cx="467.9" cy="76.4" r="4.4" fill="#17223B"/>
+        <circle cx="467.9" cy="129.2" r="4.0" fill="#2B6CB0"/>
+        <text x="352" y="42" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">log f = −x²/2 · concave</text>
+        <text x="370" y="160" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">log f(x)</text>
+        <text x="492" y="106" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11">log f(y)</text>
+        <text x="404" y="222" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">ordinary chord</text>
+        <text x="352" y="240" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">Jensen here, then exponentiate</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ §0 ============ -->
+<section class="wrap" id="s0">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <h2>A multiplicative cousin of convexity</h2>
+  <hr class="rule">
+  <p>§3.4 loosened convexity in one direction: quasiconvexity kept the <em>sublevel sets</em> convex and threw away everything else. §3.5 goes a different way. It keeps a genuine curvature condition, but applies it to \(\log f\) rather than to \(f\) — a class with a multiplicative flavour, since a condition on \(\log f\) becomes a condition on products and powers of \(f\).</p>
+  <p>This is the natural convexity notion for objects that are already multiplicative: probability densities, which multiply under independence; and \(\det X\), which multiplies under products. Log-concavity is the property those objects actually have — the multivariate normal density is not concave, but its logarithm is. This subsection gives the definition, its geometric-mean form, where the class sits relative to convex and quasiconvex, and the standard examples.</p>
+</section>
+
+<!-- ============ §1 ============ -->
+<section class="wrap" id="s1">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">definition</span></div>
+  <h2>Curvature after taking the log</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    A function \(f:\mathbf{R}^{n}\to\mathbf{R}\) is <strong>logarithmically concave</strong> (or <strong>log-concave</strong>) if \(f(x)&gt;0\) for all \(x\in\mathop{\bf dom} f\) and \(\log f\) is concave. It is <strong>logarithmically convex</strong> (<strong>log-convex</strong>) if \(\log f\) is convex.
+    <span class="src">B&amp;V §3.5.1 · L5337–5342</span>
+  </div>
+
+  <p>Two clauses, both load-bearing. The positivity clause is what makes \(\log f\) defined at all; the curvature clause is applied to \(\log f\), never to \(f\). It is worth saying out loud what the definition does <em>not</em> say: log-concave does not mean \(f\) is concave, and it does not mean \(\log f\) is positive.</p>
+
+  <ul class="reads">
+    <li><span class="tag">domain</span><div>\(\mathop{\bf dom}(\log f)=\mathop{\bf dom} f\), so log-concavity of \(f\) requires \(\mathop{\bf dom} f\) to be convex (as concavity of \(\log f\) does).</div></li>
+    <li><span class="tag">reciprocal</span><div>\(f\) is log-convex if and only if \(1/f\) is log-concave, since \(\log(1/f)=-\log f\) and negating flips convex to concave. The two notions are exact mirror images through \(f\mapsto 1/f\).</div></li>
+    <li><span class="tag">both</span><div>Nothing forbids a function from being <em>both</em>: that happens exactly when \(\log f\) is affine, i.e. \(f(x)=e^{a^{T}x+b}\).</div></li>
+  </ul>
+
+  <div class="note warn"><div class="ic">!</div><p><b>The convention for zeros.</b> It is convenient to allow \(f\) to take the value \(0\), and to use the extended-value convention \(\log f(x)=-\infty\) there. In that case \(f\) is log-concave if and only if the extended-value function \(\log f\) is concave — the \(-\infty\) values are absorbed by the extended-value definition of concavity, and \(\{x\mid f(x)&gt;0\}\) plays the role of the domain. This is what lets a density that is \(0\) outside a set still count as log-concave.</p></div>
+
+  <div class="note key"><div class="ic">!</div><p><b>The trap.</b> Log-concavity is a condition on \(\log f\), not on \(f\). \(f\) itself need not be concave, and typically is not — the Gaussian bump \(e^{-x^{2}/2}\) is log-concave but has convex tails. Conversely \(f\) concave (and nonnegative) <em>does</em> give log-concave, but that is a theorem (§3), not the definition.</p></div>
+</section>
+
+<!-- ============ §2 ============ -->
+<section class="wrap" id="s2">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">chord form</span></div>
+  <h2>The geometric-mean characterization</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    A function \(f\) with convex domain and \(f(x)&gt;0\) for all \(x\in\mathop{\bf dom} f\) is log-concave if and only if for all \(x,y\in\mathop{\bf dom} f\) and \(0\le\theta\le 1\),
+    \[ f\bigl(\theta x+(1-\theta)y\bigr)\;\ge\; f(x)^{\theta}\,f(y)^{1-\theta}. \]
+    <span class="src">B&amp;V §3.5.1 · L5343–5350</span>
+  </div>
+
+  <p>This is the definition with the logarithm cleared away. It is worth reading it beside the ordinary concavity inequality, because the two differ in exactly one place — the kind of mean taken on the right:</p>
+
+  \[ \underbrace{f(\theta x+(1-\theta)y)\;\ge\;\theta f(x)+(1-\theta)f(y)}_{\text{concave: arithmetic mean}} \qquad\qquad \underbrace{f(\theta x+(1-\theta)y)\;\ge\;f(x)^{\theta}f(y)^{1-\theta}}_{\text{log-concave: geometric mean}} \]
+
+  <p>In words: <strong>the value at the weighted average of two points is at least the weighted geometric mean of the values at the points.</strong> Since the geometric mean never exceeds the arithmetic mean, the log-concave requirement is the weaker of the two — which is the seed of the implication in §3 that a nonnegative concave function is log-concave.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;\(\log f\) concave \(\iff\) the geometric-mean inequality</span><span class="target">Jensen, then exponentiate</span></div>
+    <div class="step"><div class="math">\[ \log f(\theta x+(1-\theta)y)\;\ge\;\theta\log f(x)+(1-\theta)\log f(y) \]</div><div class="why"><b>start</b> this is exactly the statement that \(\log f\) is concave, written out for two points (Jensen's inequality for the pair \(x,y\)).</div></div>
+    <div class="step crux"><div class="math">\[ e^{\,\log f(\theta x+(1-\theta)y)}\;\ge\;e^{\,\theta\log f(x)+(1-\theta)\log f(y)} \]</div><div class="why"><b>the move</b> apply \(\exp\), which is strictly increasing, so the inequality survives intact — and, being a bijection onto \(\mathbf{R}_{++}\), the step is reversible. That reversibility is what makes this an <em>iff</em>, not just an implication.</div></div>
+    <div class="step"><div class="math">\[ f(\theta x+(1-\theta)y)\;\ge\;f(x)^{\theta}f(y)^{1-\theta} \]</div><div class="why"><b>simplify</b> \(e^{\log f}=f\) on the left; on the right \(e^{\theta\log f(x)}=f(x)^{\theta}\) and likewise for \(y\). A sum of logs upstairs has become a product of powers downstairs.</div></div>
+  </div>
+
+  <div class="note build"><div class="ic">◆</div><p><b>Why this form is the useful one.</b> Written with the logarithm, log-concavity looks like an extra composition to check. Written as a geometric mean it is a statement you can test on any \(f\) directly, without ever forming \(\log f\) — and it is the form that generalizes: the same product-of-powers pattern is what makes log-concavity survive multiplication of functions and integration (§3.5.2).</p></div>
+
+  <!-- ===== LAB 1 ===== -->
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The geometric-mean test — drag the two points</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> f</span>
+          <span><i style="border-color:#2B6CB0"></i> geometric chord f(x)<sup>θ</sup>f(y)<sup>1−θ</sup></span>
+          <span><i style="border-color:#8A91A3"></i> arithmetic chord</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Pick a function, then <b>drag the two red points</b> along the curve and <b>slide θ</b>. The blue curve is the geometric mean of the two endpoint values; log-concavity says \(f\) never dips below it.</p>
+        <div class="chips" id="ch1"></div>
+        <div class="ctrl"><label>exponent <span class="val" id="av1">a = 0.50</span></label><input type="range" id="as1" min="-2" max="3" step="0.05" value="0.5"></div>
+        <div class="ctrl"><label>θ <span class="val" id="tv1">0.50</span></label><input type="range" id="ts1" min="0" max="1" step="0.01" value="0.5"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §3 ============ -->
+<section class="wrap" id="s3">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">hierarchy</span></div>
+  <h2>Where the class sits — and which arrows are one-way</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    Log-convexity and log-concavity are closed under positive scaling and composition with an affine function. A log-convex function is convex; a nonnegative concave function is log-concave. A log-convex function is quasiconvex, and a log-concave function is quasiconcave, since the logarithm is monotone increasing.
+    <span class="src">B&amp;V §3.5.1 · L5351–5354</span>
+  </div>
+
+  <p>Four separate statements, each with a one-line reason. Three of them are compositions from §3.2.4; the fourth is the observation that a monotone transformation cannot change a sublevel set.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>The four implications</span><span class="target">composition + monotonicity</span></div>
+    <div class="step crux"><div class="math">\[ f\ \text{log-convex}\;\Longrightarrow\; f\ \text{convex} \]</div><div class="why"><b>why</b> write \(f=e^{\log f}=h\circ g\) with \(h=\exp\), \(g=\log f\). Here \(h\) is convex <em>and nondecreasing</em> and \(g\) is convex, so the composition is convex. Both properties of \(h\) are needed.</div></div>
+    <div class="step crux"><div class="math">\[ f\ \text{concave},\ f\ge 0 \;\Longrightarrow\; f\ \text{log-concave} \]</div><div class="why"><b>why</b> \(\log f=h\circ g\) with \(h=\log\), \(g=f\). Here \(h\) is concave <em>and nondecreasing</em> and \(g\) is concave, so the composition is concave. Nonnegativity is what puts \(f\) in the domain of \(\log\).</div></div>
+    <div class="step"><div class="math">\[ \{x\mid f(x)\le t\}=\{x\mid \log f(x)\le \log t\}\quad (t&gt;0) \]</div><div class="why"><b>why</b> \(\log\) is strictly increasing, so \(f\) and \(\log f\) have the <em>same</em> sublevel sets (up to relabelling the level). Log-convex \(\Rightarrow\) \(\log f\) convex \(\Rightarrow\) its sublevel sets are convex \(\Rightarrow\) \(f\) quasiconvex.</div></div>
+    <div class="step"><div class="math">\[ \{x\mid f(x)\ge t\}=\{x\mid \log f(x)\ge \log t\}\quad (t&gt;0) \]</div><div class="why"><b>why</b> the same argument on superlevel sets: log-concave \(\Rightarrow\) \(\log f\) concave \(\Rightarrow\) convex superlevel sets \(\Rightarrow\) \(f\) quasiconcave. Note the direction — log-<em>concave</em> gives quasi<em>concave</em>, never quasiconvex.</div></div>
+  </div>
+
+  <p>Together with the closure properties (positive scaling, affine precomposition — both immediate from \(\log(\alpha f)=\log\alpha+\log f\) and \(\log f(Ax+b)=(\log f)(Ax+b)\)), this places log-convex strictly inside convex, and log-concave strictly inside quasiconcave:</p>
+
+  \[ \text{log-convex}\;\subset\;\text{convex}\;\subset\;\text{quasiconvex}, \qquad \text{nonneg.\ concave}\;\subset\;\text{log-concave}\;\subset\;\text{quasiconcave}. \]
+
+  <div class="note key"><div class="ic">!</div><p><b>The arrows are one-way.</b> Convex does <em>not</em> imply log-convex. Take \(f(x)=x^{2}\) on \(\mathbf{R}_{++}\): it is convex, but \(\log f(x)=2\log x\) is <em>concave</em>, so \(x^{2}\) is log-<strong>concave</strong>, not log-convex. So a function can be convex and log-concave at the same time — the two conditions sit on different objects and constrain each other only in the directions listed above.</p></div>
+
+  <!-- ===== LAB 2 ===== -->
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Two floors — \(f\) upstairs, \(\log f\) downstairs</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv2"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> f &nbsp;/&nbsp; log f</span>
+          <span><i style="border-color:#2B6CB0"></i> chord</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">The same function drawn twice: \(f\) on top, \(\log f\) below. <b>Drag the points</b>; the badges are computed live by chord-testing several hundred sampled pairs.</p>
+        <div class="chips" id="ch2"></div>
+        <div class="ctrl"><label>exponent <span class="val" id="av2">a = 2.00</span></label><input type="range" id="as2" min="-2" max="3" step="0.05" value="2"></div>
+        <div class="slabel">diagnosis on dom f</div>
+        <div class="badges" id="bd2"></div>
+        <div class="readout" id="ro2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note build"><div class="ic">◆</div><p><b>Read the badges as a diagnosis drill.</b> Set the exponent to \(a=2\): convex ✓ and log-concave ✓ together — the counterexample above. Slide to \(a=-1\): now \(x^{-1}\) is convex <em>and</em> log-convex. Switch to \(e^{-x^{2}/2}\): log-concave ✓ but concave ✗. Switch to \(\Gamma\): log-convex ✓, hence convex ✓.</p></div>
+</section>
+
+<!-- ============ §4 ============ -->
+<section class="wrap" id="s4">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">example 3.39</span></div>
+  <h2>The standard examples</h2>
+  <hr class="rule">
+  <p>B&amp;V's list. Each is settled by writing \(\log f\) and reading its curvature off directly — that is the whole method.</p>
+
+  <div class="excard">
+    <div class="exh"><span>affine function</span><span class="vt">log-concave</span></div>
+    <div class="exb"><p>\(f(x)=a^{T}x+b\) is log-concave on \(\{x\mid a^{T}x+b&gt;0\}\). Reason: \(f\) is concave (affine, hence concave) and positive there, so §3 applies. <span class="mono">L5357–5359</span></p></div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>powers on \(\mathbf{R}_{++}\)</span><span class="vt">the sign of \(a\) decides</span></div>
+    <div class="exb">
+      <p>\(f(x)=x^{a}\) on \(\mathbf{R}_{++}\) is <strong>log-convex for \(a\le 0\)</strong> and <strong>log-concave for \(a\ge 0\)</strong>. Reason: \(\log f(x)=a\log x\), and \(\log x\) is concave; multiplying a concave function by \(a\ge0\) keeps it concave, by \(a\le 0\) flips it to convex. <span class="mono">L5360–5362</span></p>
+      <p>Note the contrast with ordinary convexity of \(x^{a}\), which is governed by \(a\le 0\) or \(a\ge 1\) (§3.1.5). The log-version has a single clean cut at \(a=0\).</p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>exponential</span><span class="vt">both</span></div>
+    <div class="exb"><p>\(f(x)=e^{ax}\) is log-convex <em>and</em> log-concave, because \(\log f(x)=ax\) is affine — and an affine function is both convex and concave. This is the boundary case of §1: \(f\) is both exactly when \(\log f\) is affine. <span class="mono">L5363–5365</span></p></div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Gaussian cumulative distribution \(\Phi\)</span><span class="vt">log-concave</span></div>
+    <div class="exb"><p>\[ \Phi(x)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{-u^{2}/2}\,du \] is log-concave. (Established in exercise 3.54; it also follows from the general fact of §3.5.2 that the integral of a log-concave function against a log-concave one stays log-concave.) <span class="mono">L5366–5370</span></p></div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>gamma function \(\Gamma\)</span><span class="vt">log-convex for \(x\ge 1\)</span></div>
+    <div class="exb"><p>\[ \Gamma(x)=\int_{0}^{\infty}u^{x-1}e^{-u}\,du \] is log-convex for \(x\ge 1\) (exercise 3.52). Being log-convex, it is therefore also convex there, by §3. <span class="mono">L5371–5374</span></p></div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>determinant on \(\mathbf{S}^{n}_{++}\)</span><span class="vt">log-concave</span></div>
+    <div class="exb"><p>\(f(X)=\det X\) is log-concave on \(\mathbf{S}^{n}_{++}\): \(\log\det X\) is concave (§3.1.5). This is the marquee matrix example, and the reason \(-\log\det X\) is the standard barrier for semidefinite programming. <span class="mono">L5375–5376</span></p></div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>determinant over trace</span><span class="vt">log-concave</span></div>
+    <div class="exb"><p>\[ f(X)=\frac{\det X}{\operatorname{\bf tr} X} \] is log-concave on \(\mathbf{S}^{n}_{++}\) (exercise 3.49). A ratio, so its log is a difference of two logs — and it is not the naive sum-of-concaves argument that settles it. <span class="mono">L5377–5378</span></p></div>
+  </div>
+
+  <!-- ===== LAB 3 ===== -->
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>\(\det X\) on \(\mathbf{S}^{2}_{++}\) — the geometric mean along a segment</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> value along the segment</span>
+          <span><i style="border-color:#2B6CB0"></i> geometric mean of endpoints</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Two positive definite matrices \(X,Y\in\mathbf{S}^{2}_{++}\). Top plot: the value along \(\theta X+(1-\theta)Y\) against the geometric chord. Bottom: the same picture after taking logs — a concave curve above a straight chord. Off-diagonals are clamped to keep both matrices positive definite.</p>
+        <div class="chips" id="ch3"></div>
+        <div class="grid2">
+          <div class="ctrl"><label>X₁₁ <span class="val" id="v_a1">2.60</span></label><input type="range" id="s_a1" min="0.2" max="5" step="0.05" value="2.6"></div>
+          <div class="ctrl"><label>Y₁₁ <span class="val" id="v_a2">0.60</span></label><input type="range" id="s_a2" min="0.2" max="5" step="0.05" value="0.6"></div>
+          <div class="ctrl"><label>X₁₂ <span class="val" id="v_b1">0.30</span></label><input type="range" id="s_b1" min="-4" max="4" step="0.05" value="0.3"></div>
+          <div class="ctrl"><label>Y₁₂ <span class="val" id="v_b2">-0.90</span></label><input type="range" id="s_b2" min="-4" max="4" step="0.05" value="-0.9"></div>
+          <div class="ctrl"><label>X₂₂ <span class="val" id="v_c1">0.70</span></label><input type="range" id="s_c1" min="0.2" max="5" step="0.05" value="0.7"></div>
+          <div class="ctrl"><label>Y₂₂ <span class="val" id="v_c2">3.40</span></label><input type="range" id="s_c2" min="0.2" max="5" step="0.05" value="3.4"></div>
+        </div>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §5 ============ -->
+<section class="wrap" id="s5">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">example 3.40</span></div>
+  <h2>Log-concave densities — a recognition gallery</h2>
+  <hr class="rule">
+  <p>Many common probability densities are log-concave. The pattern to internalise is that you never check the density itself; you write down \(\log f\) and look at its shape.</p>
+
+  <div class="excard">
+    <div class="exh"><span>multivariate normal</span><span class="vt">\(\log f\) is a concave quadratic</span></div>
+    <div class="exb">
+      <p>\[ f(x)=\frac{1}{\sqrt{(2\pi)^{n}\det\Sigma}}\;e^{-\frac{1}{2}(x-\bar{x})^{T}\Sigma^{-1}(x-\bar{x})}, \qquad \Sigma\in\mathbf{S}^{n}_{++}. \]
+      Taking logs, \(\log f(x)=\text{const}-\tfrac{1}{2}(x-\bar{x})^{T}\Sigma^{-1}(x-\bar{x})\), a quadratic with \(-\Sigma^{-1}\preceq 0\), hence concave. So \(f\) is log-concave — although \(f\) itself is certainly not concave. <span class="mono">L5385–5393</span></p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>exponential distribution on \(\mathbf{R}^{n}_{+}\)</span><span class="vt">\(\log f\) is affine</span></div>
+    <div class="exb">
+      <p>\[ f(x)=\Bigl(\textstyle\prod_{i=1}^{n}\lambda_{i}\Bigr)e^{-\lambda^{T}x},\qquad \lambda_i&gt;0,\ x\succeq 0. \]
+      \(\log f(x)=\sum_i\log\lambda_i-\lambda^{T}x\) is affine on \(\mathbf{R}^{n}_{+}\), so \(f\) is log-concave — indeed log-convex too on that domain, by the affine-log criterion. The density is \(0\) off \(\mathbf{R}^{n}_{+}\), which the \(-\infty\) convention of §1 handles, since \(\mathbf{R}^{n}_{+}\) is convex. <span class="mono">L5394–5401</span></p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>uniform distribution on a convex set</span><span class="vt">\(\log f\) constant on \(C\), \(-\infty\) off it</span></div>
+    <div class="exb">
+      <p>\[ f(x)=\begin{cases}1/\alpha & x\in C\\ 0 & x\notin C\end{cases},\qquad \alpha=\operatorname{vol}(C). \]
+      Then \(\log f=-\log\alpha\) on \(C\) and \(-\infty\) elsewhere. Because \(C\) is convex, this extended-value function is concave, so \(f\) is log-concave. This example is precisely why the \(-\infty\) convention was introduced. <span class="mono">L5402–5410</span></p>
+    </div>
+  </div>
+
+  <div class="excard">
+    <div class="exh"><span>Wishart distribution on \(\mathbf{S}^{n}_{++}\)</span><span class="vt">log-concave when \(p&gt;n\)</span></div>
+    <div class="exb">
+      <p>\(X\in\mathbf{S}^{n}_{++}\) is Wishart if its density has the form
+      \[ f(X)=a\,(\det X)^{(p-n-1)/2}\,e^{-\frac{1}{2}\operatorname{\bf tr}(\Sigma^{-1}X)}, \]
+      with \(a&gt;0\) a normalising constant. Taking logs,
+      \[ \log f(X)=\log a+\tfrac{p-n-1}{2}\log\det X-\tfrac{1}{2}\operatorname{\bf tr}(\Sigma^{-1}X). \]
+      The last term is <em>linear</em> in \(X\); the middle term is a nonnegative multiple of the concave \(\log\det X\) provided \(p\ge n+1\). So \(\log f\) is concave and the Wishart density is log-concave when \(p&gt;n\). <span class="mono">L5411–5419</span></p>
+    </div>
+  </div>
+
+  <div class="note warn"><div class="ic">!</div><p><b>Where the hypothesis is used.</b> In the Wishart case, \(p&gt;n\) is exactly what makes the coefficient \((p-n-1)/2\) nonnegative. If it were negative, the middle term would be a <em>negative</em> multiple of a concave function — convex — and the argument would collapse. This is the same "check the sign of the multiplier" step as in the \(x^{a}\) example.</p></div>
+</section>
+
+<!-- ============ §6 ============ -->
+<section class="wrap" id="s6">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">expert lens · diagnose</span></div>
+  <h2>What mastery of this subsection looks like</h2>
+  <hr class="rule">
+
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">01</span>The definition, both clauses</p><p>Log-concave \(=\) \(f&gt;0\) on \(\mathop{\bf dom} f\) <em>and</em> \(\log f\) concave; log-convex \(=\) \(\log f\) convex. And \(f\) log-convex \(\iff\) \(1/f\) log-concave.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">02</span>The geometric-mean form and its derivation</p><p>Log-concave \(\iff f(\theta x+(1-\theta)y)\ge f(x)^{\theta}f(y)^{1-\theta}\). Get it by Jensen on \(\log f\), then exponentiate; the step is reversible because \(\exp\) is a strictly increasing bijection.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">03</span>The hierarchy, with the direction of each arrow</p><p>Log-convex \(\Rightarrow\) convex; nonnegative concave \(\Rightarrow\) log-concave; log-convex \(\Rightarrow\) quasiconvex; log-concave \(\Rightarrow\) quasiconcave. None of these reverses — convex \(\not\Rightarrow\) log-convex, witnessed by \(x^{2}\), which is convex but log-concave.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">04</span>The marquee examples, on sight</p><p>\(e^{ax}\) both; \(x^{a}\) log-convex for \(a\le0\) and log-concave for \(a\ge0\); affine log-concave where positive; \(\Phi\) log-concave, \(\Gamma\) log-convex on \(x\ge1\); \(\det X\) and \(\det X/\operatorname{\bf tr}X\) log-concave on \(\mathbf{S}^{n}_{++}\); the standard densities log-concave.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">05</span>The traps</p><p>Log-concave needs \(f&gt;0\) (or the \(-\infty\) convention), not \(f\) concave. Log-concave gives quasi<em>concave</em>, not quasiconvex. For \(x^{a}\) it is the sign of \(a\) that decides, not the \(a\le0\)-or-\(a\ge1\) rule for ordinary convexity.</p></div>
+  </div>
+</section>
+
+<!-- ============ SUMMARY ============ -->
+<section class="wrap">
+  <div class="summary">
+    <div class="eyebrow">2026-08-04 · bv.3.5.1 · main points for quick review</div>
+    <h2>Log-concave and log-convex functions</h2>
+    <div class="scards">
+      <div class="scard"><h6>definition</h6><p>Log-concave \(=\) \(f&gt;0\) and \(\log f\) concave; log-convex \(=\) \(\log f\) convex. \(f\) log-convex \(\iff\) \(1/f\) log-concave.</p></div>
+      <div class="scard"><h6>geometric-mean form</h6><p>Log-concave \(\iff f(\theta x+(1-\theta)y)\ge f(x)^{\theta}f(y)^{1-\theta}\) — Jensen on \(\log f\), then exponentiate.</p></div>
+      <div class="scard"><h6>hierarchy (one-way)</h6><p>Log-convex \(\Rightarrow\) convex; nonneg. concave \(\Rightarrow\) log-concave; log-convex \(\Rightarrow\) quasiconvex; log-concave \(\Rightarrow\) quasiconcave. Convex \(\not\Rightarrow\) log-convex: \(x^{2}\).</p></div>
+      <div class="scard"><h6>examples</h6><p>\(e^{ax}\) both; \(x^{a}\) log-convex \((a\le0)\) / log-concave \((a\ge0)\); affine; \(\Phi\) log-concave, \(\Gamma\) log-convex \((x\ge1)\); \(\det X\) log-concave on \(\mathbf{S}^{n}_{++}\).</p></div>
+      <div class="scard"><h6>densities</h6><p>Normal, exponential, uniform-on-convex, Wishart with \(p&gt;n\) — all log-concave. Recognise them by the shape of \(\log f\).</p></div>
+      <div class="scard"><h6>traps</h6><p>Needs \(f&gt;0\) (or \(\log f=-\infty\) at zeros), not \(f\) concave. Log-concave \(\Rightarrow\) quasiconcave, not quasiconvex. For \(x^{a}\) the sign of \(a\) decides.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">B&amp;V §3.5.1 (p. 104–105) · log-concave and log-convex functions · interactive study sheet · drag any handle</footer>
+
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  const step=range>3?1:0.5;
+  for(let i=-range;i<=range+1e-9;i+=step){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function genericDrag(canvas,pickables,redraw){
+  let held=null;
+  canvas.addEventListener("pointerdown",function(e){
+    const r=canvas.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;
+    let best=null,bd=30;
+    for(const p of pickables()){const d=Math.hypot(px-p.sx,py-p.sy);if(d<bd){bd=d;best=p;}}
+    if(best){held=best;canvas.setPointerCapture(e.pointerId);}
+  });
+  canvas.addEventListener("pointermove",function(e){
+    if(!held)return;
+    const r=canvas.getBoundingClientRect();
+    held.set(e.clientX-r.left,e.clientY-r.top);redraw();
+  });
+  canvas.addEventListener("pointerup",function(e){held=null;try{canvas.releasePointerCapture(e.pointerId);}catch(err){}});
+  canvas.addEventListener("pointercancel",function(){held=null;});
+}
+function mkChips(host,items,initial,onPick){
+  host.innerHTML="";
+  const els={};
+  items.forEach(function(it){
+    const b=document.createElement("button");
+    b.className="chip"+(it.k===initial?" on":"");
+    b.textContent=it.t;
+    b.addEventListener("click",function(){
+      Object.keys(els).forEach(function(k){els[k].classList.remove("on");});
+      b.classList.add("on");onPick(it.k);
+    });
+    els[it.k]=b;host.appendChild(b);
+  });
+  return els;
+}
+/* a margined line plot — every drawn element is clipped to the interior box */
+function makePlot(canvas){
+  let X0=0,X1=1,Y0=0,Y1=1;
+  const ml=48,mr=18,mt=18,mb=34;
+  function dims(){const r=canvas.getBoundingClientRect();return{w:r.width,h:r.height};}
+  return {
+    setRange:function(x0,x1,y0,y1){X0=x0;X1=x1;Y0=y0;Y1=y1;},
+    rng:function(){return[X0,X1,Y0,Y1];},
+    toS:function(x,y){const d=dims();return[ml+(x-X0)/(X1-X0)*(d.w-ml-mr), d.h-mb-(y-Y0)/(Y1-Y0)*(d.h-mt-mb)];},
+    toWx:function(px){const d=dims();return X0+(px-ml)/(d.w-ml-mr)*(X1-X0);},
+    toWy:function(py){const d=dims();return Y0+(d.h-mb-py)/(d.h-mt-mb)*(Y1-Y0);},
+    box:function(){const d=dims();return{x:ml,y:mt,w:Math.max(1,d.w-ml-mr),h:Math.max(1,d.h-mt-mb)};},
+    dims:dims
+  };
+}
+function plotFrame(ctx,P,xticks,yticks){
+  const b=P.box(),r=P.rng();
+  ctx.save();
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  xticks.forEach(function(v){const p=P.toS(v,r[2]);ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();});
+  yticks.forEach(function(v){const p=P.toS(r[0],v);ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();});
+  ctx.strokeStyle="#D9D3C6";ctx.lineWidth=1.2;ctx.strokeRect(b.x,b.y,b.w,b.h);
+  ctx.fillStyle="#8A91A3";ctx.font="11px 'JetBrains Mono', monospace";ctx.textBaseline="top";ctx.textAlign="center";
+  xticks.forEach(function(v){const p=P.toS(v,r[2]);ctx.fillText(v.toFixed(0),p[0],b.y+b.h+7);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  yticks.forEach(function(v){const p=P.toS(r[0],v);ctx.fillText(v.toFixed(0),b.x-7,p[1]);});
+  ctx.textAlign="left";ctx.textBaseline="alphabetic";
+  ctx.restore();
+}
+function plotCurve(ctx,P,fn,color,wd,dash,x0,x1){
+  const r=P.rng(),b=P.box();
+  const a=(x0===undefined?r[0]:x0),z=(x1===undefined?r[1]:x1);
+  ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();
+  if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.lineJoin="round";ctx.beginPath();
+  let first=true;const N=460;
+  for(let i=0;i<=N;i++){
+    const x=a+(z-a)*i/N,y=fn(x);
+    if(y==null||!isFinite(y)){first=true;continue;}
+    const p=P.toS(x,clamp(y,r[2]-1,r[3]+1));
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function plotHLine(ctx,P,y,color,wd,dash){
+  const r=P.rng(),b=P.box();if(y<r[2]||y>r[3])return;
+  const p=P.toS(r[0],y);
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();ctx.restore();
+}
+function tag(ctx,text,px,py,color,size,align,box,bg){
+  ctx.save();
+  ctx.font=(size||12)+"px 'JetBrains Mono', monospace";
+  ctx.textBaseline="middle";ctx.textAlign=align||"left";
+  const w=ctx.measureText(text).width, pad=6;
+  if(box){
+    if(align==="center"){px=clamp(px,box.x+w/2+pad,box.x+box.w-w/2-pad);}
+    else if(align==="right"){px=clamp(px,box.x+w+pad,box.x+box.w-pad);}
+    else {px=clamp(px,box.x+pad,box.x+box.w-w-pad);}
+    py=clamp(py,box.y+9,box.y+box.h-9);
+  }
+  if(bg){
+    const x0=(align==="center")?px-w/2:(align==="right")?px-w:px, hh=(size||12)+7;
+    ctx.fillStyle="rgba(251,250,247,0.90)";
+    ctx.fillRect(x0-5,py-hh/2,w+10,hh);
+  }
+  ctx.fillStyle=color;ctx.fillText(text,px,py);ctx.restore();
+}
+function plotVLine(ctx,P,x,color,wd,dash){
+  const r=P.rng(),b=P.box();if(x<r[0]||x>r[1])return;
+  const p=P.toS(x,r[2]);
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();ctx.restore();
+}
+
+/* ===================== sheet-specific helpers ===================== */
+
+/* a plot occupying a horizontal band [fTop,fBot] of the canvas height */
+function bandPlot(canvas,M){
+  M=M||{};
+  var ml=(M.l!==undefined)?M.l:52, mr=(M.r!==undefined)?M.r:16;
+  var mt=(M.t!==undefined)?M.t:20, mb=(M.b!==undefined)?M.b:30;
+  var fT=(M.fTop!==undefined)?M.fTop:0, fB=(M.fBot!==undefined)?M.fBot:1;
+  var X0=0,X1=1,Y0=0,Y1=1;
+  function dims(){var r=canvas.getBoundingClientRect();return{w:r.width,h:r.height};}
+  function box(){var d=dims();var y0=d.h*fT+mt, y1=d.h*fB-mb;
+    return{x:ml,y:y0,w:Math.max(1,d.w-ml-mr),h:Math.max(1,y1-y0)};}
+  return{
+    setRange:function(x0,x1,y0,y1){X0=x0;X1=x1;Y0=y0;Y1=y1;},
+    rng:function(){return[X0,X1,Y0,Y1];},
+    box:box, dims:dims,
+    toS:function(x,y){var b=box();return[b.x+(x-X0)/(X1-X0)*b.w, b.y+b.h-(y-Y0)/(Y1-Y0)*b.h];},
+    toWx:function(px){var b=box();return X0+(px-b.x)/b.w*(X1-X0);},
+    toWy:function(py){var b=box();return Y0+(b.y+b.h-py)/b.h*(Y1-Y0);}
+  };
+}
+function niceTicks(lo,hi){
+  var span=hi-lo; if(!(span>0))return{v:[lo],d:1};
+  var step=Math.pow(10,Math.floor(Math.log10(span/4)));
+  var k=span/4/step; if(k>=5)step*=10; else if(k>=2)step*=5; else if(k>=1)step*=2;
+  var d=Math.max(0,Math.min(3,-Math.floor(Math.log10(step)+1e-9)));
+  var out=[],v=Math.ceil(lo/step-1e-9)*step;
+  for(var i=0;i<60&&v<=hi+1e-9;i++){out.push(Math.abs(v)<step*1e-6?0:v);v+=step;}
+  return{v:out,d:d};
+}
+function frame2(ctx,P,title){
+  var b=P.box(),r=P.rng();
+  var xt=niceTicks(r[0],r[1]), yt=niceTicks(r[2],r[3]);
+  ctx.save();
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  xt.v.forEach(function(v){var p=P.toS(v,r[2]);ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();});
+  yt.v.forEach(function(v){var p=P.toS(r[0],v);ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();});
+  ctx.strokeStyle="#D9D3C6";ctx.lineWidth=1.2;ctx.strokeRect(b.x,b.y,b.w,b.h);
+  ctx.fillStyle="#8A91A3";ctx.font="10.5px 'JetBrains Mono', monospace";
+  ctx.textBaseline="top";ctx.textAlign="center";
+  xt.v.forEach(function(v){var p=P.toS(v,r[2]);ctx.fillText(v.toFixed(xt.d),p[0],b.y+b.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  yt.v.forEach(function(v){var p=P.toS(r[0],v);ctx.fillText(v.toFixed(yt.d),b.x-6,p[1]);});
+  if(title){ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#17223B";
+    ctx.font="600 11.5px 'JetBrains Mono', monospace";ctx.fillText(title,b.x,b.y-7);}
+  ctx.restore();
+}
+function clipBox(ctx,P){var b=P.box();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();}
+
+/* --- special functions --- */
+var LANC=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,
+          -176.61502916214059,12.507343278686905,-0.13857109526572012,
+          9.9843695780195716e-6,1.5056327351493116e-7];
+function lgamma(x){
+  if(x<0.5)return Math.log(Math.PI/Math.abs(Math.sin(Math.PI*x)))-lgamma(1-x);
+  x-=1;var a=LANC[0],t=x+7.5;
+  for(var i=1;i<9;i++)a+=LANC[i]/(x+i);
+  return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);
+}
+function erf(x){
+  var s=x<0?-1:1;x=Math.abs(x);
+  var t=1/(1+0.3275911*x);
+  var y=1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return s*y;
+}
+function Phi(x){return 0.5*(1+erf(x/Math.SQRT2));}
+
+/* --- the family of examples shared by labs 1 and 2 --- */
+var FAM={
+  pow:  {t:"xᵃ", useA:true, aLo:-2,aHi:3,aDef:0.5, dx0:0.06,dx1:3.3, px0:0.0,px1:3.5,
+         nm:function(a){return "f(x) = x^"+a.toFixed(2)+"   on x > 0";},
+         f:function(x,a){return (x>0)?Math.pow(x,a):NaN;}},
+  exp:  {t:"e^{ax}", useA:true, aLo:-2,aHi:2,aDef:0.8, dx0:-2.3,dx1:2.3, px0:-2.5,px1:2.5,
+         nm:function(a){return "f(x) = e^("+a.toFixed(2)+" x)";},
+         f:function(x,a){return Math.exp(a*x);}},
+  gauss:{t:"e^{−x²/2}", useA:false, dx0:-2.9,dx1:2.9, px0:-3.1,px1:3.1,
+         nm:function(){return "f(x) = e^(−x²/2)   the Gaussian bump";},
+         f:function(x){return Math.exp(-x*x/2);}},
+  aff:  {t:"x+1.2", useA:false, dx0:-1.12,dx1:3.1, px0:-1.35,px1:3.3,
+         nm:function(){return "f(x) = x + 1.2   on x > −1.2   (affine)";},
+         f:function(x){return (x>-1.2)?(x+1.2):NaN;}},
+  phi:  {t:"Φ(x)", useA:false, dx0:-2.9,dx1:2.9, px0:-3.1,px1:3.1,
+         nm:function(){return "f(x) = Φ(x)   Gaussian CDF";},
+         f:function(x){return Phi(x);}},
+  gam:  {t:"Γ(x)", useA:false, dx0:1.02,dx1:3.5, px0:0.95,px1:3.6,
+         nm:function(){return "f(x) = Γ(x)   on x ≥ 1";},
+         f:function(x){return (x>0)?Math.exp(lgamma(x)):NaN;}},
+  unif: {t:"uniform", useA:false, dx0:-0.97,dx1:0.97, px0:-1.7,px1:1.7,
+         nm:function(){return "f = ½ on [−1,1], 0 outside   (uniform density)";},
+         f:function(x){return (x>=-1&&x<=1)?0.5:0;}}
+};
+var FAMLIST=[{k:"pow",t:"xᵃ"},{k:"exp",t:"e^{ax}"},{k:"gauss",t:"e^{−x²/2}"},
+             {k:"aff",t:"affine"},{k:"phi",t:"Φ(x)"},{k:"gam",t:"Γ(x)"},{k:"unif",t:"uniform"}];
+
+function famF(key,a){var F=FAM[key];return function(x){return F.useA?F.f(x,a):F.f(x);};}
+function famMax(key,a){
+  var F=FAM[key],fn=famF(key,a),m=0;
+  for(var i=0;i<=300;i++){var v=fn(F.dx0+(F.dx1-F.dx0)*i/300);if(isFinite(v)&&v>m)m=v;}
+  return m>0?m:1;
+}
+function famLogRange(key,a){
+  var F=FAM[key],fn=famF(key,a),lo=1e30,hi=-1e30;
+  for(var i=0;i<=300;i++){var v=fn(F.dx0+(F.dx1-F.dx0)*i/300);
+    if(v>0&&isFinite(v)){var l=Math.log(v);if(l<lo)lo=l;if(l>hi)hi=l;}}
+  if(lo>hi){lo=-1;hi=1;}
+  if(hi-lo<0.6){var c=(lo+hi)/2;lo=c-0.3;hi=c+0.3;}
+  var pad=0.16*(hi-lo);return[lo-pad,hi+pad];
+}
+
+/* chord tests — the definitions, sampled */
+function chordTest(fn,lo,hi,mode){
+  var N=24,TH=[0.15,0.35,0.5,0.65,0.85];
+  for(var i=0;i<N;i++)for(var j=i+1;j<N;j++){
+    var A=lo+(hi-lo)*i/(N-1),B=lo+(hi-lo)*j/(N-1);
+    var fa=fn(A),fb=fn(B);
+    if(!isFinite(fa)||!isFinite(fb))continue;
+    for(var q=0;q<TH.length;q++){
+      var th=TH[q],m=fn(th*A+(1-th)*B);
+      if(!isFinite(m))continue;
+      var tol=1e-6*(1+Math.abs(fa)+Math.abs(fb));
+      if(mode==="cvx"  && m>th*fa+(1-th)*fb+tol)return false;
+      if(mode==="ccv"  && m<th*fa+(1-th)*fb-tol)return false;
+      if(mode==="qcvx" && m>Math.max(fa,fb)+tol)return false;
+      if(mode==="qccv" && m<Math.min(fa,fb)-tol)return false;
+    }
+  }
+  return true;
+}
+
+/* ================= LAB 1 — the geometric-mean test ================= */
+(function(){
+  var cv=document.getElementById("cv1");if(!cv)return;
+  var ctx=cv.getContext("2d"),P=bandPlot(cv,{l:54,r:18,t:26,b:32});
+  var key="gauss",a=0.5,th=0.5,X=-1.6,Y=1.4;
+  var as=document.getElementById("as1"),ts=document.getElementById("ts1");
+  var av=document.getElementById("av1"),tv=document.getElementById("tv1");
+  var ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+
+  function F(){return famF(key,a);}
+  function clampDom(x){var Fm=FAM[key];return clamp(x,Fm.dx0,Fm.dx1);}
+  function syncA(){
+    var Fm=FAM[key];
+    as.disabled=!Fm.useA;
+    if(Fm.useA){as.min=Fm.aLo;as.max=Fm.aHi;a=clamp(a,Fm.aLo,Fm.aHi);as.value=a;}
+    av.textContent=Fm.useA?("a = "+a.toFixed(2)):"—";
+    av.style.opacity=Fm.useA?1:0.45;
+  }
+  function setFam(k){
+    key=k;var Fm=FAM[k];
+    if(Fm.useA)a=Fm.aDef;
+    X=Fm.dx0+0.22*(Fm.dx1-Fm.dx0);Y=Fm.dx0+0.80*(Fm.dx1-Fm.dx0);
+    syncA();draw();
+  }
+  mkChips(document.getElementById("ch1"),FAMLIST,"gauss",setFam);
+
+  function draw(){
+    fitCanvas(cv,ctx);
+    var Fm=FAM[key],fn=F();
+    var ymax=famMax(key,a);
+    P.setRange(Fm.px0,Fm.px1,-0.10*ymax,1.22*ymax);
+    var b=P.box();
+    frame2(ctx,P,Fm.nm(a));
+    ctx.save();clipBox(ctx,P);
+
+    var fX=fn(X),fY=fn(Y),Z=th*X+(1-th)*Y,fZ=fn(Z);
+    var gm=Math.exp(th*Math.log(Math.max(fX,1e-300))+(1-th)*Math.log(Math.max(fY,1e-300)));
+    var am=th*fX+(1-th)*fY;
+
+    /* zero line */
+    plotHLine(ctx,P,0,"#C9C2B2",1.2,null);
+
+    /* arithmetic chord */
+    var pA=P.toS(X,fX),pB=P.toS(Y,fY);
+    ctx.setLineDash([4,4]);ctx.strokeStyle="#8A91A3";ctx.lineWidth=1.8;
+    ctx.beginPath();ctx.moveTo(pA[0],pA[1]);ctx.lineTo(pB[0],pB[1]);ctx.stroke();ctx.setLineDash([]);
+
+    /* geometric chord: p = t X + (1-t) Y  ->  fX^t fY^(1-t) */
+    ctx.setLineDash([7,4]);ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.4;ctx.beginPath();
+    for(var i=0;i<=200;i++){
+      var t=i/200,p=t*X+(1-t)*Y;
+      var v=Math.exp(t*Math.log(Math.max(fX,1e-300))+(1-t)*Math.log(Math.max(fY,1e-300)));
+      var s=P.toS(p,v); if(i===0)ctx.moveTo(s[0],s[1]);else ctx.lineTo(s[0],s[1]);
+    }
+    ctx.stroke();ctx.setLineDash([]);
+
+    /* f itself */
+    ctx.restore();
+    plotCurve(ctx,P,fn,"#D7402B",2.9,null,Fm.dx0,Fm.dx1);
+    if(key==="unif"){
+      plotCurve(ctx,P,function(x){return 0;},"#D7402B",2.9,null,Fm.px0,-1.0);
+      plotCurve(ctx,P,function(x){return 0;},"#D7402B",2.9,null,1.0,Fm.px1);
+    }
+    ctx.save();clipBox(ctx,P);
+
+    /* the gap at Z */
+    var sZ=P.toS(Z,fZ),sG=P.toS(Z,gm);
+    ctx.strokeStyle=(fZ>=gm-1e-12)?"#2F855A":"#C0392B";ctx.lineWidth=5;ctx.lineCap="round";
+    ctx.beginPath();ctx.moveTo(sZ[0],sZ[1]);ctx.lineTo(sG[0],sG[1]);ctx.stroke();ctx.lineCap="butt";
+    ctx.setLineDash([3,3]);ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1;
+    var base=P.toS(Z,P.rng()[2]);ctx.beginPath();ctx.moveTo(sZ[0],sZ[1]);ctx.lineTo(base[0],base[1]);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    dot(ctx,pA[0],pA[1],5.5,"#D7402B","#fff");
+    dot(ctx,pB[0],pB[1],5.5,"#D7402B","#fff");
+    dot(ctx,sG[0],sG[1],4.6,"#2B6CB0",null);
+    dot(ctx,sZ[0],sZ[1],5.0,"#17223B",null);
+    tag(ctx,"x",pA[0],pA[1]+17,"#D7402B",12,"center",b,true);
+    tag(ctx,"y",pB[0],pB[1]+17,"#D7402B",12,"center",b,true);
+    tag(ctx,"f(θx+(1−θ)y)",sZ[0]+10,sZ[1]-14,"#17223B",11,"left",b,true);
+    tag(ctx,"geometric mean",sG[0]+10,sG[1]+15,"#2B6CB0",11,"left",b,true);
+
+    ro.innerHTML=
+      '<span class="k">x</span> = <b>'+X.toFixed(3)+'</b> &nbsp; <span class="k">f(x)</span> = <b>'+fX.toFixed(4)+'</b><br>'+
+      '<span class="k">y</span> = <b>'+Y.toFixed(3)+'</b> &nbsp; <span class="k">f(y)</span> = <b>'+fY.toFixed(4)+'</b><br>'+
+      '<span class="k">θx+(1−θ)y</span> = <b>'+Z.toFixed(3)+'</b><br>'+
+      '<span class="k">f at the average</span> = <b>'+fZ.toFixed(4)+'</b><br>'+
+      '<span class="k">geometric mean</span> = <b>'+gm.toFixed(4)+'</b><br>'+
+      '<span class="k">arithmetic mean</span> = <b>'+am.toFixed(4)+'</b>';
+    var d=fZ-gm, sc=1e-9*(1+Math.abs(gm));
+    if(Math.abs(d)<=1e-9+sc){vd.className="verdict mid";vd.textContent="f = geometric mean  ·  log f is affine here";}
+    else if(d>0){vd.className="verdict in";vd.textContent="f ≥ geometric mean  ·  log-concave direction  (+"+d.toFixed(4)+")";}
+    else{vd.className="verdict out";vd.textContent="f < geometric mean  ·  log-convex direction  ("+d.toFixed(4)+")";}
+    tv.textContent=th.toFixed(2);
+  }
+
+  genericDrag(cv,function(){
+    var fn=F();
+    var pA=P.toS(X,fn(X)),pB=P.toS(Y,fn(Y));
+    return[{sx:pA[0],sy:pA[1],set:function(px){X=clampDom(P.toWx(px));}},
+           {sx:pB[0],sy:pB[1],set:function(px){Y=clampDom(P.toWx(px));}}];
+  },draw);
+
+  as.addEventListener("input",function(){a=parseFloat(as.value);av.textContent="a = "+a.toFixed(2);draw();});
+  ts.addEventListener("input",function(){th=parseFloat(ts.value);draw();});
+  syncA();setFam("gauss");
+  new ResizeObserver(draw).observe(cv);
+})();
+
+/* ================= LAB 2 — f upstairs, log f downstairs ================= */
+(function(){
+  var cv=document.getElementById("cv2");if(!cv)return;
+  var ctx=cv.getContext("2d");
+  var PT=bandPlot(cv,{l:54,r:18,t:24,b:26,fTop:0,fBot:0.5});
+  var PB=bandPlot(cv,{l:54,r:18,t:24,b:30,fTop:0.5,fBot:1});
+  var key="pow",a=2.0,X=0.6,Y=2.6;
+  var as=document.getElementById("as2"),av=document.getElementById("av2");
+  var ro=document.getElementById("ro2"),bd=document.getElementById("bd2");
+
+  function F(){return famF(key,a);}
+  function clampDom(x){var Fm=FAM[key];return clamp(x,Fm.dx0,Fm.dx1);}
+  function syncA(){
+    var Fm=FAM[key];as.disabled=!Fm.useA;
+    if(Fm.useA){as.min=Fm.aLo;as.max=Fm.aHi;a=clamp(a,Fm.aLo,Fm.aHi);as.value=a;}
+    av.textContent=Fm.useA?("a = "+a.toFixed(2)):"—";av.style.opacity=Fm.useA?1:0.45;
+  }
+  function setFam(k){
+    key=k;var Fm=FAM[k];
+    if(Fm.useA&&k!=="pow")a=Fm.aDef;
+    X=Fm.dx0+0.20*(Fm.dx1-Fm.dx0);Y=Fm.dx0+0.82*(Fm.dx1-Fm.dx0);
+    syncA();draw();
+  }
+  mkChips(document.getElementById("ch2"),FAMLIST,"pow",setFam);
+
+  function badge(nm,sym,ok){
+    return '<div class="bdg '+(ok?"yes":"no")+'"><b>'+nm+'</b><span class="m">'+(ok?"✓":"✗")+'</span></div>';
+  }
+  function draw(){
+    fitCanvas(cv,ctx);
+    var Fm=FAM[key],fn=F();
+    var ymax=famMax(key,a), lr=famLogRange(key,a);
+    PT.setRange(Fm.px0,Fm.px1,-0.10*ymax,1.20*ymax);
+    PB.setRange(Fm.px0,Fm.px1,lr[0],lr[1]);
+    frame2(ctx,PT,Fm.nm(a));
+    frame2(ctx,PB,"log f");
+
+    var fX=fn(X),fY=fn(Y),lX=Math.log(Math.max(fX,1e-300)),lY=Math.log(Math.max(fY,1e-300));
+
+    /* ---- top: f with its geometric chord ---- */
+    ctx.save();clipBox(ctx,PT);
+    plotHLine(ctx,PT,0,"#C9C2B2",1.2,null);
+    ctx.setLineDash([7,4]);ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.3;ctx.beginPath();
+    for(var i=0;i<=200;i++){var t=i/200,p=t*X+(1-t)*Y,v=Math.exp(t*lX+(1-t)*lY);
+      var s=PT.toS(p,v);if(i===0)ctx.moveTo(s[0],s[1]);else ctx.lineTo(s[0],s[1]);}
+    ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    plotCurve(ctx,PT,fn,"#D7402B",2.8,null,Fm.dx0,Fm.dx1);
+    if(key==="unif"){
+      plotCurve(ctx,PT,function(){return 0;},"#D7402B",2.8,null,Fm.px0,-1.0);
+      plotCurve(ctx,PT,function(){return 0;},"#D7402B",2.8,null,1.0,Fm.px1);
+    }
+
+    /* ---- bottom: log f with the ordinary straight chord ---- */
+    var lg=function(x){var v=fn(x);return (v>0&&isFinite(v))?Math.log(v):null;};
+    ctx.save();clipBox(ctx,PB);
+    var qA=PB.toS(X,lX),qB=PB.toS(Y,lY);
+    ctx.setLineDash([7,4]);ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.3;
+    ctx.beginPath();ctx.moveTo(qA[0],qA[1]);ctx.lineTo(qB[0],qB[1]);ctx.stroke();ctx.setLineDash([]);
+    ctx.restore();
+    plotCurve(ctx,PB,lg,"#D7402B",2.8,null,Fm.dx0,Fm.dx1);
+
+    var pA=PT.toS(X,fX),pB2=PT.toS(Y,fY);
+    dot(ctx,pA[0],pA[1],5.2,"#D7402B","#fff");dot(ctx,pB2[0],pB2[1],5.2,"#D7402B","#fff");
+    dot(ctx,qA[0],qA[1],5.2,"#D7402B","#fff");dot(ctx,qB[0],qB[1],5.2,"#D7402B","#fff");
+    tag(ctx,"x",pA[0],pA[1]+16,"#D7402B",11,"center",PT.box(),true);
+    tag(ctx,"y",pB2[0],pB2[1]+16,"#D7402B",11,"center",PT.box(),true);
+
+    /* ---- badges ---- */
+    var lo=Fm.dx0,hi=Fm.dx1;
+    var cvx=chordTest(fn,lo,hi,"cvx"), ccv=chordTest(fn,lo,hi,"ccv");
+    var L=function(x){var v=fn(x);return (v>0&&isFinite(v))?Math.log(v):NaN;};
+    var lcx=chordTest(L,lo,hi,"cvx"), lcc=chordTest(L,lo,hi,"ccv");
+    var qcx=chordTest(fn,lo,hi,"qcvx"), qcc=chordTest(fn,lo,hi,"qccv");
+    bd.innerHTML=badge("convex","",cvx)+badge("concave","",ccv)+
+                 badge("log-convex","",lcx)+badge("log-concave","",lcc)+
+                 badge("quasiconvex","",qcx)+badge("quasiconcave","",qcc);
+
+    ro.innerHTML=
+      '<span class="k">f(x)</span> = <b>'+fX.toFixed(4)+'</b> &nbsp; <span class="k">log f(x)</span> = <b>'+lX.toFixed(4)+'</b><br>'+
+      '<span class="k">f(y)</span> = <b>'+fY.toFixed(4)+'</b> &nbsp; <span class="k">log f(y)</span> = <b>'+lY.toFixed(4)+'</b><br>'+
+      '<span class="k">chord below log f</span> ⟺ <b>'+(lcc?"log-concave":"not log-concave")+'</b>';
+  }
+
+  genericDrag(cv,function(){
+    var fn=F();
+    var fX=fn(X),fY=fn(Y);
+    var t1=PT.toS(X,fX),t2=PT.toS(Y,fY);
+    var b1=PB.toS(X,Math.log(Math.max(fX,1e-300))),b2=PB.toS(Y,Math.log(Math.max(fY,1e-300)));
+    return[{sx:t1[0],sy:t1[1],set:function(px){X=clampDom(PT.toWx(px));}},
+           {sx:t2[0],sy:t2[1],set:function(px){Y=clampDom(PT.toWx(px));}},
+           {sx:b1[0],sy:b1[1],set:function(px){X=clampDom(PB.toWx(px));}},
+           {sx:b2[0],sy:b2[1],set:function(px){Y=clampDom(PB.toWx(px));}}];
+  },draw);
+
+  as.addEventListener("input",function(){a=parseFloat(as.value);av.textContent="a = "+a.toFixed(2);draw();});
+  syncA();setFam("pow");
+  new ResizeObserver(draw).observe(cv);
+})();
+
+/* ================= LAB 3 — det X on S²₊₊ ================= */
+(function(){
+  var cv=document.getElementById("cv3");if(!cv)return;
+  var ctx=cv.getContext("2d");
+  var PT=bandPlot(cv,{l:56,r:18,t:24,b:26,fTop:0,fBot:0.5});
+  var PB=bandPlot(cv,{l:56,r:18,t:24,b:30,fTop:0.5,fBot:1});
+  var mode="det";
+  var S={a1:2.6,b1:0.3,c1:0.7,a2:0.6,b2:-0.9,c2:3.4};
+  var ids=["a1","b1","c1","a2","b2","c2"];
+  var ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+
+  mkChips(document.getElementById("ch3"),
+    [{k:"det",t:"det X"},{k:"dtr",t:"det X / tr X"}],"det",function(k){mode=k;draw();});
+
+  function fixPD(){
+    var m1=0.985*Math.sqrt(S.a1*S.c1), m2=0.985*Math.sqrt(S.a2*S.c2);
+    S.b1=clamp(S.b1,-m1,m1); S.b2=clamp(S.b2,-m2,m2);
+  }
+  function Mat(t){return{a:t*S.a1+(1-t)*S.a2, b:t*S.b1+(1-t)*S.b2, c:t*S.c1+(1-t)*S.c2};}
+  function val(m){var d=m.a*m.c-m.b*m.b; return (mode==="det")?d:d/(m.a+m.c);}
+
+  function draw(){
+    fitCanvas(cv,ctx);
+    fixPD();
+    ids.forEach(function(k){
+      document.getElementById("s_"+k).value=S[k];
+      document.getElementById("v_"+k).textContent=S[k].toFixed(2);
+    });
+    var vX=val(Mat(1)),vY=val(Mat(0));
+    var N=240,vs=[],gs=[],lo=1e30,hi=-1e30,worst=1e30,worstT=0;
+    for(var i=0;i<=N;i++){
+      var t=i/N,v=val(Mat(t)),g=Math.exp(t*Math.log(vX)+(1-t)*Math.log(vY));
+      vs.push(v);gs.push(g);
+      lo=Math.min(lo,v,g);hi=Math.max(hi,v,g);
+      if(v-g<worst){worst=v-g;worstT=t;}
+    }
+    var pad=0.12*(hi-lo)+1e-6;
+    PT.setRange(0,1,Math.max(0,lo-pad),hi+pad);
+    var llo=Math.log(lo),lhi=Math.log(hi),lp=0.14*(lhi-llo)+1e-6;
+    PB.setRange(0,1,llo-lp,lhi+lp);
+    frame2(ctx,PT,(mode==="det"?"det(θX+(1−θ)Y)":"det/tr along the segment")+"   vs geometric mean");
+    frame2(ctx,PB,"log of the same  ·  concave above a straight chord");
+
+    function curve(P,arr,color,wd,dash){
+      ctx.save();clipBox(ctx,P);if(dash)ctx.setLineDash(dash);
+      ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.lineJoin="round";ctx.beginPath();
+      for(var i=0;i<=N;i++){var s=P.toS(i/N,arr[i]);if(i===0)ctx.moveTo(s[0],s[1]);else ctx.lineTo(s[0],s[1]);}
+      ctx.stroke();ctx.restore();
+    }
+    var lvs=vs.map(Math.log),lgs=gs.map(Math.log);
+    curve(PT,gs,"#2B6CB0",2.3,[7,4]);
+    curve(PT,vs,"#D7402B",2.9,null);
+    curve(PB,lgs,"#2B6CB0",2.3,[7,4]);
+    curve(PB,lvs,"#D7402B",2.9,null);
+
+    /* the worst-case gap */
+    ctx.save();clipBox(ctx,PT);
+    var g1=PT.toS(worstT,vs[Math.round(worstT*N)]),g2=PT.toS(worstT,gs[Math.round(worstT*N)]);
+    ctx.strokeStyle=(worst>=-1e-9)?"#2F855A":"#C0392B";ctx.lineWidth=5;ctx.lineCap="round";
+    ctx.beginPath();ctx.moveTo(g1[0],g1[1]);ctx.lineTo(g2[0],g2[1]);ctx.stroke();ctx.lineCap="butt";
+    ctx.restore();
+    tag(ctx,"tightest θ = "+worstT.toFixed(2),g1[0]+9,g1[1],"#2F855A",11,"left",PT.box(),true);
+
+    var e1=PT.toS(0,vs[0]),e2=PT.toS(1,vs[N]);
+    dot(ctx,e1[0],e1[1],5.0,"#D7402B","#fff");dot(ctx,e2[0],e2[1],5.0,"#D7402B","#fff");
+    tag(ctx,"Y",e1[0]+8,e1[1]-12,"#D7402B",11,"left",PT.box(),true);
+    tag(ctx,"X",e2[0]-8,e2[1]-12,"#D7402B",11,"right",PT.box(),true);
+
+    var dX=S.a1*S.c1-S.b1*S.b1, dY=S.a2*S.c2-S.b2*S.b2;
+    ro.innerHTML=
+      '<span class="k">X</span> = [['+S.a1.toFixed(2)+', '+S.b1.toFixed(2)+'], ['+S.b1.toFixed(2)+', '+S.c1.toFixed(2)+']] &nbsp; <span class="k">det</span> <b>'+dX.toFixed(3)+'</b><br>'+
+      '<span class="k">Y</span> = [['+S.a2.toFixed(2)+', '+S.b2.toFixed(2)+'], ['+S.b2.toFixed(2)+', '+S.c2.toFixed(2)+']] &nbsp; <span class="k">det</span> <b>'+dY.toFixed(3)+'</b><br>'+
+      '<span class="k">f(X)</span> = <b>'+vX.toFixed(4)+'</b> &nbsp; <span class="k">f(Y)</span> = <b>'+vY.toFixed(4)+'</b><br>'+
+      '<span class="k">min over θ of  f − geometric mean</span> = <b>'+worst.toFixed(5)+'</b>';
+    if(worst>=-1e-9){vd.className="verdict in";vd.textContent="f ≥ f(X)^θ f(Y)^(1−θ) for every θ  ·  log-concave";}
+    else{vd.className="verdict out";vd.textContent="dips below the geometric mean at θ = "+worstT.toFixed(2);}
+  }
+
+  ids.forEach(function(k){
+    document.getElementById("s_"+k).addEventListener("input",function(e){
+      S[k]=parseFloat(e.target.value);draw();});
+  });
+  draw();
+  new ResizeObserver(draw).observe(cv);
+})();
+</script>
+</body>
+</html>
