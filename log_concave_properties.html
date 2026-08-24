@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.5.2 — Log-concave and Log-convex Functions: Properties</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.4vw,62px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.rtab{width:100%;border-collapse:collapse;margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;font-size:16px}
+.rtab th,.rtab td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.rtab thead th{background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rtab tbody tr:last-child td,.rtab tr:last-child td{border-bottom:none}
+.rtab .rn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal);font-weight:600}
+.rtab .res{font-weight:600;color:var(--ink)}
+.rtab td .mono{font-size:14px}
+.rtab .yes{color:var(--inside);font-weight:600}
+.rtab .no{color:var(--outside);font-weight:600}
+
+.excard{margin:16px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exh{padding:11px 18px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.excard .exh .vt{color:var(--normal);text-align:right}
+.excard .exb{padding:6px 18px 14px}
+.excard .exb p{font-size:17px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+input[type=range]:disabled::-webkit-slider-thumb{background:#C9C2B2}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--normal);color:#fff;border-color:var(--normal)}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF7EC;border-color:#E9DCC0}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 42%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+.badges{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px}
+.bdg{font-family:"JetBrains Mono",monospace;font-size:11.5px;border-radius:8px;padding:6px 9px;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bdg b{font-weight:600;color:var(--ink-soft)}
+.bdg .m{font-weight:700}
+.bdg.yes{background:var(--inside-fill);border-color:rgba(47,133,90,.3);color:var(--inside)}
+.bdg.yes b{color:var(--inside)}
+.bdg.no{background:#fff;color:#B0B6C4}
+.bdg.no b{color:#B0B6C4}
+.slabel{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin-top:4px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.5.2</div>
+    <h1>Log-concavity: <em>what survives</em></h1>
+    <p class="sub">The calculus of the class. A second-order test, then the one fact worth memorising: log-concavity is <em>not</em> closed under addition, but it <em>is</em> closed under integration — and that single closure rule delivers marginals, convolutions, CDFs, yields and volumes.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> log-concave \(\iff f\nabla^{2}f \preceq \nabla f\nabla f^{T}\)</span>
+      <span><span class="dot" style="background:var(--outside)"></span> sums: log-concavity fails</span>
+      <span><span class="dot" style="background:var(--inside)"></span> integrals: log-concavity holds</span>
+      <span>p.&nbsp;105–108 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 250" role="img" aria-label="Left panel: the logarithm of a sum of two well-separated Gaussian bumps, drawn in vermilion, is W-shaped with two peaks and a deep valley between them. A blue dashed chord joining the two peaks lies far above the curve at the midpoint, and the red vertical gap is labelled chord above graph, so the sum is not log-concave. Right panel: the logarithm of the Gaussian cumulative distribution function, drawn in vermilion, is concave; a blue dashed chord lies below it and the green vertical gap is labelled chord below graph, so the integral is log-concave. Caption: addition breaks it, integration preserves it.">
+        <defs>
+          <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern>
+        </defs>
+        <rect width="640" height="250" fill="url(#dots)"/>
+
+        <!-- ===== panel A: sum of two log-concave bumps — log f is NOT concave ===== -->
+        <line x1="42" y1="212" x2="288" y2="212" stroke="#C9C2B2" stroke-width="1.4"/>
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.8" stroke-linejoin="round" points="42.0,192.1 44.7,181.8 47.5,172.0 50.2,162.7 52.9,153.8 55.7,145.4 58.4,137.4 61.1,129.9 63.9,122.9 66.6,116.4 69.3,110.3 72.1,104.7 74.8,99.5 77.5,94.9 80.3,90.7 83.0,86.9 85.7,83.7 88.5,80.8 91.2,78.5 93.9,76.6 96.7,75.2 99.4,74.3 102.1,73.8 104.9,73.8 107.6,74.3 110.3,75.2 113.1,76.6 115.8,78.5 118.5,80.8 121.3,83.7 124.0,86.9 126.7,90.7 129.5,94.9 132.2,99.5 134.9,104.7 137.7,110.3 140.4,116.4 143.1,122.9 145.9,129.8 148.6,137.2 151.3,144.9 154.1,152.7 156.8,160.4 159.5,167.2 162.3,172.1 165.0,173.9 167.7,172.1 170.5,167.2 173.2,160.4 175.9,152.7 178.7,144.9 181.4,137.2 184.1,129.8 186.9,122.9 189.6,116.4 192.3,110.3 195.1,104.7 197.8,99.5 200.5,94.9 203.3,90.7 206.0,86.9 208.7,83.7 211.5,80.8 214.2,78.5 216.9,76.6 219.7,75.2 222.4,74.3 225.1,73.8 227.9,73.8 230.6,74.3 233.3,75.2 236.1,76.6 238.8,78.5 241.5,80.8 244.3,83.7 247.0,86.9 249.7,90.7 252.5,94.9 255.2,99.5 257.9,104.7 260.7,110.3 263.4,116.4 266.1,122.9 268.9,129.9 271.6,137.4 274.3,145.4 277.1,153.8 279.8,162.7 282.5,172.0 285.3,181.8 288.0,192.1"/>
+        <line x1="103.5" y1="73.8" x2="226.5" y2="73.8" stroke="#2B6CB0" stroke-width="2.4" stroke-dasharray="6 4"/>
+        <line x1="165.0" y1="73.8" x2="165.0" y2="173.9" stroke="#C0392B" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="103.5" cy="73.8" r="4.4" fill="#D7402B"/>
+        <circle cx="226.5" cy="73.8" r="4.4" fill="#D7402B"/>
+        <circle cx="165.0" cy="173.9" r="4.4" fill="#17223B"/>
+        <text x="42" y="42" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">log( e^(−(x−3)²/2) + e^(−(x+3)²/2) )</text>
+        <text x="42" y="60" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">a sum of two log-concave bumps</text>
+        <text x="118" y="192" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">chord above graph</text>
+        <text x="42" y="232" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="11">(log f)″(0) = 8 &gt; 0 · not log-concave</text>
+
+        <!-- ===== panel B: an integral of a log-concave density — log F IS concave ===== -->
+        <line x1="352" y1="212" x2="598" y2="212" stroke="#C9C2B2" stroke-width="1.4"/>
+        <polyline fill="none" stroke="#D7402B" stroke-width="2.8" stroke-linejoin="round" points="352.0,186.2 354.7,182.7 357.5,179.2 360.2,175.8 362.9,172.4 365.7,169.2 368.4,165.9 371.1,162.8 373.9,159.7 376.6,156.7 379.3,153.7 382.1,150.9 384.8,148.0 387.5,145.3 390.3,142.6 393.0,139.9 395.7,137.4 398.5,134.9 401.2,132.4 403.9,130.0 406.7,127.7 409.4,125.5 412.1,123.3 414.9,121.1 417.6,119.0 420.3,117.0 423.1,115.1 425.8,113.2 428.5,111.3 431.3,109.5 434.0,107.8 436.7,106.1 439.5,104.5 442.2,102.9 444.9,101.4 447.7,100.0 450.4,98.6 453.1,97.2 455.9,95.9 458.6,94.6 461.3,93.4 464.1,92.3 466.8,91.2 469.5,90.1 472.3,89.1 475.0,88.1 477.7,87.2 480.5,86.3 483.2,85.5 485.9,84.7 488.7,83.9 491.4,83.2 494.1,82.5 496.9,81.9 499.6,81.3 502.3,80.7 505.1,80.2 507.8,79.7 510.5,79.2 513.3,78.7 516.0,78.3 518.7,77.9 521.5,77.6 524.2,77.2 526.9,76.9 529.7,76.6 532.4,76.4 535.1,76.1 537.9,75.9 540.6,75.7 543.3,75.5 546.1,75.3 548.8,75.1 551.5,75.0 554.3,74.9 557.0,74.7 559.7,74.6 562.5,74.5 565.2,74.4 567.9,74.4 570.7,74.3 573.4,74.2 576.1,74.2 578.9,74.1 581.6,74.1 584.3,74.0 587.1,74.0 589.8,74.0 592.5,73.9 595.3,73.9 598.0,73.9"/>
+        <line x1="382.8" y1="150.1" x2="557.0" y2="74.7" stroke="#2B6CB0" stroke-width="2.4" stroke-dasharray="6 4"/>
+        <line x1="469.9" y1="90.0" x2="469.9" y2="112.4" stroke="#2F855A" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="382.8" cy="150.1" r="4.4" fill="#D7402B"/>
+        <circle cx="557.0" cy="74.7" r="4.4" fill="#D7402B"/>
+        <circle cx="469.9" cy="90.0" r="4.4" fill="#17223B"/>
+        <text x="352" y="42" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">log Φ(x),  Φ(x) = ∫₋∞ˣ φ(z) dz</text>
+        <text x="352" y="60" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11">an integral of a log-concave density</text>
+        <text x="404" y="132" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">chord below graph</text>
+        <text x="352" y="232" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="11">(log Φ)″ ≤ 0 everywhere · log-concave</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ §0 ============ -->
+<section class="wrap" id="s0">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <h2>From the definition to the calculus</h2>
+  <hr class="rule">
+  <p>§3.5.1 defined the two classes: \(f\) is log-concave when \(f&gt;0\) and \(\log f\) is concave, log-convex when \(\log f\) is convex. That subsection told us what the classes <em>are</em>. This one tells us how to <em>work</em> with them — which is what turns a definition into a tool.</p>
+  <p>Three things, in order. A <strong>second-order test</strong>, so that log-concavity can be checked by differentiating twice instead of verifying a chord inequality. A <strong>closure table</strong> — which operations keep you inside each class — whose defining feature is an asymmetry: products preserve both, sums preserve only log-convexity, and integration preserves only log-concavity. And then the <strong>payoffs</strong>, all of which are consequences of that last, deepest closure rule: marginals, convolutions, the Laplace transform, cumulative distribution functions, manufacturing yields, and the volume of a polyhedron as a function of its right-hand side.</p>
+</section>
+
+<!-- ============ §1 ============ -->
+<section class="wrap" id="s1">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">twice-differentiable characterization</span></div>
+  <h2>Differentiate the logarithm twice</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    A twice differentiable function \(f\) with convex domain is log-concave if and only if
+    \[ f(x)\,\nabla^{2}f(x) \;\preceq\; \nabla f(x)\,\nabla f(x)^{T} \]
+    for all \(x\in\mathop{\bf dom} f\), and log-convex if and only if the inequality holds with \(\succeq\).
+    <span class="src">B&amp;V §3.5.2 · L5426–5434</span>
+  </div>
+
+  <p>The test comes from one differentiation. Since \(f&gt;0\) on its domain, \(\log f\) is twice differentiable wherever \(f\) is, and the chain rule gives</p>
+
+  \[ \nabla^{2}\log f(x) \;=\; \frac{1}{f(x)}\nabla^{2}f(x)\;-\;\frac{1}{f(x)^{2}}\nabla f(x)\nabla f(x)^{T}. \]
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;the matrix inequality is exactly \(\nabla^{2}\log f\preceq 0\)</span><span class="target">clear the positive factor</span></div>
+    <div class="step"><div class="math">\[ \nabla \log f = \frac{\nabla f}{f} \]</div><div class="why"><b>why</b> chain rule on \(\log\). Note the gradient of \(\log f\) is the gradient of \(f\) rescaled — the <em>relative</em> gradient.</div></div>
+    <div class="step"><div class="math">\[ \nabla^{2}\log f = \frac{\nabla^{2} f}{f} - \frac{\nabla f\,\nabla f^{T}}{f^{2}} \]</div><div class="why"><b>why</b> differentiate the quotient \(\nabla f/f\) once more; the second term is the derivative of the \(1/f\) factor and is a rank-one matrix.</div></div>
+    <div class="step crux"><div class="math">\[ \nabla^{2}\log f \preceq 0 \;\iff\; f\,\nabla^{2}f \preceq \nabla f\,\nabla f^{T} \]</div><div class="why"><b>why</b> multiply through by the scalar \(f(x)^{2}&gt;0\). Multiplying a matrix inequality by a <em>positive scalar</em> preserves it — this is the only place positivity of \(f\) is used, and it is what makes the test clean.</div></div>
+  </div>
+
+  <div class="note build"><div class="ic">i</div><p><b>Why state it as \(f\nabla^{2}f\preceq\nabla f\nabla f^{T}\) rather than \(\nabla^{2}\log f\preceq0\).</b> The cleared form involves only derivatives of \(f\) itself, so you never have to form \(\log f\) symbolically; and it stays meaningful at points where \(f\) is smooth but \(\log f\) is awkward to write down. Note also that the right-hand side \(\nabla f\nabla f^{T}\) is always positive semidefinite and of rank at most one — so log-concavity permits \(\nabla^{2}f\) to have <em>one</em> direction of positive curvature, funded by the gradient.</p></div>
+
+  <p>In one variable the matrices are numbers and the test collapses to a memorable inequality:</p>
+
+  <ul class="reads">
+    <li><span class="tag">scalar</span><div>\(f\) is log-concave \(\iff f(x)f''(x)\le f'(x)^{2}\), and log-convex \(\iff f(x)f''(x)\ge f'(x)^{2}\), for all \(x\in\mathop{\bf dom} f\).</div></li>
+    <li><span class="tag">reading it</span><div>Curvature is allowed, but only in proportion to the square of the slope. Where \(f'=0\) (a critical point) log-concavity forces \(f''\le0\): a log-concave function can have no interior local minimum unless it is flat there.</div></li>
+    <li><span class="tag">both</span><div>Equality \(ff''=(f')^{2}\) everywhere means \(\nabla^{2}\log f=0\), i.e. \(\log f\) affine, i.e. \(f(x)=e^{a^{T}x+b}\) — the functions that are simultaneously log-concave and log-convex.</div></li>
+  </ul>
+
+  <div class="note warn"><div class="ic">!</div><p><b>Direction check.</b> The \(\preceq\) sign goes with log-<em>concave</em> — which is the reverse of the naive reflex "concave ↔ small". Anchor it on the Gaussian: \(f=e^{-x^{2}/2}\) has \(ff''=(x^{2}-1)e^{-x^{2}}\) and \((f')^{2}=x^{2}e^{-x^{2}}\), so \(ff''-(f')^{2}=-e^{-x^{2}}&lt;0\). Log-concave, and the scalar test reads \(\le\).</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>The second-order test — watch \(ff''\) race \((f')^{2}\)</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> f</span>
+          <span><i style="border-color:#17223B"></i> (log f)″ = (f f″ − (f′)²)/f²</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.28)"></i> (log f)″ ≤ 0 · log-concave</span>
+          <span><i class="sw" style="background:rgba(192,57,43,0.22)"></i> (log f)″ &gt; 0 · log-convex there</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Pick a function, then <b>drag the red handle</b> along the curve. The lower panel is \((\log f)''\); the shaded sign tells you which side of the test you are on. The readout compares \(ff''\) with \((f')^{2}\) at the handle.</p>
+        <div class="chips" id="ch1"></div>
+        <div class="ctrl"><label>parameter <span class="val" id="av1">a = 0.50</span></label><input type="range" id="as1" min="-2" max="3" step="0.05" value="0.5"></div>
+        <div class="ctrl"><label>x <span class="val" id="xv1">0.00</span></label><input type="range" id="xs1" min="0" max="1" step="0.001" value="0.5"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="badges">
+          <div class="bdg" id="b1a"><b>f f″ ≤ (f′)²</b><span class="m" id="b1am">—</span></div>
+          <div class="bdg" id="b1b"><b>f f″ ≥ (f′)²</b><span class="m" id="b1bm">—</span></div>
+        </div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §2 ============ -->
+<section class="wrap" id="s2">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">multiplication and addition</span></div>
+  <h2>The closure asymmetry</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    Log-convexity and log-concavity are closed under multiplication and positive scaling. If \(f\) and \(g\) are log-concave, then so is the pointwise product \(h(x)=f(x)g(x)\); if \(f\) and \(g\) are log-convex, so is \(fg\).
+    <span class="src">B&amp;V §3.5.2 · L5436–5449</span>
+  </div>
+
+  <p>This one is immediate and worth seeing as a one-liner: \(\log(fg)=\log f+\log g\), and a sum of two concave functions is concave (a sum of two convex functions is convex). Positive scaling is the special case \(g\equiv c&gt;0\), whose logarithm is a constant. Products are where log-concavity is at its most comfortable — which is precisely why the class is the right one for probability densities, which multiply under independence.</p>
+
+  <div class="bv">
+    Simple examples show that the sum of log-concave functions is <em>not</em>, in general, log-concave. Log-convexity, however, <em>is</em> preserved under sums: let \(f\) and \(g\) be log-convex functions, i.e. \(F=\log f\) and \(G=\log g\) are convex. Then \(\log\bigl(f+g\bigr)=\log\bigl(e^{F}+e^{G}\bigr)\) is convex, since the log-sum-exp function is convex and nondecreasing in each argument, and \(F,G\) are convex.
+    <span class="src">B&amp;V §3.5.2 · L5436–5449</span>
+  </div>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;\(f,g\) log-convex \(\Rightarrow f+g\) log-convex</span><span class="target">composition rule, §3.2.4</span></div>
+    <div class="step"><div class="math">\[ \log(f+g) = \log\bigl(e^{F}+e^{G}\bigr),\qquad F=\log f,\ G=\log g \]</div><div class="why"><b>why</b> rewrite each summand as \(e^{\text{something convex}}\). This is the whole idea: the sum lives inside a log-sum-exp.</div></div>
+    <div class="step crux"><div class="math">\[ h(u,v)=\log(e^{u}+e^{v})\ \text{is convex and nondecreasing in each argument} \]</div><div class="why"><b>why</b> log-sum-exp is convex (§3.1.5) and \(\partial h/\partial u=e^{u}/(e^{u}+e^{v})&gt;0\). <em>Both</em> properties are needed for the next line.</div></div>
+    <div class="step"><div class="math">\[ h\bigl(F(x),G(x)\bigr)\ \text{convex} \]</div><div class="why"><b>why</b> the vector composition rule: \(h\) convex, nondecreasing in each argument, composed with convex \(F,G\), is convex. Monotonicity is where log-<em>convexity</em> of the pieces gets used.</div></div>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p><b>The asymmetry, stated once.</b> Products preserve <em>both</em> classes. Sums preserve <em>only log-convexity</em>. This is the single most examinable fact in the subsection, and the error to avoid is stating it backwards — "log-concavity is closed under sums" is false, and the counterexample is one line away.</p></div>
+
+  <h3>The counterexample: two separated bumps</h3>
+
+  <p>Take two Gaussian bumps with means \(\pm a\),</p>
+
+  \[ f(x)=e^{-(x-a)^{2}/2}+e^{-(x+a)^{2}/2}. \]
+
+  <p>Each summand is log-concave — the logarithm of each is a downward parabola. Their sum need not be. Differentiating \(\log f\) twice at the symmetric point \(x=0\) gives</p>
+
+  \[ (\log f)''(0)\;=\;a^{2}-1, \]
+
+  <p>so as soon as the bumps are separated by more than one standard deviation, \(a&gt;1\), the logarithm is <em>strictly convex</em> at the midpoint and \(f\) is not log-concave. At \(a=3\) the number is \(a^{2}-1=8\): the valley between the two peaks is deep, and the chord joining the peaks sits far above the graph — exactly the picture in the header.</p>
+
+  <div class="excard">
+    <div class="exh"><span>Counterexample · verified</span><span class="vt">\((\log f)''(0)=a^{2}-1\)</span></div>
+    <div class="exb">
+      <p>Symmetry does the work. At \(x=0\) write \(u=e^{-(a^{2})/2}\) for the common value of each summand. Then \(f(0)=2u\), \(f'(0)=0\) by symmetry, and \(f''(0)=2u(a^{2}-1)\). The scalar test compares \(f f''=4u^{2}(a^{2}-1)\) with \((f')^{2}=0\), so</p>
+      \[ (\log f)''(0)=\frac{f f''-(f')^{2}}{f^{2}}\bigg|_{0}=\frac{4u^{2}(a^{2}-1)}{4u^{2}}=a^{2}-1. \]
+      <p><strong>Separation matters, and the threshold is sharp.</strong> For \(a\le1\) the bumps overlap enough that \(a^{2}-1\le0\) and this test is passed at the midpoint; for \(a&gt;1\) log-concavity fails. The counterexample is not "sums are bad" — it is "sums are bad once the pieces are far apart".</p>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Sum versus product — pull the bumps apart</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv2"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> the combination h</span>
+          <span><i style="border-color:#8A91A3"></i> the two pieces</span>
+          <span><i style="border-color:#17223B"></i> log h</span>
+          <span><i style="border-color:#2B6CB0"></i> chord of log h</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Three combinations of two log-concave or two log-convex pieces. <b>Slide the separation</b> \(a\) and watch the lower panel: the chord of \(\log h\) dropping <b>below</b> the curve is log-concavity surviving; rising <b>above</b> it is log-concavity failing.</p>
+        <div class="chips" id="ch2"></div>
+        <div class="ctrl"><label>separation <span class="val" id="av2">a = 1.60</span></label><input type="range" id="as2" min="0" max="3" step="0.02" value="1.6"></div>
+        <div class="readout" id="ro2"></div>
+        <div class="verdict" id="vd2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn"><div class="ic">!</div><p><b>Do not over-read the failure.</b> Sums of log-concave functions are not <em>always</em> non-log-concave — the lab's \(a\le1\) regime is log-concave, and a sum of two identical log-concave functions is just a positive multiple of one of them, hence log-concave. The claim is only that log-concavity is not <em>preserved</em>: closure means "for all", so one counterexample settles it.</p></div>
+</section>
+
+<!-- ============ §3 ============ -->
+<section class="wrap" id="s3">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">integration</span></div>
+  <h2>Integration — the deep closure rule</h2>
+  <hr class="rule">
+
+  <p>Addition of two functions destroys log-concavity. Integration — which is, after all, a limit of sums — <em>preserves</em> it. That is not a contradiction but a genuinely surprising theorem, and the difference is the hypothesis: the integrand must be log-concave <strong>jointly</strong> in the variable being kept and the variable being integrated out.</p>
+
+  <h3>The easy half: log-convexity</h3>
+
+  <div class="bv">
+    If \(f:\mathbf{R}^{n}\times\mathbf{R}^{m}\to\mathbf{R}\) is log-convex in \(x\) for each \(y\), then
+    \[ g(x)=\int_{C} f(x,y)\,dy \]
+    is log-convex.
+    <span class="src">B&amp;V §3.5.2 · L5450–5514</span>
+  </div>
+
+  <p>This is the sum result taken to the limit. A finite sum \(\sum_{i} f(x,y_{i})\) of functions log-convex in \(x\) is log-convex by §2; the integral is a limit of such sums, and log-convexity is preserved under pointwise limits. Notice the weak hypothesis: log-convexity in \(x\) <em>separately</em>, for each fixed \(y\), is enough. Nothing joint is required.</p>
+
+  <h3>The deep half: log-concavity</h3>
+
+  <div class="bv">
+    If \(f:\mathbf{R}^{n}\times\mathbf{R}^{m}\to\mathbf{R}\) is log-concave, then
+    \[ g(x)=\int f(x,y)\,dy \]
+    is a log-concave function of \(x\) (on \(\mathbf{R}^{n}\)).
+    <span class="src">B&amp;V §3.5.2 · L5450–5514</span>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p><b>Read the hypothesis carefully.</b> Here \(f\) must be log-concave as a function of the pair \((x,y)\) — jointly, on \(\mathbf{R}^{n}\times\mathbf{R}^{m}\) — not merely log-concave in \(x\) for each fixed \(y\). The separated-bumps counterexample of §2 is exactly a case where the summands are log-concave in \(x\) for each index but not jointly, and the conclusion fails. Joint log-concavity is what buys the theorem.</p></div>
+
+  <div class="note build"><div class="ic">i</div><p><b>On the proof.</b> B&amp;V do not prove this result; it is a nontrivial theorem and they refer the reader to the references (it is due to Prékopa; the associated inequality is the Prékopa–Leindler inequality, which is the functional form of the Brunn–Minkowski inequality). What is expected of us here is fluent <em>use</em> of the statement, not a reproduction of its proof.</p></div>
+
+  <h3>What the theorem immediately gives</h3>
+
+  <ul class="reads">
+    <li><span class="tag">marginals</span><div>If \(p(x,y)\) is a log-concave joint density, then the marginal \(p(x)=\int p(x,y)\,dy\) is log-concave. Log-concavity is inherited by marginal distributions.</div></li>
+    <li><span class="tag">convolution</span><div>The convolution of two log-concave functions is log-concave: \((f*g)(x)=\int f(x-y)g(y)\,dy\), and the integrand \(f(x-y)g(y)\) is log-concave jointly in \((x,y)\) — the map \((x,y)\mapsto x-y\) is affine, and log-concavity survives composition with an affine map (§3.5.1) and multiplication (§2).</div></li>
+    <li><span class="tag">probability</span><div>If \(C\subseteq\mathbf{R}^{n}\) is convex and \(w\) is a random vector with log-concave density \(p\), then \(\;\mathop{\bf prob}(x+w\in C)\;\) is a log-concave function of \(x\).</div></li>
+  </ul>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;\(f(x)=\mathop{\bf prob}(x+w\in C)\) is log-concave</span><span class="target">the standard packaging move</span></div>
+    <div class="step"><div class="math">\[ f(x)=\int g(x+w)\,p(w)\,dw,\qquad g(u)=\begin{cases}1 & u\in C\\ 0 & u\notin C\end{cases} \]</div><div class="why"><b>why</b> write the probability as an integral of an <em>indicator</em>. This is the move that turns every "probability of landing in a set" question into the integration theorem.</div></div>
+    <div class="step crux"><div class="math">\[ g\ \text{log-concave} \iff C\ \text{convex} \]</div><div class="why"><b>why</b> the indicator of \(C\), with the convention \(\log 0=-\infty\), has \(\log g\) equal to \(0\) on \(C\) and \(-\infty\) off it — a concave extended-value function exactly when \(C\) is convex. <em>This</em> is where convexity of \(C\) is used, and it is the only place.</div></div>
+    <div class="step"><div class="math">\[ (x,w)\mapsto g(x+w)p(w)\ \text{is log-concave jointly} \]</div><div class="why"><b>why</b> \(g(x+w)\) is log-concave in \((x,w)\) because \((x,w)\mapsto x+w\) is affine; \(p(w)\) is log-concave in \((x,w)\) by hypothesis; and the product of log-concave functions is log-concave (§2).</div></div>
+    <div class="step"><div class="math">\[ \int g(x+w)p(w)\,dw\ \text{is log-concave in }x \]</div><div class="why"><b>why</b> integrate out \(w\) and apply the theorem. All three preservation rules — affine composition, product, integration — are used in sequence.</div></div>
+  </div>
+
+  <p>That four-line argument is a template, not a one-off. Sections 5, 6 and 7 below are the same four lines with a different set \(C\) and a different density.</p>
+</section>
+
+<!-- ============ §4 ============ -->
+<section class="wrap" id="s4">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">example 3.41</span></div>
+  <h2>Laplace transform, moment generating function, cumulant generating function</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    <strong>Example 3.41</strong> &nbsp;Suppose \(p:\mathbf{R}^{n}\to\mathbf{R}\) satisfies \(p(x)\ge0\) for all \(x\). The Laplace transform
+    \[ P(z)=\int p(x)\,e^{-z^{T}x}\,dx \]
+    is log-convex on \(\mathop{\bf dom} P=\{z\mid P(z)&lt;\infty\}\) (which is a convex set).
+    <span class="src">B&amp;V §3.5.2 · L5457–5478</span>
+  </div>
+
+  <p>This is the log-convex integration rule applied with the parameter \(z\) as the kept variable and \(x\) integrated out. For each fixed \(x\), the integrand as a function of \(z\) is</p>
+
+  \[ \log\bigl(p(x)e^{-z^{T}x}\bigr) = \log p(x) - z^{T}x, \]
+
+  <p>which is <strong>affine in \(z\)</strong>, hence convex — so each integrand is log-convex in \(z\), and the integral inherits log-convexity. Note how little is asked of \(p\): only nonnegativity. \(p\) need not be log-concave, log-convex, or anything else.</p>
+
+  <div class="note build"><div class="ic">i</div><p><b>The domain is convex for free.</b> \(\log P\) is a convex function; the set where a convex function is finite is its domain, and domains of convex functions are convex. So \(\{z\mid P(z)&lt;\infty\}\) is convex without any separate argument.</p></div>
+
+  <h3>Specialising to a probability density</h3>
+
+  <p>Now suppose \(p\) is the density of a random variable \(v\). Then \(P(-z)=\mathop{\bf E}e^{z^{T}v}\) is the <strong>moment generating function</strong> \(M(z)\), and \(\log M\) is the <strong>cumulant generating function</strong>. Since \(M(z)=P(-z)\) is \(P\) composed with an affine map, \(M\) is log-convex too — so \(\log M\) is convex.</p>
+
+  <div class="excard">
+    <div class="exh"><span>Derivatives at the origin</span><span class="vt">moments and cumulants</span></div>
+    <div class="exb">
+      <p>Differentiating under the integral, at \(z=0\) (where \(M(0)=1\)):</p>
+      \[ \nabla M(0)=\mathop{\bf E}v,\qquad \nabla^{2}M(0)=\mathop{\bf E}vv^{T}, \]
+      <p>and for the cumulant generating function,</p>
+      \[ \nabla \log M(0)=\mathop{\bf E}v,\qquad \nabla^{2}\log M(0)=\mathop{\bf E}vv^{T}-\bigl(\mathop{\bf E}v\bigr)\bigl(\mathop{\bf E}v\bigr)^{T}=\mathop{\bf cov}(v). \]
+      <p>The second identity is the second-order log-convexity formula of §1 evaluated at \(0\): \(\nabla^{2}\log M = \nabla^{2}M/M - \nabla M\nabla M^{T}/M^{2}\), and \(M(0)=1\). Convexity of \(\log M\) therefore <em>says</em>, at the origin, that \(\mathop{\bf cov}(v)\succeq0\) — the covariance matrix is positive semidefinite. A familiar fact, recovered as a special case of a curvature statement.</p>
+    </div>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p><b>Worth keeping.</b> The CGF is convex, its gradient at \(0\) is the mean, its Hessian at \(0\) is the covariance. This is the cleanest example in the section of log-convexity carrying real statistical content rather than being a formal property.</p></div>
+</section>
+
+<!-- ============ §5 ============ -->
+<section class="wrap" id="s5">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">example 3.42</span></div>
+  <h2>The cumulative distribution function of a log-concave density</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    <strong>Example 3.42</strong> &nbsp;Let \(f:\mathbf{R}^{n}\to\mathbf{R}\) be a log-concave probability density, and let \(C\subseteq\mathbf{R}^{n}\) be a convex set. Then the function
+    \[ F(x)=\mathop{\bf prob}(w\preceq x)=\int_{-\infty}^{x_{1}}\!\!\cdots\!\int_{-\infty}^{x_{n}} f(z)\,dz \]
+    is log-concave. In particular, the cumulative distribution function of a log-concave density is log-concave.
+    <span class="src">B&amp;V §3.5.2 · L5516–5530</span>
+  </div>
+
+  <p>The proof is the packaging template of §3 with \(C\) taken to be the (convex) set \(\{z\mid z\preceq x\}\). Write</p>
+
+  \[ F(x)=\int \Psi(x,z)\,f(z)\,dz,\qquad \Psi(x,z)=\begin{cases}1 & z\preceq x\\ 0 & \text{otherwise,}\end{cases} \]
+
+  <p>and check the two ingredients. \(\Psi\) is the indicator of the set \(\{(x,z)\mid z\preceq x\}\), which is convex — indeed it is a <em>cone</em> defined by the linear inequalities \(z_{i}-x_{i}\le0\) — so \(\Psi\) is log-concave jointly in \((x,z)\). The density \(f(z)\) is log-concave in \((x,z)\) by hypothesis. Their product is log-concave, and integrating out \(z\) leaves a log-concave function of \(x\) .</p>
+
+  <div class="note build"><div class="ic">i</div><p><b>Where the joint hypothesis bites.</b> \(\Psi\) is the reason the theorem's <em>joint</em> log-concavity requirement is not a technicality to be waved through: \(\Psi(x,z)\) genuinely couples the two variables, and it is log-concave only because \(\{(x,z)\mid z\preceq x\}\) is a convex set. Change \(\preceq\) to something non-convex and the argument stops.</p></div>
+
+  <div class="excard">
+    <div class="exh"><span>The special case everyone knows</span><span class="vt">\(\Phi\) is log-concave</span></div>
+    <div class="exb">
+      <p>Take \(n=1\) and \(f\) the standard normal density \(e^{-z^{2}/2}/\sqrt{2\pi}\), which is log-concave (its logarithm is \(-z^{2}/2-\tfrac12\log 2\pi\), a downward parabola). The theorem says the Gaussian CDF</p>
+      \[ \Phi(x)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x} e^{-z^{2}/2}\,dz \]
+      <p>is log-concave — the fact quoted without proof in §3.5.1's list of examples. Here it is, as a one-line consequence of the integration theorem. The same argument covers the CDF of any log-concave density: exponential, uniform, Laplace, logistic, and so on.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ §6 ============ -->
+<section class="wrap" id="s6">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">example 3.43</span></div>
+  <h2>Yield function</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    <strong>Example 3.43</strong> &nbsp;Let \(x\in\mathbf{R}^{n}\) be a vector of nominal parameter values for a product, \(w\in\mathbf{R}^{n}\) a random vector of manufacturing variations, and \(S\) the set of acceptable parameter values. The <em>yield</em> of the product, as a function of the nominal parameter values, is
+    \[ Y(x)=\mathop{\bf prob}(x+w\in S). \]
+    If \(S\) is convex and \(w\) has a log-concave probability density \(p\), then \(Y\) is a log-concave function of \(x\).
+    <span class="src">B&amp;V §3.5.2 · L5533–5551</span>
+  </div>
+
+  <p>Same template again: write \(Y(x)=\int g(x+w)p(w)\,dw\) with \(g\) the indicator of \(S\), note that \(g\) is log-concave because \(S\) is convex, that \(g(x+w)\) is log-concave in \((x,w)\) because \(x+w\) is affine in \((x,w)\), that the product with \(p(w)\) is log-concave, and integrate.</p>
+
+  <h3>The payoff: yield regions are convex</h3>
+
+  <div class="bv">
+    It follows that the \(\alpha\)-yield region, defined as the set of nominal parameters for which the yield exceeds \(\alpha\),
+    \[ \{x \mid Y(x)\ge\alpha\}=\{x\mid \log Y(x)\ge\log\alpha\}, \]
+    is convex for \(\alpha&gt;0\), since it is a superlevel set of the concave function \(\log Y\).
+    <span class="src">B&amp;V §3.5.2 · L5533–5551</span>
+  </div>
+
+  <div class="note key"><div class="ic">!</div><p><b>Why this matters for optimization.</b> "Design so that at least \(\alpha\) of the units come out acceptable" is a <em>convex constraint</em> — it can be written \(\log\alpha-\log Y(x)\le0\) with the left side convex. Without log-concavity, a yield requirement would be an arbitrary nonconvex constraint. The restriction \(\alpha&gt;0\) is needed only so that \(\log\alpha\) is finite; at \(\alpha=0\) the set is all of \(\mathbf{R}^{n}\) anyway.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Yield — and why the \(\alpha\)-yield region is an interval</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col"><canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:rgba(43,108,176,0.30)"></i> acceptable set S</span>
+          <span><i style="border-color:#D7402B"></i> yield Y(x)</span>
+          <span><i style="border-color:#17223B"></i> log Y(x)</span>
+          <span><i class="sw" style="background:rgba(47,133,90,0.28)"></i> α-yield region</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">One nominal parameter, one manufacturing variation \(w\sim\mathcal{N}(0,\sigma^{2})\). <b>Drag the nominal value \(x\)</b>, slide \(\sigma\) and the yield threshold \(\alpha\). The green band is \(\{Y\ge\alpha\}\) — with \(S\) convex it is always a single interval.</p>
+        <div class="chips" id="ch3"></div>
+        <div class="ctrl"><label>spread <span class="val" id="sv3">σ = 0.60</span></label><input type="range" id="ss3" min="0.15" max="2" step="0.01" value="0.6"></div>
+        <div class="ctrl"><label>threshold <span class="val" id="alv3">α = 0.60</span></label><input type="range" id="als3" min="0.02" max="0.98" step="0.01" value="0.6"></div>
+        <div class="ctrl"><label>nominal x <span class="val" id="xv3">0.00</span></label><input type="range" id="xs3" min="0" max="1" step="0.001" value="0.5"></div>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn"><div class="ic">!</div><p><b>Both hypotheses are load-bearing.</b> Switch the lab's acceptable set to two disjoint intervals — a non-convex \(S\) — and \(\log Y\) develops a convex valley between the two acceptable windows, exactly like the two-bump counterexample of §2. The \(\alpha\)-yield region then splits into two pieces and is no longer convex. Log-concavity of the density is equally necessary: a bimodal \(w\) would do the same damage from the other side.</p></div>
+</section>
+
+<!-- ============ §7 ============ -->
+<section class="wrap" id="s7">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">example 3.44</span></div>
+  <h2>Volume of a polyhedron</h2>
+  <hr class="rule">
+
+  <div class="bv">
+    <strong>Example 3.44</strong> &nbsp;Let \(A\in\mathbf{R}^{m\times n}\). Then the function
+    \[ \mathop{\bf vol}P_{u},\qquad P_{u}=\{x\in\mathbf{R}^{n}\mid Ax\preceq u\}, \]
+    is a log-concave function of \(u\).
+    <span class="src">B&amp;V §3.5.2 · L5556–5571</span>
+  </div>
+
+  <p>The polyhedron's shape is fixed by \(A\); only the right-hand side \(u\) moves, sliding each face in or out along its own normal. The claim is that the volume swept out is log-concave in that right-hand side.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Claim &nbsp;\(u\mapsto\mathop{\bf vol}P_{u}\) is log-concave</span><span class="target">indicator + integrate out \(x\)</span></div>
+    <div class="step"><div class="math">\[ \Psi(x,u)=\begin{cases}1 & Ax\preceq u\\ 0 & \text{otherwise}\end{cases} \]</div><div class="why"><b>why</b> the indicator of \(\{(x,u)\mid Ax\preceq u\}\) — a set cut out by the linear inequalities \(a_{i}^{T}x-u_{i}\le0\) in the <em>pair</em> \((x,u)\), hence convex, hence \(\Psi\) log-concave jointly.</div></div>
+    <div class="step crux"><div class="math">\[ \int \Psi(x,u)\,dx = \mathop{\bf vol}P_{u} \]</div><div class="why"><b>why</b> integrating an indicator over \(x\) measures the slice — here the volume of \(P_{u}\). Note which variable is integrated out: \(x\), the one we do <em>not</em> keep.</div></div>
+    <div class="step"><div class="math">\[ \Rightarrow\ \mathop{\bf vol}P_{u}\ \text{log-concave in }u \]</div><div class="why"><b>why</b> the integration theorem, with the roles of the two variables as above. No density is involved at all — the log-concave integrand is a bare indicator.</div></div>
+  </div>
+
+  <div class="note build"><div class="ic">i</div><p><b>What this is really saying.</b> It is a Brunn–Minkowski statement in disguise: \(P_{\theta u+(1-\theta)v}\supseteq\theta P_{u}+(1-\theta)P_{v}\), so the volume of the polyhedron at an averaged right-hand side is at least the volume of the Minkowski average of the two polyhedra, and Brunn–Minkowski makes that at least \((\mathop{\bf vol}P_{u})^{\theta}(\mathop{\bf vol}P_{v})^{1-\theta}\) — the geometric-mean form of log-concavity from §3.5.1.</p></div>
+</section>
+
+<!-- ============ §8 ============ -->
+<section class="wrap" id="s8">
+  <div class="secnum"><span class="n">§8</span><span class="eyebrow">expert lens</span></div>
+  <h2>Diagnose: what to have loaded</h2>
+  <hr class="rule">
+
+  <div class="moves">
+    <div class="move">
+      <p class="mh"><span class="mnum">01</span> The second-order test, both directions</p>
+      <p>Log-concave \(\iff f\nabla^{2}f\preceq\nabla f\nabla f^{T}\); log-convex \(\iff\succeq\). Scalar form: \(ff''\le(f')^{2}\) for log-concave, \(\ge\) for log-convex. Derive it, if in doubt, from \(\nabla^{2}\log f=\nabla^{2}f/f-\nabla f\nabla f^{T}/f^{2}\) and multiply by \(f^{2}&gt;0\).</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">02</span> The closure table is the crux</p>
+      <p>Product and positive scaling: <strong>both</strong> classes closed. Sum: <strong>log-convex only</strong> — via log-sum-exp of convex functions. Integration and marginals: <strong>log-concave</strong> (the deep theorem, joint hypothesis). Log-convexity also survives integration under the weaker, separate hypothesis.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">03</span> Carry one counterexample</p>
+      <p>\(f(x)=e^{-(x-3)^{2}/2}+e^{-(x+3)^{2}/2}\), with \((\log f)''(0)=a^{2}-1=8&gt;0\) at \(a=3\). Separation is the mechanism: means \(\pm a\) with \(a\le1\) give \(a^{2}-1\le0\) and no failure at the midpoint.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">04</span> The integration payoffs, as a list</p>
+      <p>Marginals of log-concave densities; convolution; \(\mathop{\bf prob}(x+w\in C)\) for convex \(C\); CDFs (Ex 3.42, of which \(\Phi\) is the special case); yield \(Y(x)=\mathop{\bf prob}(x+w\in S)\) (Ex 3.43); \(\mathop{\bf vol}P_{u}\) (Ex 3.44). All log-concave — and all \(\alpha\)-superlevel regions therefore convex.</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">05</span> Laplace, MGF, CGF</p>
+      <p>\(P(z)=\int p(x)e^{-z^{T}x}dx\) is log-convex on \(\{z\mid P(z)&lt;\infty\}\) for any \(p\ge0\), because \(\log p(x)-z^{T}x\) is affine in \(z\). Hence the CGF \(\log M\) is convex, with \(\nabla\log M(0)=\mathop{\bf E}v\) and \(\nabla^{2}\log M(0)=\mathop{\bf cov}(v)\).</p>
+    </div>
+    <div class="move">
+      <p class="mh"><span class="mnum">06</span> Traps to say out loud</p>
+      <p>Don't claim log-concavity is closed under sums — log-<em>convexity</em> is. Don't weaken the integration hypothesis to "log-concave in \(x\) for each \(y\)" — it must be joint. Don't flip the twice-differentiable direction: \(\preceq\) is log-concave.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ summary ============ -->
+<section class="wrap">
+  <div class="summary">
+    <div class="eyebrow">Summary — main points for quick review</div>
+    <h2>Log-concave and log-convex functions: properties</h2>
+    <div class="scards">
+      <div class="scard"><h6>twice differentiable</h6><p>Log-concave \(\iff f\nabla^{2}f\preceq\nabla f\nabla f^{T}\) (scalar: \(ff''\le(f')^{2}\)); log-convex \(\iff\succeq\). From \(\nabla^{2}\log f=\nabla^{2}f/f-\nabla f\nabla f^{T}/f^{2}\), cleared by \(f^{2}&gt;0\).</p></div>
+      <div class="scard"><h6>closure asymmetry</h6><p>Product and positive scaling: both. Sum: log-<strong>convex</strong> only — \(e^{-(x-3)^{2}/2}+e^{-(x+3)^{2}/2}\) has \((\log f)''(0)=8&gt;0\). Integration and marginals: log-<strong>concave</strong> (deep theorem, joint hypothesis).</p></div>
+      <div class="scard"><h6>integration payoffs</h6><p>Marginals, convolution, \(\mathop{\bf prob}(x+w\in C)\), CDF, yield \(Y(x)=\mathop{\bf prob}(x+w\in S)\), \(\mathop{\bf vol}P_{u}\) — all log-concave; \(\alpha\)-superlevel regions convex for \(\alpha&gt;0\).</p></div>
+      <div class="scard"><h6>Laplace / MGF / CGF (Ex 3.41)</h6><p>\(P(z)=\int p\,e^{-z^{T}x}dx\) log-convex on \(\{P&lt;\infty\}\) since \(\log p(x)-z^{T}x\) is affine in \(z\). CGF \(\log M\) convex, \(\nabla\log M(0)=\mathop{\bf E}v\), \(\nabla^{2}\log M(0)=\mathop{\bf cov}(v)\).</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">B&amp;V §3.5.2 (p. 105–108) · Log-concave and log-convex functions: properties · interactive study sheet · drag any handle</div>
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+
+/* ===================== shared helpers ===================== */
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){var r=canvas.getBoundingClientRect();var d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function mkChips(host,items,initial,onPick){
+  host.innerHTML="";var els={};
+  items.forEach(function(it){
+    var b=document.createElement("button");
+    b.className="chip"+(it.k===initial?" on":"");
+    b.textContent=it.t;
+    b.addEventListener("click",function(){
+      Object.keys(els).forEach(function(k){els[k].classList.remove("on");});
+      b.classList.add("on");onPick(it.k);
+    });
+    els[it.k]=b;host.appendChild(b);
+  });
+  return els;
+}
+function genericDrag(canvas,pickables,redraw){
+  var held=null;
+  canvas.addEventListener("pointerdown",function(e){
+    var r=canvas.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;
+    var best=null,bd=34;
+    pickables().forEach(function(p){var d=Math.hypot(px-p.sx,py-p.sy);if(d<bd){bd=d;best=p;}});
+    if(best){held=best;canvas.setPointerCapture(e.pointerId);}
+  });
+  canvas.addEventListener("pointermove",function(e){
+    if(!held)return;var r=canvas.getBoundingClientRect();
+    held.set(e.clientX-r.left,e.clientY-r.top);redraw();
+  });
+  canvas.addEventListener("pointerup",function(e){held=null;try{canvas.releasePointerCapture(e.pointerId);}catch(err){}});
+  canvas.addEventListener("pointercancel",function(){held=null;});
+}
+/* a plot occupying a horizontal band [fTop,fBot] of the canvas height */
+function bandPlot(canvas,M){
+  M=M||{};
+  var ml=(M.l!==undefined)?M.l:54, mr=(M.r!==undefined)?M.r:16;
+  var mt=(M.t!==undefined)?M.t:22, mb=(M.b!==undefined)?M.b:28;
+  var fT=(M.fTop!==undefined)?M.fTop:0, fB=(M.fBot!==undefined)?M.fBot:1;
+  var X0=0,X1=1,Y0=0,Y1=1;
+  function dims(){var r=canvas.getBoundingClientRect();return{w:r.width,h:r.height};}
+  function box(){var d=dims();var y0=d.h*fT+mt, y1=d.h*fB-mb;
+    return{x:ml,y:y0,w:Math.max(1,d.w-ml-mr),h:Math.max(1,y1-y0)};}
+  return{
+    setRange:function(x0,x1,y0,y1){X0=x0;X1=x1;Y0=y0;Y1=y1;},
+    rng:function(){return[X0,X1,Y0,Y1];},
+    box:box, dims:dims,
+    toS:function(x,y){var b=box();return[b.x+(x-X0)/(X1-X0)*b.w, b.y+b.h-(y-Y0)/(Y1-Y0)*b.h];},
+    toWx:function(px){var b=box();return X0+(px-b.x)/b.w*(X1-X0);},
+    toWy:function(py){var b=box();return Y0+(b.y+b.h-py)/b.h*(Y1-Y0);}
+  };
+}
+function niceTicks(lo,hi){
+  var span=hi-lo; if(!(span>0))return{v:[lo],d:1};
+  var step=Math.pow(10,Math.floor(Math.log10(span/4)));
+  var k=span/4/step; if(k>=5)step*=10; else if(k>=2)step*=5; else if(k>=1)step*=2;
+  var d=Math.max(0,Math.min(3,-Math.floor(Math.log10(step)+1e-9)));
+  var out=[],v=Math.ceil(lo/step-1e-9)*step;
+  for(var i=0;i<60&&v<=hi+1e-9;i++){out.push(Math.abs(v)<step*1e-6?0:v);v+=step;}
+  return{v:out,d:d};
+}
+function frame2(ctx,P,title){
+  var b=P.box(),r=P.rng();
+  var xt=niceTicks(r[0],r[1]), yt=niceTicks(r[2],r[3]);
+  ctx.save();
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  xt.v.forEach(function(v){var p=P.toS(v,r[2]);ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();});
+  yt.v.forEach(function(v){var p=P.toS(r[0],v);ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();});
+  ctx.strokeStyle="#D9D3C6";ctx.lineWidth=1.2;ctx.strokeRect(b.x,b.y,b.w,b.h);
+  ctx.fillStyle="#8A91A3";ctx.font="10.5px 'JetBrains Mono', monospace";
+  ctx.textBaseline="top";ctx.textAlign="center";
+  xt.v.forEach(function(v){var p=P.toS(v,r[2]);ctx.fillText(v.toFixed(xt.d),p[0],b.y+b.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  yt.v.forEach(function(v){var p=P.toS(r[0],v);ctx.fillText(v.toFixed(yt.d),b.x-6,p[1]);});
+  if(title){ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#17223B";
+    ctx.font="600 11.5px 'JetBrains Mono', monospace";ctx.fillText(title,b.x,b.y-7);}
+  ctx.restore();
+}
+function clipBox(ctx,P){var b=P.box();ctx.beginPath();ctx.rect(b.x,b.y,b.w,b.h);ctx.clip();}
+/* every curve is drawn inside the band's box — nothing can escape the frame */
+function bandCurve(ctx,P,fn,color,wd,dash,x0,x1){
+  var r=P.rng();
+  var a=(x0===undefined)?r[0]:x0, z=(x1===undefined)?r[1]:x1;
+  ctx.save();clipBox(ctx,P);
+  if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.lineJoin="round";ctx.beginPath();
+  var first=true,N=520;
+  for(var i=0;i<=N;i++){
+    var x=a+(z-a)*i/N, y=fn(x);
+    if(y===null||y===undefined||!isFinite(y)){first=true;continue;}
+    var p=P.toS(x,clamp(y,r[2],r[3]));   /* clamp into the frame — never rely on the clip alone */
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function bandHLine(ctx,P,y,color,wd,dash){
+  var r=P.rng(),b=P.box();if(y<r[2]||y>r[3])return;
+  var p=P.toS(r[0],y);
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(b.x,p[1]);ctx.lineTo(b.x+b.w,p[1]);ctx.stroke();ctx.restore();
+}
+function bandVLine(ctx,P,x,color,wd,dash){
+  var r=P.rng(),b=P.box();if(x<r[0]||x>r[1])return;
+  var p=P.toS(x,r[2]);
+  ctx.save();if(dash)ctx.setLineDash(dash);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();ctx.moveTo(p[0],b.y);ctx.lineTo(p[0],b.y+b.h);ctx.stroke();ctx.restore();
+}
+function bandSeg(ctx,P,x0,y0,x1,y1,color,wd,dash){
+  ctx.save();clipBox(ctx,P);if(dash)ctx.setLineDash(dash);
+  var a=P.toS(x0,y0),z=P.toS(x1,y1);
+  ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(z[0],z[1]);ctx.stroke();ctx.restore();
+}
+/* shade a vertical strip x in [x0,x1] across the whole band */
+function bandStrip(ctx,P,x0,x1,fill){
+  var r=P.rng(),b=P.box();
+  var a=clamp(x0,r[0],r[1]), z=clamp(x1,r[0],r[1]);
+  if(z<=a)return;
+  var pa=P.toS(a,r[2]),pz=P.toS(z,r[2]);
+  ctx.save();clipBox(ctx,P);ctx.fillStyle=fill;
+  ctx.fillRect(pa[0],b.y,pz[0]-pa[0],b.h);ctx.restore();
+}
+function tagBox(ctx,text,px,py,color,size,align,box){
+  ctx.save();
+  ctx.font=(size||11.5)+"px 'JetBrains Mono', monospace";
+  ctx.textBaseline="middle";ctx.textAlign=align||"left";
+  var w=ctx.measureText(text).width,pad=6;
+  if(box){
+    if(align==="center")px=clamp(px,box.x+w/2+pad,box.x+box.w-w/2-pad);
+    else if(align==="right")px=clamp(px,box.x+w+pad,box.x+box.w-pad);
+    else px=clamp(px,box.x+pad,box.x+box.w-w-pad);
+    py=clamp(py,box.y+9,box.y+box.h-9);
+  }
+  var x0=(align==="center")?px-w/2:(align==="right")?px-w:px, hh=(size||11.5)+7;
+  ctx.fillStyle="rgba(251,250,247,0.90)";ctx.fillRect(x0-5,py-hh/2,w+10,hh);
+  ctx.fillStyle=color;ctx.fillText(text,px,py);ctx.restore();
+}
+/* --- special functions --- */
+function erf(x){
+  var s=x<0?-1:1;x=Math.abs(x);
+  var t=1/(1+0.3275911*x);
+  var y=1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return s*y;
+}
+function Phi(x){return 0.5*(1+erf(x/Math.SQRT2));}
+/* --- numeric derivatives --- */
+function d1(f,x,h){return (f(x+h)-f(x-h))/(2*h);}
+function d2(f,x,h){return (f(x+h)-2*f(x)+f(x-h))/(h*h);}
+
+/* ===================== LAB 1 — the second-order test ===================== */
+(function(){
+  var FAM={
+    gauss:{t:"e^{−x²/2}",useA:false,dx0:-2.9,dx1:2.9,px0:-3.1,px1:3.1,
+      nm:function(){return "f(x) = e^(−x²/2)";},f:function(x){return Math.exp(-x*x/2);}},
+    pow:{t:"xᵃ",useA:true,aLo:-2,aHi:3,aDef:0.5,dx0:0.12,dx1:3.2,px0:0.05,px1:3.4,
+      nm:function(a){return "f(x) = x^"+a.toFixed(2)+"  on x > 0";},f:function(x,a){return x>0?Math.pow(x,a):NaN;}},
+    exp:{t:"e^{ax}",useA:true,aLo:-2,aHi:2,aDef:0.8,dx0:-2.3,dx1:2.3,px0:-2.5,px1:2.5,
+      nm:function(a){return "f(x) = e^("+a.toFixed(2)+" x)";},f:function(x,a){return Math.exp(a*x);}},
+    aff:{t:"x+1.2",useA:false,dx0:-1.1,dx1:3.1,px0:-1.3,px1:3.3,
+      nm:function(){return "f(x) = x + 1.2  on x > −1.2";},f:function(x){return x>-1.2?x+1.2:NaN;}},
+    phi:{t:"Φ(x)",useA:false,dx0:-2.7,dx1:2.7,px0:-3.0,px1:3.0,
+      nm:function(){return "f(x) = Φ(x)  Gaussian CDF";},f:function(x){return Phi(x);}},
+    recip:{t:"1/x",useA:false,dx0:0.25,dx1:3.2,px0:0.18,px1:3.4,
+      nm:function(){return "f(x) = 1/x  on x > 0  (log-convex)";},f:function(x){return x>0?1/x:NaN;}},
+    bump:{t:"two bumps",useA:false,dx0:-4.6,dx1:4.6,px0:-5.0,px1:5.0,
+      nm:function(){return "f(x) = e^(−(x−1.6)²/2) + e^(−(x+1.6)²/2)";},
+      f:function(x){return Math.exp(-(x-1.6)*(x-1.6)/2)+Math.exp(-(x+1.6)*(x+1.6)/2);}}
+  };
+  var LIST=[{k:"gauss",t:"e^{−x²/2}"},{k:"pow",t:"xᵃ"},{k:"exp",t:"e^{ax}"},{k:"aff",t:"affine"},
+            {k:"phi",t:"Φ(x)"},{k:"recip",t:"1/x"},{k:"bump",t:"two bumps"}];
+  var key="gauss", a=0.5, x=0.6;
+  var cv=document.getElementById("cv1"),ctx=cv.getContext("2d");
+  var PT=bandPlot(cv,{fTop:0,fBot:0.52,t:24,b:24}),PB=bandPlot(cv,{fTop:0.52,fBot:1,t:24,b:30});
+  var as=document.getElementById("as1"),xs=document.getElementById("xs1");
+  var av=document.getElementById("av1"),xv=document.getElementById("xv1");
+  var ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  var b1a=document.getElementById("b1a"),b1b=document.getElementById("b1b");
+  var b1am=document.getElementById("b1am"),b1bm=document.getElementById("b1bm");
+
+  function F(t){var v=FAM[key].f(t,a);return v;}
+  function L(t){var v=F(t);return (v>0)?Math.log(v):NaN;}
+  function hstep(){var S=FAM[key];return (S.dx1-S.dx0)*4e-4;}
+  function safe(t){var S=FAM[key];return clamp(t,S.dx0,S.dx1);}
+  function ll2(t){var h=hstep();return d2(L,t,h);}
+
+  function stats(){
+    var S=FAM[key],N=240,lo=1e9,hi=-1e9,okC=true,okX=true;
+    for(var i=0;i<=N;i++){
+      var t=S.dx0+(S.dx1-S.dx0)*i/N, v=ll2(t);
+      if(!isFinite(v))continue;
+      lo=Math.min(lo,v);hi=Math.max(hi,v);
+      if(v>1e-6)okC=false;
+      if(v<-1e-6)okX=false;
+    }
+    return {lo:lo,hi:hi,okC:okC,okX:okX};
+  }
+  function draw(){
+    fitCanvas(cv,ctx);
+    var S=FAM[key];
+    ctx.clearRect(0,0,cv.width,cv.height);
+    /* --- ranges --- */
+    var N=200,fmin=1e9,fmax=-1e9,gmin=1e9,gmax=-1e9;
+    for(var i=0;i<=N;i++){
+      var t=S.dx0+(S.dx1-S.dx0)*i/N;
+      var v=F(t); if(isFinite(v)){fmin=Math.min(fmin,v);fmax=Math.max(fmax,v);}
+      var g=ll2(t); if(isFinite(g)){gmin=Math.min(gmin,g);gmax=Math.max(gmax,g);}
+    }
+    if(!(fmax>fmin)){fmax=fmin+1;}
+    var fpad=0.12*(fmax-fmin);
+    PT.setRange(S.px0,S.px1,Math.min(0,fmin-fpad),fmax+fpad);
+    var gspan=Math.max(0.6,gmax-gmin),gpad=0.22*gspan;
+    var glo=Math.min(-0.25,gmin-gpad),ghi=Math.max(0.25,gmax+gpad);
+    PB.setRange(S.px0,S.px1,glo,ghi);
+
+    frame2(ctx,PT,S.nm(a));
+    frame2(ctx,PB,"(log f)″  —  the sign is the whole test");
+
+    /* sign shading on the lower band */
+    var bB=PB.box(),rB=PB.rng();
+    var pz=PB.toS(rB[0],0);
+    ctx.save();clipBox(ctx,PB);
+    ctx.fillStyle="rgba(47,133,90,0.20)";
+    ctx.fillRect(bB.x,pz[1],bB.w,bB.y+bB.h-pz[1]);
+    ctx.fillStyle="rgba(192,57,43,0.14)";
+    ctx.fillRect(bB.x,bB.y,bB.w,pz[1]-bB.y);
+    ctx.restore();
+    bandHLine(ctx,PB,0,"#8A91A3",1.4,[5,4]);
+    tagBox(ctx,"(log f)″ ≤ 0 · log-concave",bB.x+8,pz[1]+14,"#2F855A",11,"left",bB);
+    tagBox(ctx,"(log f)″ > 0 · log-convex",bB.x+8,pz[1]-14,"#C0392B",11,"left",bB);
+
+    /* curves */
+    bandCurve(ctx,PT,function(t){return F(t);},"#D7402B",2.8,null,S.dx0,S.dx1);
+    bandCurve(ctx,PB,function(t){return ll2(t);},"#17223B",2.4,null,S.dx0,S.dx1);
+
+    /* handle */
+    var xx=safe(x);
+    bandVLine(ctx,PT,xx,"#C9C2B2",1.2,[4,4]);
+    bandVLine(ctx,PB,xx,"#C9C2B2",1.2,[4,4]);
+    var fv=F(xx),gv=ll2(xx);
+    var pT=PT.toS(xx,clamp(fv,PT.rng()[2],PT.rng()[3]));
+    var pBv=PB.toS(xx,clamp(gv,PB.rng()[2],PB.rng()[3]));
+    dot(ctx,pT[0],pT[1],6.5,"#D7402B","#fff");
+    dot(ctx,pBv[0],pBv[1],5.5,"#17223B","#fff");
+
+    /* readout */
+    var h=hstep();
+    var f1=d1(F,xx,h),f2=d2(F,xx,h);
+    var A=fv*f2, B=f1*f1;
+    ro.innerHTML=
+      "<span class='k'>x</span> <b>"+xx.toFixed(3)+"</b>  &nbsp; <span class='k'>f</span> <b>"+fv.toFixed(4)+"</b><br>"+
+      "<span class='k'>f′</span> <b>"+f1.toFixed(4)+"</b> &nbsp; <span class='k'>f″</span> <b>"+f2.toFixed(4)+"</b><br>"+
+      "<span class='k'>f·f″</span> <b>"+A.toFixed(4)+"</b> &nbsp; <span class='k'>(f′)²</span> <b>"+B.toFixed(4)+"</b><br>"+
+      "<span class='k'>(log f)″</span> <b>"+gv.toFixed(4)+"</b>";
+    var st=stats();
+    b1a.className="bdg "+(st.okC?"yes":"no");b1am.textContent=st.okC?"holds on all of dom f":"fails somewhere";
+    b1b.className="bdg "+(st.okX?"yes":"no");b1bm.textContent=st.okX?"holds on all of dom f":"fails somewhere";
+    if(st.okC&&st.okX){vd.className="verdict in";vd.textContent="log-concave AND log-convex — log f is affine";}
+    else if(st.okC){vd.className="verdict in";vd.textContent="LOG-CONCAVE  ·  f f″ ≤ (f′)² throughout";}
+    else if(st.okX){vd.className="verdict mid";vd.textContent="LOG-CONVEX  ·  f f″ ≥ (f′)² throughout";}
+    else {vd.className="verdict out";vd.textContent="NEITHER  ·  (log f)″ changes sign";}
+    xv.textContent=xx.toFixed(3);
+    av.textContent="a = "+a.toFixed(2);
+    as.disabled=!S.useA;
+  }
+  function setX(t){var S=FAM[key];x=clamp(t,S.dx0,S.dx1);
+    xs.value=((x-S.dx0)/(S.dx1-S.dx0)).toFixed(3);}
+  mkChips(document.getElementById("ch1"),LIST,key,function(k){
+    key=k;var S=FAM[k];
+    if(S.useA){a=S.aDef;as.min=S.aLo;as.max=S.aHi;as.value=a;}
+    setX((S.dx0+S.dx1)/2+0.15*(S.dx1-S.dx0));draw();
+  });
+  as.addEventListener("input",function(){a=parseFloat(as.value);draw();});
+  xs.addEventListener("input",function(){var S=FAM[key];setX(S.dx0+(S.dx1-S.dx0)*parseFloat(xs.value));draw();});
+  genericDrag(cv,function(){
+    var xx=safe(x),fv=F(xx),gv=ll2(xx);
+    var pT=PT.toS(xx,clamp(fv,PT.rng()[2],PT.rng()[3]));
+    return [{sx:pT[0],sy:pT[1],set:function(px,py){setX(PT.toWx(px));}}];
+  },draw);
+  cv.addEventListener("pointerdown",function(e){
+    var r=cv.getBoundingClientRect();setX(PT.toWx(e.clientX-r.left));draw();
+  });
+  setX(0.6);draw();
+  new ResizeObserver(draw).observe(cv);
+})();
+
+/* ===================== LAB 2 — sum versus product ===================== */
+(function(){
+  var mode="sumlc", a=1.6;
+  var cv=document.getElementById("cv2"),ctx=cv.getContext("2d");
+  var PT=bandPlot(cv,{fTop:0,fBot:0.52,t:24,b:24}),PB=bandPlot(cv,{fTop:0.52,fBot:1,t:24,b:30});
+  var as=document.getElementById("as2"),av=document.getElementById("av2");
+  var ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  var MODES=[{k:"sumlc",t:"f+g · both log-concave"},{k:"sumlx",t:"f+g · both log-convex"},{k:"prodlc",t:"f·g · both log-concave"}];
+
+  function pieces(){
+    if(mode==="sumlx")return [function(t){return Math.exp(-1.2*t);},function(t){return Math.exp(0.8*t);}];
+    return [function(t){return Math.exp(-(t-a)*(t-a)/2);},function(t){return Math.exp(-(t+a)*(t+a)/2);}];
+  }
+  function H(t){var P=pieces();return (mode==="prodlc")?P[0](t)*P[1](t):P[0](t)+P[1](t);}
+  function LH(t){var v=H(t);return v>0?Math.log(v):NaN;}
+  function span(){return (mode==="sumlx")?[-2.0,2.0]:[-5.0,5.0];}
+  function chordPts(){
+    if(mode==="sumlx")return [-1.5,1.5];
+    return [-Math.max(a,0.6),Math.max(a,0.6)];
+  }
+  function ll2(t){var s=span();return d2(LH,t,(s[1]-s[0])*4e-4);}
+
+  function draw(){
+    fitCanvas(cv,ctx);ctx.clearRect(0,0,cv.width,cv.height);
+    var s=span(),N=260,hmin=1e9,hmax=-1e9,lmin=1e9,lmax=-1e9,cmin=1e9,cmax=-1e9;
+    for(var i=0;i<=N;i++){
+      var t=s[0]+(s[1]-s[0])*i/N;
+      var v=H(t);if(isFinite(v)){hmin=Math.min(hmin,v);hmax=Math.max(hmax,v);}
+      var l=LH(t);if(isFinite(l)){lmin=Math.min(lmin,l);lmax=Math.max(lmax,l);}
+      var c=ll2(t);if(isFinite(c)){cmin=Math.min(cmin,c);cmax=Math.max(cmax,c);}
+    }
+    var hp=0.12*(hmax-hmin||1);
+    PT.setRange(s[0],s[1],Math.max(0,hmin-hp),hmax+hp);
+    var lp=0.16*(lmax-lmin||1);
+    PB.setRange(s[0],s[1],lmin-lp,lmax+lp);
+
+    var ttl=(mode==="sumlx")?"h(x) = e^(−1.2x) + e^(0.8x)"
+          :(mode==="prodlc")?("h(x) = e^(−(x−"+a.toFixed(2)+")²/2) · e^(−(x+"+a.toFixed(2)+")²/2)")
+          :("h(x) = e^(−(x−"+a.toFixed(2)+")²/2) + e^(−(x+"+a.toFixed(2)+")²/2)");
+    frame2(ctx,PT,ttl);
+    frame2(ctx,PB,"log h  and its chord");
+
+    var P=pieces();
+    bandCurve(ctx,PT,P[0],"#A9A296",1.8,[5,4]);
+    bandCurve(ctx,PT,P[1],"#A9A296",1.8,[5,4]);
+    bandCurve(ctx,PT,H,"#D7402B",2.8);
+    bandCurve(ctx,PB,LH,"#17223B",2.6);
+
+    var c=chordPts(),y0=LH(c[0]),y1=LH(c[1]);
+    bandSeg(ctx,PB,c[0],y0,c[1],y1,"#2B6CB0",2.4,[6,4]);
+    var m=(c[0]+c[1])/2, chordM=(y0+y1)/2, curveM=LH(m);
+    bandSeg(ctx,PB,m,Math.min(chordM,curveM),m,Math.max(chordM,curveM),
+      (curveM>=chordM)?"#2F855A":"#C0392B",5,null);
+    var pa=PB.toS(c[0],y0),pb=PB.toS(c[1],y1),pm=PB.toS(m,curveM);
+    dot(ctx,pa[0],pa[1],4.6,"#D7402B","#fff");
+    dot(ctx,pb[0],pb[1],4.6,"#D7402B","#fff");
+    dot(ctx,pm[0],pm[1],4.6,"#17223B","#fff");
+    tagBox(ctx,(curveM>=chordM)?"chord below graph":"chord above graph",
+      pm[0]+10,(PB.toS(m,chordM)[1]+pm[1])/2,(curveM>=chordM)?"#2F855A":"#C0392B",11,"left",PB.box());
+
+    var at0=ll2(0);
+    var okC=(cmax<=1e-6),okX=(cmin>=-1e-6);
+    ro.innerHTML=
+      "<span class='k'>(log h)″(0)</span> <b>"+(isFinite(at0)?at0.toFixed(3):"—")+"</b>"+
+      ((mode==="sumlc")?" &nbsp;<span class='k'>= a²−1 =</span> <b>"+(a*a-1).toFixed(3)+"</b>":"")+"<br>"+
+      "<span class='k'>min (log h)″</span> <b>"+cmin.toFixed(3)+"</b> &nbsp; <span class='k'>max</span> <b>"+cmax.toFixed(3)+"</b><br>"+
+      "<span class='k'>log h at midpoint</span> <b>"+curveM.toFixed(3)+"</b><br>"+
+      "<span class='k'>chord at midpoint</span> <b>"+chordM.toFixed(3)+"</b>";
+    if(okC&&okX){vd.className="verdict in";vd.textContent="log h affine — log-concave and log-convex";}
+    else if(okC){vd.className="verdict in";vd.textContent="LOG-CONCAVE  ·  closure survives";}
+    else if(okX){vd.className="verdict mid";vd.textContent="LOG-CONVEX  ·  sums preserve log-convexity";}
+    else {vd.className="verdict out";vd.textContent="NOT LOG-CONCAVE  ·  (log h)″ > 0 between the bumps";}
+    av.textContent="a = "+a.toFixed(2);
+    as.disabled=(mode==="sumlx");
+  }
+  mkChips(document.getElementById("ch2"),MODES,mode,function(k){mode=k;draw();});
+  as.addEventListener("input",function(){a=parseFloat(as.value);draw();});
+  draw();
+  new ResizeObserver(draw).observe(cv);
+})();
+
+/* ===================== LAB 3 — yield and the α-yield region ===================== */
+(function(){
+  var conv=true, sig=0.6, al=0.6, x=0.0;
+  var cv=document.getElementById("cv3"),ctx=cv.getContext("2d");
+  var PT=bandPlot(cv,{fTop:0,fBot:0.52,t:26,b:24}),PB=bandPlot(cv,{fTop:0.52,fBot:1,t:24,b:30});
+  var ss=document.getElementById("ss3"),als=document.getElementById("als3"),xs=document.getElementById("xs3");
+  var sv=document.getElementById("sv3"),alv=document.getElementById("alv3"),xv=document.getElementById("xv3");
+  var ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  var XLO=-4.2,XHI=4.2;
+
+  function S(){return conv?[[-1.4,1.4]]:[[-2.6,-1.2],[1.2,2.6]];}
+  function Y(t){
+    var s=S(),acc=0;
+    for(var i=0;i<s.length;i++)acc+=Phi((s[i][1]-t)/sig)-Phi((s[i][0]-t)/sig);
+    return clamp(acc,1e-12,1);
+  }
+  function LY(t){return Math.log(Y(t));}
+  function region(){
+    var N=900,inR=[],prev=false,start=0,comps=[];
+    for(var i=0;i<=N;i++){
+      var t=XLO+(XHI-XLO)*i/N, on=(Y(t)>=al);
+      if(on&&!prev){start=t;}
+      if(!on&&prev){comps.push([start,t]);}
+      prev=on;
+    }
+    if(prev)comps.push([start,XHI]);
+    return comps;
+  }
+  function draw(){
+    fitCanvas(cv,ctx);ctx.clearRect(0,0,cv.width,cv.height);
+    PT.setRange(XLO,XHI,0,1.08);
+    var N=300,lmin=1e9;
+    for(var i=0;i<=N;i++){var v=LY(XLO+(XHI-XLO)*i/N);if(isFinite(v))lmin=Math.min(lmin,v);}
+    lmin=Math.max(lmin,-9);
+    PB.setRange(XLO,XHI,lmin-0.35,0.35);
+
+    frame2(ctx,PT,"Y(x) = prob(x + w ∈ S),  w ~ N(0, σ²)");
+    frame2(ctx,PB,"log Y(x)"+(conv?"  —  concave":"  —  a convex valley appears"));
+
+    /* the acceptable set S, drawn as blue strips on the top band */
+    var s=S();
+    for(var i=0;i<s.length;i++){bandStrip(ctx,PT,s[i][0],s[i][1],"rgba(43,108,176,0.16)");}
+    for(i=0;i<s.length;i++){
+      bandVLine(ctx,PT,s[i][0],"#2B6CB0",1.2,[4,4]);
+      bandVLine(ctx,PT,s[i][1],"#2B6CB0",1.2,[4,4]);
+    }
+    tagBox(ctx,"S",PT.toS((s[0][0]+s[0][1])/2,1.0)[0],PT.toS(0,1.0)[1],"#2B6CB0",12,"center",PT.box());
+
+    /* α-yield region shaded green on both bands */
+    var comps=region();
+    comps.forEach(function(c){
+      bandStrip(ctx,PT,c[0],c[1],"rgba(47,133,90,0.20)");
+      bandStrip(ctx,PB,c[0],c[1],"rgba(47,133,90,0.20)");
+    });
+
+    bandHLine(ctx,PT,al,"#2F855A",1.6,[6,4]);
+    bandHLine(ctx,PB,Math.log(al),"#2F855A",1.6,[6,4]);
+    tagBox(ctx,"α = "+al.toFixed(2),PT.box().x+PT.box().w-6,PT.toS(XLO,al)[1]-10,"#2F855A",11,"right",PT.box());
+    tagBox(ctx,"log α = "+Math.log(al).toFixed(2),PB.box().x+PB.box().w-6,PB.toS(XLO,Math.log(al))[1]-10,"#2F855A",11,"right",PB.box());
+
+    bandCurve(ctx,PT,Y,"#D7402B",2.8);
+    bandCurve(ctx,PB,LY,"#17223B",2.6);
+
+    var xx=clamp(x,XLO,XHI);
+    bandVLine(ctx,PT,xx,"#C9C2B2",1.2,[4,4]);
+    bandVLine(ctx,PB,xx,"#C9C2B2",1.2,[4,4]);
+    var pT=PT.toS(xx,clamp(Y(xx),0,1.08)),pB2=PB.toS(xx,clamp(LY(xx),PB.rng()[2],PB.rng()[3]));
+    dot(ctx,pT[0],pT[1],6.5,"#D7402B","#fff");
+    dot(ctx,pB2[0],pB2[1],5.5,"#17223B","#fff");
+
+    /* curvature of log Y */
+    var cmax=-1e9,h=(XHI-XLO)*4e-4;
+    for(i=0;i<=240;i++){var t=XLO+(XHI-XLO)*i/240,c2=d2(LY,t,h);if(isFinite(c2))cmax=Math.max(cmax,c2);}
+    var reg=comps.length?("["+comps[0][0].toFixed(2)+", "+comps[comps.length-1][1].toFixed(2)+"]"):"empty";
+    ro.innerHTML=
+      "<span class='k'>x</span> <b>"+xx.toFixed(3)+"</b> &nbsp; <span class='k'>Y(x)</span> <b>"+(Y(xx)*100).toFixed(2)+"%</b><br>"+
+      "<span class='k'>log Y(x)</span> <b>"+LY(xx).toFixed(3)+"</b><br>"+
+      "<span class='k'>max (log Y)″</span> <b>"+cmax.toFixed(3)+"</b><br>"+
+      "<span class='k'>{Y ≥ α}</span> <b>"+reg+"</b> &nbsp; <span class='k'>pieces</span> <b>"+comps.length+"</b>";
+    if(comps.length>1){vd.className="verdict out";vd.textContent="α-YIELD REGION IN "+comps.length+" PIECES — not convex";}
+    else if(Y(xx)>=al){vd.className="verdict in";vd.textContent="x IS in the α-yield region (one interval)";}
+    else {vd.className="verdict mid";vd.textContent="x is OUTSIDE the α-yield region";}
+    sv.textContent="σ = "+sig.toFixed(2);
+    alv.textContent="α = "+al.toFixed(2);
+    xv.textContent=xx.toFixed(2);
+  }
+  function setX(t){x=clamp(t,XLO,XHI);xs.value=((x-XLO)/(XHI-XLO)).toFixed(3);}
+  mkChips(document.getElementById("ch3"),
+    [{k:"c",t:"S convex · one interval"},{k:"n",t:"S non-convex · two"}],"c",
+    function(k){conv=(k==="c");draw();});
+  ss.addEventListener("input",function(){sig=parseFloat(ss.value);draw();});
+  als.addEventListener("input",function(){al=parseFloat(als.value);draw();});
+  xs.addEventListener("input",function(){setX(XLO+(XHI-XLO)*parseFloat(xs.value));draw();});
+  genericDrag(cv,function(){
+    var pT=PT.toS(clamp(x,XLO,XHI),clamp(Y(x),0,1.08));
+    return [{sx:pT[0],sy:pT[1],set:function(px,py){setX(PT.toWx(px));}}];
+  },draw);
+  cv.addEventListener("pointerdown",function(e){
+    var r=cv.getBoundingClientRect();setX(PT.toWx(e.clientX-r.left));draw();
+  });
+  setX(0);draw();
+  new ResizeObserver(draw).observe(cv);
+})();
+</script>
+</body>
+</html>
