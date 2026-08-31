@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§3.6.2 — Convexity w.r.t. a Generalized Inequality</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.altbox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.altcard{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
+.altcard .at{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.altcard.i .at{color:var(--halfspace)} .altcard.ii .at{color:var(--normal)}
+.altcard p{margin:0;font-size:15px;color:var(--ink-soft)}
+@media (max-width:640px){.altbox{grid-template-columns:1fr}}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §3.6.2</div>
+    <h1>Convexity w.r.t. a<br><em>generalized inequality</em></h1>
+    <p class="sub">§3.6.1 lifted <em>monotonicity</em> to a cone. This lifts <em>convexity</em>: <span class="mono">f : Rⁿ → Rᵐ</span> is <span class="mono">K</span>-convex if Jensen's inequality holds in the order <span class="mono">⪯<sub>K</sub></span>. The cone now sits in the codomain, and a single dual test — <span class="mono">wᵀf</span> convex for every <span class="mono">w ⪰<sub>K*</sub> 0</span> — decides it.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--halfspace)"></span> K — orders the outputs</span>
+      <span><span class="dot" style="background:var(--normal)"></span> f — the K-convex map</span>
+      <span><span class="dot" style="background:var(--inside)"></span> gap lands in K</span>
+      <span>p.&nbsp;109–111 · mastery: diagnose · completes Ch. 3</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 240" role="img" aria-label="A chord between f(x) and f(y) in ink, the actual curve f dipping below it in vermilion, with a blue cone K icon showing the gap between the chord and the curve lands inside K.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="240" fill="url(#dots)"/>
+        <!-- chord from f(x) to f(y) -->
+        <line x1="150" y1="170" x2="490" y2="90" stroke="#46506A" stroke-width="2" stroke-dasharray="7 5"/>
+        <!-- actual curve f, dipping below the chord -->
+        <path d="M150,170 Q320,196 490,90" fill="none" stroke="#D7402B" stroke-width="3"/>
+        <!-- endpoints -->
+        <circle cx="150" cy="170" r="5.5" fill="#17223B"/>
+        <text x="128" y="192" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="14">f(x)</text>
+        <circle cx="490" cy="90" r="5.5" fill="#17223B"/>
+        <text x="498" y="80" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="14">f(y)</text>
+        <!-- chord midpoint -->
+        <circle cx="320" cy="130" r="4.5" fill="#46506A"/>
+        <text x="332" y="118" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="12.5">θf(x)+(1−θ)f(y)</text>
+        <!-- curve point at t=0.5 (below chord) -->
+        <circle cx="320" cy="160" r="5.5" fill="#D7402B"/>
+        <text x="222" y="188" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12.5">f(θx+(1−θ)y)</text>
+        <!-- K wedge icon showing order direction, gap between curve pt and chord pt -->
+        <path d="M320,160 L303,133 A19,19 0 0 1 337,133 Z" fill="rgba(43,108,176,0.16)" stroke="#2B6CB0" stroke-width="1.6"/>
+        <line x1="320" y1="160" x2="320" y2="131" stroke="#2B6CB0" stroke-width="2" marker-end="url(#arrowK)"/>
+        <defs><marker id="arrowK" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2B6CB0"/></marker></defs>
+        <text x="345" y="150" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">K</text>
+        <text x="320" y="222" text-anchor="middle" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600"><tspan fill="#D7402B">f(θx+(1−θ)y)</tspan>  ⪯ᴷ  <tspan fill="#17223B">θf(x)+(1−θ)f(y)</tspan></text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§3.6 lifts two scalar notions to a generalized inequality <span class="mono">⪯<sub>K</sub></span>. §3.6.1 did monotonicity; this does convexity. One structural warning first, because it's the most common confusion here: in §3.6.1 the cone lived in the <em>domain</em> and the gradient landed in the dual cone <span class="mono">K*</span>. In §3.6.2 the cone <span class="mono">K ⊆ Rᵐ</span> lives in the <em>codomain</em> — it orders the output vectors <span class="mono">f(x)</span>. The dual cone <span class="mono">K*</span> reappears, but only as the set of scalarizing weights in the dual characterization (§5). Keep the two K's in their correct spaces.</p>
+</section>
+
+<!-- 1 definition -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">definition</span></div>
+  <hr class="rule"/>
+  <div class="bv">For a proper cone <span class="mono">K ⊆ Rᵐ</span>, a function <span class="mono">f : Rⁿ → Rᵐ</span> is <strong>K-convex</strong> if for all <span class="mono">x, y</span> and <span class="mono">0 ≤ θ ≤ 1</span>,
+    \[ f(\theta x+(1-\theta)y)\ \preceq_K\ \theta f(x)+(1-\theta) f(y). \]
+    It is <strong>strictly K-convex</strong> if \(f(\theta x+(1-\theta)y)\prec_K \theta f(x)+(1-\theta) f(y)\) for \(x\neq y\), \(0<\theta<1\).
+    <span class="src">B&amp;V §3.6.2 · L5653–5664</span>
+  </div>
+  <p>Same Jensen form as the scalar case; the only change is <span class="mono">≤</span> becomes <span class="mono">⪯<sub>K</sub></span>. At <span class="mono">m = 1, K = R₊</span> it reduces to ordinary (strict) convexity.</p>
+</section>
+
+<!-- 2 example 3.47 componentwise -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">example 3.47 — componentwise inequality</span></div>
+  <hr class="rule"/>
+  <div class="bv">For <span class="mono">K = Rᵐ₊</span>, <span class="mono">f</span> is K-convex iff every component <span class="mono">fᵢ</span> is convex (strictly K-convex iff each <span class="mono">fᵢ</span> strictly convex).<span class="src">B&amp;V §3.6.2 · L5666–5676</span></div>
+  <p>Componentwise K-convexity is just "convex in each output coordinate."</p>
+</section>
+
+<!-- 3 example 3.48 matrix convexity -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">example 3.48 — matrix convexity</span></div>
+    <hr class="rule"/>
+    <div class="bv">For <span class="mono">f : Rⁿ → Sᵐ</span> with <span class="mono">K = Sᵐ₊</span>: <span class="mono">f</span> is <strong>matrix convex</strong> if \(f(\theta x+(1-\theta)y)\preceq \theta f(x)+(1-\theta)f(y)\). Equivalently: <span class="mono">f</span> is matrix convex iff the scalar <span class="mono">zᵀf(x)z</span> is convex in <span class="mono">x</span> for every fixed <span class="mono">z</span> (strict iff <span class="mono">zᵀf(x)z</span> strictly convex for every <span class="mono">z ≠ 0</span>).<span class="src">B&amp;V §3.6.2 · L5679–5698</span></div>
+    <p>Examples: <span class="mono">f(X) = XXᵀ</span> (<span class="mono">X ∈ Rⁿˣᵐ</span>) is matrix convex — for fixed <span class="mono">z</span>, <span class="mono">zᵀXXᵀz = ‖Xᵀz‖₂²</span>, a convex quadratic in <span class="mono">X</span>. Same reason: <span class="mono">f(X) = X²</span> is matrix convex on <span class="mono">Sⁿ</span>. <span class="mono">Xᵖ</span> is matrix convex on <span class="mono">Sⁿ₊₊</span> for <span class="mono">1 ≤ p ≤ 2</span> or <span class="mono">−1 ≤ p ≤ 0</span>, matrix concave for <span class="mono">0 ≤ p ≤ 1</span>. <span class="mono">f(X) = exp(X)</span> (matrix exponential) is <strong>not</strong> matrix convex on <span class="mono">Sⁿ</span> for <span class="mono">n ≥ 2</span> — scalar convexity of <span class="mono">eᵗ</span> does not lift to the matrix order.</p>
+    <div class="note warn"><div class="ic">!</div><p>The matrix test needs <em>every</em> <span class="mono">z</span>, not just a convenient one. It is exactly what breaks for <span class="mono">exp(X)</span>: some directions <span class="mono">z</span> give a convex <span class="mono">zᵀ exp(X) z</span>, others don't — Lab 1 lets you hunt for the failing <span class="mono">z</span>.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Matrix convexity: is zᵀf(X)z convex for every z?</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--normal)"></i> g(t) = zᵀf(X0+tV)z</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> chord (Jensen test)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">X(t) = X0 + t·V is a line of symmetric 2×2 matrices. Pick <b>f</b>, aim the direction <b>z</b> with the angle slider, and watch g(t) = zᵀf(X(t))z. If g dips <i>above</i> the chord anywhere, that z breaks matrix convexity.</p>
+          <div class="chips" id="fpick1">
+            <button class="chip active" data-f="sq">f(X) = X²</button>
+            <button class="chip" data-f="exp">f(X) = exp(X)</button>
+          </div>
+          <div class="ctrl"><label>z angle (direction tested)<span class="val" id="zang1v">20°</span></label><input type="range" id="zang1" min="0" max="180" step="1" value="20"></div>
+          <div class="ctrl"><label>V orientation (line direction)<span class="val" id="vang1v">70°</span></label><input type="range" id="vang1" min="0" max="180" step="1" value="70"></div>
+          <div class="ctrl"><label>X0 spread (eigen-gap)<span class="val" id="x0v">1.2</span></label><input type="range" id="x0" min="0" max="30" step="1" value="12"></div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 restriction to a line -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">restriction to a line</span></div>
+  <hr class="rule"/>
+  <div class="bv">As with ordinary convexity, <span class="mono">f</span> is K-convex iff its restriction to every line in <span class="mono">dom f</span> is K-convex — i.e. <span class="mono">g(t) = f(x + t v)</span> is K-convex in <span class="mono">t</span> for all <span class="mono">x, v</span>.<span class="src">B&amp;V §3.6.2 · L5701–5704</span></div>
+  <p>Many questions reduce to a 1-D check — exactly the move Lab 1 uses: parametrize <span class="mono">X(t) = X0 + tV</span>, then check the scalar curve.</p>
+</section>
+
+<!-- 5 dual characterization -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">dual characterization — the workhorse</span></div>
+    <hr class="rule"/>
+    <div class="bv"><span class="mono">f</span> is K-convex iff for every <span class="mono">w ⪰<sub>K*</sub> 0</span>, the real-valued <span class="mono">wᵀf</span> is convex (ordinary sense); strictly K-convex iff for every nonzero <span class="mono">w ⪰<sub>K*</sub> 0</span>, <span class="mono">wᵀf</span> is strictly convex.<span class="src">B&amp;V §3.6.2 · L5706–5710</span></div>
+    <p>It collapses vector convexity into a family of scalar convexity checks, one per dual-feasible weight <span class="mono">w ∈ K*</span>. It follows from <span class="mono">a ⪯<sub>K</sub> b ⟺ wᵀa ≤ wᵀb</span> for all <span class="mono">w ⪰<sub>K*</sub> 0</span>, applied to both sides of Jensen.</p>
+    <div class="note key"><div class="ic">!</div><p>Matrix convexity is exactly this specialized. For <span class="mono">K = Sᵐ₊</span> (self-dual), the weights are <span class="mono">W ⪰ 0</span> acting by <span class="mono">tr(Wf)</span>. The rank-one <span class="mono">zzᵀ</span> generate <span class="mono">Sᵐ₊</span>, and <span class="mono">tr(zzᵀf) = zᵀfz</span> — so "<span class="mono">tr(Wf)</span> convex for all <span class="mono">W ⪰ 0</span>" is "<span class="mono">zᵀfz</span> convex for all <span class="mono">z</span>," the §3 test.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Componentwise (Rᵐ₊): the dual test needs every weight w ≥ 0</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--halfspace)"></i> f1(x) = a1x²+b1x+c1</span>
+            <span><i style="border-color:#B7791F"></i> f2(x) = a2x²+b2x+c2</span>
+            <span><i style="border-color:var(--normal)"></i> w1f1 + w2f2</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint"><b>K = R²₊</b>, so K* = R²₊ too. f is K-convex iff <b>both</b> f1, f2 are convex. §5's dual test says: wᵀf must be convex for <b>every</b> w ⪰ 0 — try a1 &lt; 0 with w1 small to see the combination stay convex, then raise w1 to see it fail.</p>
+          <div class="ctrl"><label>a1 (curvature of f1)<span class="val" id="a1v">1.0</span></label><input type="range" id="a1" min="-15" max="20" step="1" value="10"></div>
+          <div class="ctrl"><label>a2 (curvature of f2)<span class="val" id="a2v">1.0</span></label><input type="range" id="a2" min="-15" max="20" step="1" value="10"></div>
+          <div class="ctrl"><label>w1 (weight on f1)<span class="val" id="w1v">0.50</span></label><input type="range" id="w1" min="0" max="100" step="1" value="50"></div>
+          <div class="ctrl"><label>w2 (weight on f2)<span class="val" id="w2v">0.50</span></label><input type="range" id="w2" min="0" max="100" step="1" value="50"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 first order -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">differentiable K-convex — first-order condition</span></div>
+  <hr class="rule"/>
+  <div class="bv">A differentiable <span class="mono">f</span> is K-convex iff <span class="mono">dom f</span> is convex and, for all <span class="mono">x, y ∈ dom f</span>,
+    \[ f(y)\ \succeq_K\ f(x) + Df(x)(y-x), \]
+    where <span class="mono">Df(x) ∈ Rᵐˣⁿ</span> is the Jacobian. Strict iff <span class="mono">≻<sub>K</sub></span> for <span class="mono">x ≠ y</span>.<span class="src">B&amp;V §3.6.2 · L5714–5721</span></div>
+  <p>Exact vector analog of <span class="mono">f(y) ≥ f(x) + ∇f(x)ᵀ(y−x)</span>: the affine approximation underestimates <span class="mono">f(y)</span> in the order <span class="mono">⪯<sub>K</sub></span>.</p>
+</section>
+
+<!-- 7 composition theorem -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">composition theorem</span></div>
+  <hr class="rule"/>
+  <div class="bv">If <span class="mono">g : Rⁿ → Rᵖ</span> is K-convex, <span class="mono">h : Rᵖ → R</span> is convex, and the extended-value extension <span class="mono">h̃</span> is <strong>K-nondecreasing</strong>, then <span class="mono">h ∘ g</span> is convex (ordinary sense).<span class="src">B&amp;V §3.6.2 · L5723–5728</span></div>
+  <p>This generalizes "a nondecreasing convex function of a convex function is convex" (§3.2.4): <span class="mono">h̃</span> K-nondecreasing pushes the inner <span class="mono">⪯<sub>K</sub></span> inequality forward through <span class="mono">h</span> without reversing it, and ordinary convexity of <span class="mono">h</span> then closes Jensen. The hypothesis forces <span class="mono">dom h − K = dom h</span>.</p>
+  <div class="note build"><div class="ic">↺</div><p>Note the output type-change: <span class="mono">g</span> is vector/matrix-valued and K-convex, but <span class="mono">h ∘ g</span> is real-valued and ordinarily convex — a bridge from generalized convexity back to scalar convexity.</p></div>
+</section>
+
+<!-- 8 example 3.49 -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§8</span><span class="eyebrow">example 3.49 — worked composition</span></div>
+    <hr class="rule"/>
+    <p>Let <span class="mono">A ∈ Sᵐ</span>, <span class="mono">B ∈ Rᵐˣⁿ</span>, <span class="mono">C ∈ Sⁿ</span>, and <span class="mono">g(X) = XᵀAX + BᵀX + XᵀB + C</span>. Then <span class="mono">g</span> is matrix convex (<span class="mono">Sⁿ₊</span>-convex) when <span class="mono">A ⪰ 0</span>. Take <span class="mono">h(Y) = −log det(−Y)</span>, convex and increasing on <span class="mono">dom h = −Sⁿ₊₊</span>. By the composition theorem,</p>
+    <div class="bv">\[ f(X) = -\log\det\!\big(-(X^{\mathsf T}AX+B^{\mathsf T}X+X^{\mathsf T}B+C)\big) \]
+    is convex on <span class="mono">{X | XᵀAX + BᵀX + XᵀB + C ≺ 0}</span> when <span class="mono">A ⪰ 0</span>.<span class="src">B&amp;V §3.6.2 · L5730–5752</span></div>
+    <p>Generalizes the scalar fact that <span class="mono">−log(−(ax² + bx + c))</span> is convex on <span class="mono">{x | ax²+bx+c &lt; 0}</span> when <span class="mono">a ≥ 0</span>. Lab 3 works exactly this scalar case — it is the <span class="mono">n = m = 1</span> shadow of Example 3.49, and shows both halves: the composition needs <span class="mono">h̃</span> K-nondecreasing (here, ordinary "increasing"), and the inner quadratic needs to stay inside its domain (<span class="mono">q(x) &lt; 0</span>).</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Scalar shadow of Ex. 3.49: −log(−(ax²+bx+c))</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:var(--halfspace)"></i> q(x) = ax²+bx+c</span>
+            <span><i style="border-color:var(--normal)"></i> f(x) = −log(−q(x))</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> dom f: q(x) &lt; 0</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">g(x) = q(x) plays the K-convex inner map; h(y) = −log(−y) is convex and increasing on y &lt; 0. Composition theorem ⟹ f convex on <b>dom f</b> — but only while <b>a ≥ 0</b> (q convex). Push a negative to watch f lose convexity.</p>
+          <div class="ctrl"><label>a (curvature of q)<span class="val" id="a3v">1.0</span></label><input type="range" id="a3" min="-10" max="15" step="1" value="10"></div>
+          <div class="ctrl"><label>b (tilt of q)<span class="val" id="b3v">0.5</span></label><input type="range" id="b3" min="-30" max="30" step="1" value="10"></div>
+          <div class="ctrl"><label>c (shift of q)<span class="val" id="c3v">-2.0</span></label><input type="range" id="c3" min="-40" max="-2" step="1" value="-20"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§9</span><span class="eyebrow">expert lens — diagnose</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">G1</span>Codomain, not domain</p><p>Cone <span class="mono">K ⊆ Rᵐ</span> orders the outputs — the §3.6.1 contrast: monotonicity put the gradient in a domain cone's dual; here <span class="mono">K*</span> only supplies scalarizing weights.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G2</span>Two concrete tests</p><p>Componentwise (<span class="mono">Rᵐ₊</span>): each <span class="mono">fᵢ</span> convex. Matrix (<span class="mono">Sᵐ₊</span>): <span class="mono">zᵀf(x)z</span> convex for all <span class="mono">z</span> (strict: all <span class="mono">z ≠ 0</span>). <span class="mono">XXᵀ</span>, <span class="mono">X²</span> matrix convex; <span class="mono">exp(X)</span> not for <span class="mono">n ≥ 2</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G3</span>Dual characterization</p><p>The everyday tool: <span class="mono">wᵀf</span> convex for every <span class="mono">w ⪰<sub>K*</sub> 0</span>. The matrix test is this with <span class="mono">w = zzᵀ</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G4</span>First-order</p><p><span class="mono">f(y) ⪰<sub>K</sub> f(x) + Df(x)(y−x)</span>, Jacobian <span class="mono">Df</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G5</span>Composition</p><p>Delivers <em>ordinary</em> convexity, and needs <span class="mono">h̃</span> K-nondecreasing (not K-convex).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">G6</span>Traps</p><p>Cone in the codomain not the domain; the matrix test needs <em>every</em> <span class="mono">z</span>; <span class="mono">exp(X)</span> kills naive "scalar convex ⟹ matrix convex."</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-08-28 · bv.3.6.2</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Definition</h6><p>\(f:\mathbb R^n\to\mathbb R^m\) is K-convex if \(f(\theta x+(1-\theta)y)\preceq_K \theta f(x)+(1-\theta)f(y)\) (cone \(K\subseteq\mathbb R^m\) orders outputs); strict with \(\prec_K\). \(m=1,K=\mathbb R_+\) recovers ordinary convexity.</p></div>
+      <div class="scard"><h6>Two concrete tests</h6><p>Componentwise (\(\mathbb R^m_+\)): ⟺ each \(f_i\) convex. Matrix (\(S^m_+\)): ⟺ \(z^{\mathsf T}f(x)z\) convex for all \(z\); \(XX^{\mathsf T}\), \(X^2\) matrix convex; \(X^p\) convex for \(1\le p\le2\)/\(-1\le p\le0\), concave \(0\le p\le1\); \(\exp(X)\) not matrix convex (\(n\ge2\)).</p></div>
+      <div class="scard"><h6>Dual characterization</h6><p>⟺ \(w^{\mathsf T}f\) convex for every \(w\succeq_{K^*}0\) (matrix test = this with \(w=zz^{\mathsf T}\)).</p></div>
+      <div class="scard"><h6>First-order</h6><p>⟺ \(\operatorname{dom}f\) convex and \(f(y)\succeq_K f(x)+Df(x)(y-x)\).</p></div>
+      <div class="scard"><h6>Composition</h6><p>\(g\) K-convex, \(h\) convex, \(\tilde h\) K-nondecreasing ⟹ \(h\circ g\) ordinarily convex. Ex 3.49: \(f(X)=-\log\det(-(X^{\mathsf T}AX+B^{\mathsf T}X+X^{\mathsf T}B+C))\) convex where the matrix quadratic is \(\prec0\) (needs \(A\succeq0\)).</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §3.6.2 (p. 109–111) · interactive study sheet · drag any handle, slide any control · completes Chapter 3.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+
+// ---- generic 2-D function-plot view: world x in [xmin,xmax], world y in [ymin,ymax] ----
+function makePlotView(canvas,xmin,xmax,ymin,ymax){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  const pad=36;
+  return {dims,
+    toS(x,y){const {w,h}=dims();const px=pad+(x-xmin)/(xmax-xmin)*(w-2*pad);
+      const py=(h-pad)-(y-ymin)/(ymax-ymin)*(h-2*pad);return [px,py];},
+    pad};
+}
+function drawAxes(ctx,view,xmin,xmax,ymin,ymax,xlabel,ylabel){
+  const {w,h}=view.dims();ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#FBFAF7";ctx.fillRect(0,0,w,h);
+  ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let gx=Math.ceil(xmin);gx<=xmax;gx++){const a=view.toS(gx,ymin),b=view.toS(gx,ymax);
+    ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  for(let gy=Math.ceil(ymin/5)*5;gy<=ymax;gy+=Math.max(1,Math.round((ymax-ymin)/8))){
+    const a=view.toS(xmin,gy),b=view.toS(xmax,gy);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  if(ymin<0&&ymax>0){const a=view.toS(xmin,0),b=view.toS(xmax,0);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  if(xmin<0&&xmax>0){const a=view.toS(0,ymin),b=view.toS(0,ymax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+}
+function plotCurve(ctx,view,fn,xmin,xmax,color,wd,n){
+  n=n||140;ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();let started=false;
+  for(let i=0;i<=n;i++){const x=xmin+(xmax-xmin)*i/n;const y=fn(x);
+    if(!isFinite(y)){started=false;continue;}
+    const p=view.toS(x,y);if(!started){ctx.moveTo(p[0],p[1]);started=true;}else ctx.lineTo(p[0],p[1]);}
+  ctx.stroke();
+}
+// discrete convexity check over sampled (x,y) pairs: every midpoint must lie <= chord (within tol)
+function isConvexSampled(fn,xmin,xmax,n,tol){
+  n=n||60;tol=tol===undefined?1e-3:tol;let worst=0;
+  for(let i=1;i<n;i++){
+    const x0=xmin+(xmax-xmin)*(i-1)/n, x1=xmin+(xmax-xmin)*(i+1)/n, xm=(x0+x1)/2;
+    const y0=fn(x0),y1=fn(x1),ym=fn(xm),chord=(y0+y1)/2;
+    if(!isFinite(y0)||!isFinite(y1)||!isFinite(ym))continue;
+    worst=Math.max(worst, ym-chord-tol);
+  }
+  return {convex:worst<=0, worst};
+}
+
+/* ===== LAB 1 — matrix convexity zᵀf(X)z ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d");
+  const T=3.2; // t range
+  let mode="sq", zang=20, vang=70, x0spread=12;
+  const chipEls=document.querySelectorAll("#fpick1 .chip");
+  const zEl=document.getElementById("zang1"),vEl=document.getElementById("vang1"),x0El=document.getElementById("x0"),
+        zV=document.getElementById("zang1v"),vV=document.getElementById("vang1v"),x0V=document.getElementById("x0v"),
+        ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+
+  // symmetric 2x2 matrix eigendecomposition: M=[[a,b],[b,c]] -> eigvals l1,l2 and rotation angle
+  function eig2(a,b,c){
+    const tr=a+c, diff=(a-c)/2, disc=Math.sqrt(diff*diff+b*b);
+    const l1=tr/2+disc, l2=tr/2-disc;
+    const ang=0.5*Math.atan2(2*b,(a-c)); // rotation of eigenbasis
+    return {l1,l2,ang};
+  }
+  // apply scalar function to eigenvalues, reconstruct M
+  function matFn(a,b,c,fscalar){
+    const {l1,l2,ang}=eig2(a,b,c);
+    const fl1=fscalar(l1), fl2=fscalar(l2);
+    const cs=Math.cos(ang), sn=Math.sin(ang);
+    // Q = [[cs,-sn],[sn,cs]] columns are eigenvectors; f(M) = Q diag(fl1,fl2) Qᵀ
+    const m11=fl1*cs*cs+fl2*sn*sn;
+    const m22=fl1*sn*sn+fl2*cs*cs;
+    const m12=(fl1-fl2)*cs*sn;
+    return {a:m11,b:m12,c:m22};
+  }
+  function fscalar(l){ return mode==="sq" ? l*l : Math.exp(l); }
+
+  function g(t){
+    const x0=x0spread/10;
+    const va=vang*Math.PI/180, vx=Math.cos(va), vy=Math.sin(va);
+    // X0 fixed diagonal-ish base with spread param, V direction from slider (symmetric 2x2 has 3 dof: a,b,c)
+    const Xa=x0, Xb=0.3, Xc=-x0*0.6;
+    const Va=vx, Vb=vy*0.6, Vc=-vx*0.5+vy*0.4;
+    const a=Xa+t*Va, b=Xb+t*Vb, c=Xc+t*Vc;
+    const M=matFn(a,b,c,fscalar);
+    const za=zang*Math.PI/180, zx=Math.cos(za), zy=Math.sin(za);
+    // zᵀ M z for M=[[a,b],[b,c]]
+    return M.a*zx*zx + 2*M.b*zx*zy + M.c*zy*zy;
+  }
+
+  function draw(){
+    fitCanvas(canvas,ctx);
+    // estimate y-range by sampling
+    let ymin=Infinity,ymax=-Infinity;
+    for(let i=0;i<=80;i++){const t=-T+2*T*i/80;const y=g(t);if(isFinite(y)){ymin=Math.min(ymin,y);ymax=Math.max(ymax,y);}}
+    if(!isFinite(ymin)){ymin=0;ymax=1;}
+    const pad=(ymax-ymin)*0.15+0.05; ymin-=pad; ymax+=pad;
+    const view=makePlotView(canvas,-T,T,ymin,ymax);
+    drawAxes(ctx,view,-T,T,ymin,ymax);
+    // chord between endpoints
+    const gA=g(-T), gB=g(T);
+    ctx.strokeStyle="#2F855A";ctx.lineWidth=2;ctx.setLineDash([7,5]);
+    const pA=view.toS(-T,gA),pB=view.toS(T,gB);
+    ctx.beginPath();ctx.moveTo(pA[0],pA[1]);ctx.lineTo(pB[0],pB[1]);ctx.stroke();ctx.setLineDash([]);
+    // curve
+    plotCurve(ctx,view,g,-T,T,"#D7402B",3);
+    const chk=isConvexSampled(g,-T,T,60,1e-2*(ymax-ymin+1));
+    ro.innerHTML=`<span class="k">g(-T)</span>=<b>${gA.toFixed(2)}</b> &nbsp;<span class="k">g(T)</span>=<b>${gB.toFixed(2)}</b><br>`+
+      `<span class="k">max(curve − chord)</span> = <b>${chk.worst.toFixed(3)}</b>`;
+    if(chk.convex){vd.className="verdict in";vd.textContent="✓ g(t) stays on/below chord — convex for this z";}
+    else{vd.className="verdict out";vd.textContent="✗ g(t) rises above chord — this z breaks matrix convexity";}
+    zV.textContent=zang+"°";vV.textContent=vang+"°";x0V.textContent=(x0spread/10).toFixed(1);
+  }
+  chipEls.forEach(ch=>ch.addEventListener("click",()=>{chipEls.forEach(c=>c.classList.remove("active"));ch.classList.add("active");mode=ch.dataset.f;draw();}));
+  zEl.addEventListener("input",()=>{zang=parseInt(zEl.value);draw();});
+  vEl.addEventListener("input",()=>{vang=parseInt(vEl.value);draw();});
+  x0El.addEventListener("input",()=>{x0spread=parseInt(x0El.value);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — componentwise / dual test over w ∈ K*=R²₊ ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d");
+  const X=3;
+  let a1=1.0,a2=1.0,w1=0.5,w2=0.5;
+  const b1=0.4,c1=0.2,b2=-0.3,c2=0.1;
+  const a1El=document.getElementById("a1"),a2El=document.getElementById("a2"),w1El=document.getElementById("w1"),w2El=document.getElementById("w2"),
+        a1V=document.getElementById("a1v"),a2V=document.getElementById("a2v"),w1V=document.getElementById("w1v"),w2V=document.getElementById("w2v"),
+        ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function f1(x){return a1*x*x+b1*x+c1;}
+  function f2(x){return a2*x*x+b2*x+c2;}
+  function comb(x){return w1*f1(x)+w2*f2(x);}
+  function draw(){
+    fitCanvas(canvas,ctx);
+    let ymin=Infinity,ymax=-Infinity;
+    [f1,f2,comb].forEach(fn=>{for(let i=0;i<=60;i++){const x=-X+2*X*i/60;const y=fn(x);ymin=Math.min(ymin,y);ymax=Math.max(ymax,y);}});
+    const pad=(ymax-ymin)*0.15+0.3; ymin-=pad; ymax+=pad;
+    const view=makePlotView(canvas,-X,X,ymin,ymax);
+    drawAxes(ctx,view,-X,X,ymin,ymax);
+    plotCurve(ctx,view,f1,-X,X,"#2B6CB0",2.2);
+    plotCurve(ctx,view,f2,-X,X,"#B7791F",2.2);
+    plotCurve(ctx,view,comb,-X,X,"#D7402B",3);
+    const f1conv=a1>=0, f2conv=a2>=0;
+    const combConv=(w1*a1+w2*a2)>=-1e-9;
+    ro.innerHTML=`<span class="k">a1</span>=<b>${a1.toFixed(1)}</b> (f1 ${f1conv?"convex":"NOT convex"}) &nbsp;`+
+      `<span class="k">a2</span>=<b>${a2.toFixed(1)}</b> (f2 ${f2conv?"convex":"NOT convex"})<br>`+
+      `<span class="k">w1a1+w2a2</span> = <b>${(w1*a1+w2*a2).toFixed(2)}</b> (curvature of w1f1+w2f2)`;
+    if(f1conv&&f2conv){vd.className="verdict in";vd.textContent="✓ every fᵢ convex ⟹ f is R²₊-convex (all w ≥ 0 pass)";}
+    else if(combConv){vd.className="verdict mid";vd.textContent="mid: this w happens to pass, but not every w ∈ K* will";}
+    else{vd.className="verdict out";vd.textContent="✗ w1f1+w2f2 not convex for this w — f is not K-convex";}
+    a1V.textContent=a1.toFixed(1);a2V.textContent=a2.toFixed(1);w1V.textContent=w1.toFixed(2);w2V.textContent=w2.toFixed(2);
+  }
+  a1El.addEventListener("input",()=>{a1=parseInt(a1El.value)/10;draw();});
+  a2El.addEventListener("input",()=>{a2=parseInt(a2El.value)/10;draw();});
+  w1El.addEventListener("input",()=>{w1=parseInt(w1El.value)/100;draw();});
+  w2El.addEventListener("input",()=>{w2=parseInt(w2El.value)/100;draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — scalar shadow of Example 3.49 ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  const X=4;
+  let a=1.0,b=1.0,c=-2.0;
+  const aEl=document.getElementById("a3"),bEl=document.getElementById("b3"),cEl=document.getElementById("c3"),
+        aV=document.getElementById("a3v"),bV=document.getElementById("b3v"),cV=document.getElementById("c3v"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function q(x){return a*x*x+b*x+c;}
+  function f(x){const qv=q(x); return qv<0 ? -Math.log(-qv) : NaN;}
+  function draw(){
+    fitCanvas(canvas,ctx);
+    let ymin=Infinity,ymax=-Infinity, anyDom=false;
+    for(let i=0;i<=100;i++){const x=-X+2*X*i/100;const y=f(x);if(isFinite(y)){anyDom=true;ymin=Math.min(ymin,y);ymax=Math.max(ymax,y);}}
+    if(!anyDom){ymin=-1;ymax=1;}
+    const qmin=Math.min(...[-X,X].map(q)), qmax=Math.max(0,...[-X,X].map(q));
+    const pad=(ymax-ymin)*0.15+0.4; ymin=Math.min(ymin-pad,-2); ymax=ymax+pad;
+    const view=makePlotView(canvas,-X,X,ymin,ymax);
+    drawAxes(ctx,view,-X,X,ymin,ymax);
+    // shade dom f: q(x) < 0
+    ctx.fillStyle="rgba(47,133,90,0.10)";
+    let inDom=false, startX=null;
+    for(let i=0;i<=200;i++){
+      const x=-X+2*X*i/200; const neg=q(x)<0;
+      if(neg && !inDom){startX=x;inDom=true;}
+      if((!neg||i===200) && inDom){
+        const endX = neg? x : x;
+        const p0=view.toS(startX,ymin),p1=view.toS(endX,ymax);
+        ctx.fillRect(Math.min(p0[0],p1[0]),Math.min(p0[1],p1[1]),Math.abs(p1[0]-p0[0]),Math.abs(p1[1]-p0[1]));
+        inDom=false;
+      }
+    }
+    plotCurve(ctx,view,q,-X,X,"#2B6CB0",2.2);
+    plotCurve(ctx,view,f,-X,X,"#D7402B",3);
+    const chk=isConvexSampled(f,-X,X,80,1e-2*(ymax-ymin+1));
+    const aconv=a>=0;
+    ro.innerHTML=`<span class="k">q(x)=</span><b>${a.toFixed(1)}x²+${b.toFixed(1)}x+${c.toFixed(1)}</b> (${aconv?"convex, a≥0":"NOT convex, a<0"})<br>`+
+      `<span class="k">max(f−chord) on dom f</span> = <b>${isFinite(chk.worst)?chk.worst.toFixed(3):"n/a"}</b>`;
+    if(!anyDom){vd.className="verdict mid";vd.textContent="dom f is empty — q(x) ≥ 0 everywhere shown; widen c or a";}
+    else if(aconv && chk.convex){vd.className="verdict in";vd.textContent="✓ a ≥ 0 ⟹ q convex ⟹ f = −log(−q) convex on dom f";}
+    else{vd.className="verdict out";vd.textContent="✗ a < 0 breaks it — h nondecreasing alone can't save a non-convex g";}
+    aV.textContent=a.toFixed(1);bV.textContent=b.toFixed(1);cV.textContent=c.toFixed(1);
+  }
+  aEl.addEventListener("input",()=>{a=parseInt(aEl.value)/10;draw();});
+  bEl.addEventListener("input",()=>{b=parseInt(bEl.value)/10;draw();});
+  cEl.addEventListener("input",()=>{c=parseInt(cEl.value)/10;draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>

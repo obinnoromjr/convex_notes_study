@@ -191,6 +191,17 @@ Lab guidelines:
   `psd_cone.html` / `norm_balls_and_cones.html`).
 - **SVG rule:** CSS `var(--…)` does **not** resolve inside SVG presentation attributes.
   In the hero SVG use **hard-coded hex** (`fill="#D7402B"`), never `fill="var(--normal)"`.
+- **No KaTeX in the lab chrome (recurring bug — check it).** Inside `.legend`, `.ctrl label`,
+  and the `.lab-head h4` title, write math as **plain Unicode** (`K*`, `∇f = c`, `x ⪯ y`,
+  `v = (cos φ, sin φ)`, `R²₊`, `tr(WX)`, `X₀ + t·vvᵀ`) — never `\(…\)`. KaTeX renders each
+  fragment as an inline-block that will not shrink, so in those narrow boxes every row
+  line-breaks. In the legend that is destructive rather than merely ugly: `.legend span`
+  carries an 82%-opaque paper background, so the broken rows tile translucent pills across
+  the canvas and wash the whole drawing out (it reads as "blurry"). Keep each legend row to
+  **one short line, ≤ ~30 characters.** `.hint`, `.readout` and `.verdict` are plain text too.
+  KaTeX belongs in the prose, the `.bv` blockquotes, `.proof` steps, `.note`s and the summary.
+- **Legend placement:** the legend sits at `left:14px; top:12px`. On a band-plot lab that
+  corner holds the top plot's title — drop the legend there and say it in the `.hint` instead.
 - **Keep every shape inside the frame (recurring bug — check it).** Cones/wedges and any
   drawn region must be **bounded sectors that sit fully within the grid**, never filled or
   stroked out to the frame edge — or they clip and look cut off. On canvas, draw wedges as
@@ -206,7 +217,11 @@ Lab guidelines:
 Run in the workspace shell:
 1. Extract the `<script>` and `node --check` it (syntax).
 2. Confirm **no `var(--` inside any `<svg>`**.
-3. **Frame-containment check (required — this is a recurring bug).** Programmatically confirm
+3. **Lab-chrome KaTeX check (required — this is a recurring bug).** Assert there is no `\(`
+   inside any `<div class="legend">`, any `<label>` in a `.ctrl`, or any `.lab-head h4` — and
+   that every legend row is a single line of ≤ ~30 characters. One grep; it catches the
+   failure that makes labs look blurry.
+4. **Frame-containment check (required — this is a recurring bug).** Programmatically confirm
    every shape stays inside its frame *before* presenting:
    - Grep the script for any wedge/sector "far" radius and confirm it is **≤ 4.4** (grid
      `range = 5`); confirm ray/label radii are ≤ 4.6.
@@ -215,12 +230,12 @@ Run in the workspace shell:
      Then **render the hero to PNG** (`cairosvg` or `rsvg-convert`) and **view it** to confirm
      no cone spills off the top/right/bottom. Do the same visual check for the labs' initial
      state if feasible.
-4. **Node-sample the core math** to prove the lab is correct — e.g. verify an identity over
+5. **Node-sample the core math** to prove the lab is correct — e.g. verify an identity over
    10–20k random inputs, or that a constructed object satisfies its defining inequality.
    (Examples used before: PSD three-condition ⇔ eigenvalue test; perspective
    `P(θx+(1−θ)y)=μP(x)+(1−μ)P(y)`; separator `f≤0` on C and `f≥0` on D; ℓ_p boundary norm = r;
    dual-inequality `x ≼_K y ⟺ λᵀz ≥ 0 ∀ λ∈K*` via extreme rays.)
-5. Then re-read the source against the page for the fidelity check (§2).
+6. Then re-read the source against the page for the fidelity check (§2).
 
 ---
 
