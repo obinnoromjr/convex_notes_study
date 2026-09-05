@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§4.1.2 — Expressing Problems in Standard Form</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:hover{border-color:var(--ink-soft)}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.excard{margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exhead{padding:11px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.excard .exbody{padding:6px 4px}
+.exrow{display:flex;gap:16px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--paper-2)}
+.exrow:last-child{border-bottom:none}
+.exrow .ef{flex:0 0 118px;font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--ink)}
+.exrow .ed{flex:1;font-size:16.5px;color:var(--ink-soft)}
+.exrow .ed b{color:var(--ink)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+  .exrow{flex-direction:column;gap:4px}
+  .exrow .ef{flex:none}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §4.1.2</div>
+    <h1>Expressing problems<br><em>in standard form</em></h1>
+    <p class="sub">§4.1.1 fixed the vocabulary. This is the mechanics of getting a problem into it: zero out every right-hand side, split two-sided bounds into one-sided ones, and turn a maximization into a minimization. Still the general problem — no convexity yet.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> a≥b → b−a≤0</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> n bounds → 2n constraints</span>
+      <span><span class="dot" style="background:var(--inside)"></span> max f₀ ≡ min −f₀</span>
+      <span>B&amp;V §4.1.2, pp. 129–130 · mastery: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A box constraint l sub i less than or equal to x sub i less than or equal to u sub i splitting into two one-sided constraints l minus x less than or equal to 0 and x minus u less than or equal to 0.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+
+        <!-- left: the two-sided box in R^2 -->
+        <rect x="60" y="55" width="150" height="130" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.8"/>
+        <text x="60" y="44" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="12">l ≤ x ≤ u</text>
+        <line x1="60" y1="55" x2="60" y2="185" stroke="#17223B" stroke-width="2"/>
+        <line x1="210" y1="55" x2="210" y2="185" stroke="#17223B" stroke-width="2"/>
+        <line x1="60" y1="55" x2="210" y2="55" stroke="#17223B" stroke-width="2"/>
+        <line x1="60" y1="185" x2="210" y2="185" stroke="#17223B" stroke-width="2"/>
+        <text x="98" y="205" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">two-sided</text>
+
+        <!-- arrow -->
+        <line x1="252" y1="120" x2="330" y2="120" stroke="#D7402B" stroke-width="2.4"/>
+        <polygon points="330,120 318,113 318,127" fill="#D7402B"/>
+        <text x="256" y="103" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">split</text>
+
+        <!-- right: four one-sided half-plane boundaries, same box but drawn as separate constraints -->
+        <rect x="410" y="55" width="150" height="130" fill="none" stroke="#D9D3C6" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="410" y1="45" x2="410" y2="195" stroke="#D7402B" stroke-width="2.2"/>
+        <line x1="560" y1="45" x2="560" y2="195" stroke="#D7402B" stroke-width="2.2"/>
+        <line x1="400" y1="55" x2="570" y2="55" stroke="#D7402B" stroke-width="2.2"/>
+        <line x1="400" y1="185" x2="570" y2="185" stroke="#D7402B" stroke-width="2.2"/>
+        <text x="368" y="122" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="10.5">l−x≤0</text>
+        <text x="566" y="122" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="10.5">x−u≤0</text>
+        <text x="452" y="38" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="10.5">l−x≤0</text>
+        <text x="452" y="204" fill="#C0392B" font-family="JetBrains Mono, monospace" font-size="10.5">x−u≤0</text>
+        <text x="440" y="215" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">4 one-sided (2n)</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§4.1.1 fixed the vocabulary of the standard-form problem (4.1). This subsection is the mechanics of getting a problem into that form: how to zero out the right-hand sides, the canonical box-constraint example, and how a maximization is handled. Still the general problem — no convexity assumed (that's §4.2), and the deeper equivalence transformations are §4.1.3.</p>
+</section>
+
+<!-- 1 the zero-RHS convention -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">the standard-form convention</span></div>
+  <hr class="rule"/>
+  <p>We call (4.1) the <strong>standard form</strong>. The convention is that the right-hand sides of the inequality and equality constraints are zero. Any nonzero RHS is subtracted off:</p>
+  <div class="bv">
+    an equality \(g_i(x)=\tilde g_i(x)\) is represented as \(h_i(x)=0\) with \(h_i(x)=g_i(x)-\tilde g_i(x)\);<br>
+    an inequality \(f_i(x)\ge 0\) is represented as \(-f_i(x)\le 0\).
+    <span class="src">B&amp;V L6613–6618</span>
+  </div>
+  <p>Two moves: move everything to one side (RHS becomes 0), and for a <span class="mono">≥</span> constraint, negate so it reads <span class="mono">≤ 0</span>. So <span class="mono">a(x) ≤ b(x)</span> becomes <span class="mono">a(x) − b(x) ≤ 0</span>; <span class="mono">a(x) ≥ b(x)</span> becomes <span class="mono">b(x) − a(x) ≤ 0</span>.</p>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Zero-RHS transcription</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#2B6CB0"></i> a(x)</span>
+          <span><i style="border-color:#17223B"></i> b(x)</span>
+          <span><i class="sw" style="background:var(--normal-soft);border:1px solid var(--normal)"></i> transcribed fᵢ or hᵢ</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Pick the raw relation, then drag <b>a</b> and <b>b</b> on the number line. Watch the standard-form value update — and check its sign convention against the relation you picked.</p>
+        <div class="chips">
+          <button class="chip on" data-rel="le">a ≤ b</button>
+          <button class="chip" data-rel="ge">a ≥ b</button>
+          <button class="chip" data-rel="eq">a = b</button>
+        </div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn"><div class="ic">!</div><p>Forgetting the negation on a <span class="mono">≥</span> constraint is the classic error — <span class="mono">fᵢ(x) ≥ 0</span> is <em>not</em> standard form; you must write <span class="mono">−fᵢ(x) ≤ 0</span>.</p></div>
+</section>
+
+<!-- 2 Example 4.2 box constraints -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">example 4.2 — box constraints</span></div>
+    <hr class="rule"/>
+    <div class="bv">
+      minimize \(f_0(x)\)<br>
+      subject to \(l_i\le x_i\le u_i,\quad i=1,\dots,n\)
+      <span class="src">B&amp;V L6620–6641</span>
+    </div>
+    <p>with <span class="mono">x ∈ Rⁿ</span>. These are <strong>variable bounds</strong> (each <span class="mono">xᵢ</span> gets a lower and upper bound) or <strong>box constraints</strong> (the feasible set is a box). Each two-sided bound <span class="mono">lᵢ ≤ xᵢ ≤ uᵢ</span> splits into two one-sided constraints:</p>
+    <div class="bv">
+      minimize \(f_0(x)\)<br>
+      subject to \(l_i-x_i\le 0,\quad i=1,\dots,n\)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(x_i-u_i\le 0,\quad i=1,\dots,n\)
+      <span class="src">B&amp;V L6620–6641</span>
+    </div>
+    <p>There are <span class="mono">2n</span> inequality constraint functions: <span class="mono">fᵢ(x) = lᵢ − xᵢ</span> (<span class="mono">i = 1..n</span>) and <span class="mono">fᵢ(x) = x_{i−n} − u_{i−n}</span> (<span class="mono">i = n+1..2n</span>).</p>
+    <div class="note key"><div class="ic">!</div><p>The key point: <span class="mono">n</span> two-sided bounds become <span class="mono">2n</span> one-sided <span class="mono">≤ 0</span> constraints.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Box constraints, n = 2 — four one-sided functions</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> feasible box</span>
+            <span><i style="border-color:#C0392B"></i> active fᵢ(x)=0</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Slide <b>l₁,u₁,l₂,u₂</b> to resize the box. Drag <b>x</b> inside it. Each edge is one of the <b>2n=4</b> one-sided functions <b>fᵢ</b> — it turns red exactly when that <b>fᵢ(x)=0</b>.</p>
+          <div class="ctrl"><label>l₁ <span class="val" id="l1v">−2.0</span></label><input type="range" id="l1" min="-3.5" max="0" step="0.1" value="-2"></div>
+          <div class="ctrl"><label>u₁ <span class="val" id="u1v">2.0</span></label><input type="range" id="u1" min="0" max="3.5" step="0.1" value="2"></div>
+          <div class="ctrl"><label>l₂ <span class="val" id="l2v">−1.5</span></label><input type="range" id="l2" min="-3.5" max="0" step="0.1" value="-1.5"></div>
+          <div class="ctrl"><label>u₂ <span class="val" id="u2v">2.5</span></label><input type="range" id="u2" min="0" max="3.5" step="0.1" value="2.5"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 maximization -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">maximization problems</span></div>
+    <hr class="rule"/>
+    <p>By convention we work with minimization. A maximization problem (4.2)</p>
+    <div class="bv">maximize \(f_0(x)\) subject to \(f_i(x)\le 0,\ h_i(x)=0\)<span class="src">B&amp;V L6643–6659</span></div>
+    <p>is solved by minimizing <span class="mono">−f₀</span> over the same constraints. The feasible set is unchanged, and the §4.1.1 terms carry over with the natural sign flips:</p>
+    <ul class="reads">
+      <li><span class="tag">optimal value</span><div>\(p^\star=\sup\{\,f_0(x)\mid f_i(x)\le0,\ h_i(x)=0\,\}\) (note <span class="mono">sup</span>, not <span class="mono">inf</span>), and it equals <span class="mono">−inf{−f₀(x) | x feasible}</span> — the negative of the optimal value of <span class="mono">minimize −f₀</span> (an infimum, which need not be attained).</div></li>
+      <li><span class="tag">ε-suboptimal</span><div>A feasible <span class="mono">x</span> is ε-suboptimal if <span class="mono">f₀(x) ≥ p⋆ − ε</span> (the inequality flips relative to the minimization case <span class="mono">f₀(x) ≤ p⋆ + ε</span>).</div></li>
+      <li><span class="tag">utility</span><div>For a maximization the objective is sometimes called the <strong>utility</strong> or <strong>satisfaction level</strong> rather than the cost.</div></li>
+    </ul>
+    <p>A point <span class="mono">x</span> is optimal for <span class="mono">maximize f₀</span> iff it is optimal for <span class="mono">minimize −f₀</span>; the two are equivalent, with optimal values related by <span class="mono">p⋆_max = −p⋆_min</span>.</p>
+    <div class="note warn"><div class="ic">!</div><p>Using the minimization ε-sign (<span class="mono">f₀(x) ≤ p⋆ + ε</span>) for a maximization problem is the recurring slip — check which direction "sub-optimal" points.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>max f₀ ≡ min −f₀ — and the ε-suboptimal flip</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:#D7402B"></i> plotted objective</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> ε-suboptimal band</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <div class="chips">
+            <button class="chip on" data-mode="max">maximize f₀(x)</button>
+            <button class="chip" data-mode="min">minimize −f₀(x)</button>
+          </div>
+          <p class="hint">Drag <b>x</b> along the curve. Slide <b>ε</b>. Both modes test the <em>same</em> point against their own sign convention — a correct implementation always agrees.</p>
+          <div class="ctrl"><label>ε <span class="val" id="ev3">0.50</span></label><input type="range" id="eps3" min="0" max="4" step="0.05" value="0.5"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">E1</span>Zero-RHS convention</p><p>Move everything to one side. <span class="mono">a ≤ b</span> → <span class="mono">a − b ≤ 0</span>; <span class="mono">a ≥ b</span> → <span class="mono">b − a ≤ 0</span>; <span class="mono">gᵢ = g̃ᵢ</span> → <span class="mono">gᵢ − g̃ᵢ = 0</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E2</span><span class="mono">≥</span> needs a negation</p><p><span class="mono">fᵢ ≥ 0</span> → <span class="mono">−fᵢ ≤ 0</span>. Forgetting the sign flip is the classic error.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E3</span>Box constraints</p><p><span class="mono">n</span> two-sided bounds → <span class="mono">2n</span> one-sided functions; feasible set is a box.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E4</span>Maximization</p><p><span class="mono">max f₀</span> ≡ <span class="mono">min −f₀</span> over the same feasible set; <span class="mono">p⋆ = sup f₀ = −p⋆_min</span>; ε-suboptimal <span class="mono">f₀(x) ≥ p⋆ − ε</span> (flipped); objective is a "utility."</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E5</span>Traps</p><p>Leaving a nonzero RHS; writing a <span class="mono">≥ 0</span> (not <span class="mono">≤ 0</span>) inequality in standard form; using the minimization ε-sign (<span class="mono">≤ p⋆ + ε</span>) for a maximization; counting <span class="mono">n</span> instead of <span class="mono">2n</span> box constraints.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E6</span>Scope</p><p>Mechanics only — equivalence transformations (change of variables, slack variables, epigraph form) are §4.1.3; convexity is §4.2.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-09-01 · bv.4.1.2 · Expressing problems in standard form (B&amp;V §4.1.2)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Zero-RHS convention</h6><p>Subtract off nonzero right-hand sides. Equality \(g_i=\tilde g_i\) → \(g_i-\tilde g_i=0\); inequality \(f_i\ge0\) → \(-f_i\le0\) (\(a\ge b\) → \(b-a\le0\)).</p></div>
+      <div class="scard"><h6>Box constraints (Ex 4.2)</h6><p>\(l_i\le x_i\le u_i\) (\(i{=}1..n\)) → 2n one-sided constraints \(l_i-x_i\le0\) and \(x_i-u_i\le0\); feasible set is a box.</p></div>
+      <div class="scard"><h6>Maximization</h6><p>\(\text{maximize } f_0\) is solved by \(\text{minimize } -f_0\) over the same feasible set; \(p^\star=\sup f_0=-p^\star_{\min}\); ε-suboptimal \(f_0(x)\ge p^\star-\varepsilon\); objective = utility/satisfaction.</p></div>
+      <div class="scard"><h6>Scope</h6><p>Conventions only; equivalence transformations are §4.1.3, convexity is §4.2.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §4.1.2 (p. 129–130) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+
+/* generic rectangular (non-symmetric) view for the function-plot labs */
+function makeRect(canvas,xMin,xMax,yMin,yMax,padL,padB){
+  padL=padL||46; padB=padB||34;
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  return {dims,
+    toS(x,y){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [padL+(x-xMin)/(xMax-xMin)*iw, 20+ih-(y-yMin)/(yMax-yMin)*ih];},
+    toW(px,py){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [xMin+(px-padL)/iw*(xMax-xMin), yMin+(20+ih-py)/ih*(yMax-yMin)];}};
+}
+function drawAxes(ctx,rv,xMin,xMax,yMin,yMax){
+  const {w,h}=rv.dims();ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  for(let gx=Math.ceil(xMin);gx<=xMax;gx++){const a=rv.toS(gx,yMin),b=rv.toS(gx,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  for(let gy=Math.ceil(yMin);gy<=yMax;gy++){const a=rv.toS(xMin,gy),b=rv.toS(xMax,gy);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  if(yMin<0&&yMax>0){const a=rv.toS(xMin,0),b=rv.toS(xMax,0);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  if(xMin<=0&&xMax>=0){const a=rv.toS(0,yMin),b=rv.toS(0,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  else {const a=rv.toS(xMin,yMin),b=rv.toS(xMin,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+}
+
+/* ===== LAB 1 — zero-RHS transcription on a number line ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d");
+  const xMin=-5,xMax=5;
+  function toX(v){const r=canvas.getBoundingClientRect();const pad=40;
+    return pad+(v-xMin)/(xMax-xMin)*(r.width-2*pad);}
+  function fromX(px){const r=canvas.getBoundingClientRect();const pad=40;
+    return xMin+(px-pad)/(r.width-2*pad)*(xMax-xMin);}
+  let a=1.4, b=3.1, rel="le";
+  const chips=document.querySelectorAll('[data-rel]'),ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  chips.forEach(ch=>ch.addEventListener("click",()=>{chips.forEach(c=>c.classList.remove("on"));ch.classList.add("on");rel=ch.dataset.rel;draw();}));
+
+  function standardForm(){
+    if(rel==="le") return {name:"fᵢ(x) = a − b", val:a-b, kind:"ineq"};
+    if(rel==="ge") return {name:"fᵢ(x) = b − a", val:b-a, kind:"ineq"};
+    return {name:"hᵢ(x) = a − b", val:a-b, kind:"eq"};
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);
+    const midY=r.height/2;
+    // axis
+    ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(toX(xMin),midY);ctx.lineTo(toX(xMax),midY);ctx.stroke();
+    for(let t=xMin;t<=xMax;t++){const x=toX(t);ctx.beginPath();ctx.moveTo(x,midY-6);ctx.lineTo(x,midY+6);ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;ctx.stroke();
+      label(ctx,String(t),x-4,midY+22,"#8A91A3",10);}
+    // a and b points
+    const ax=toX(a), bx=toX(b);
+    dot(ctx,ax,midY,7,"#fff","#2B6CB0"); label(ctx,"a",ax-4,midY-18,"#2B6CB0",13);
+    dot(ctx,bx,midY,7,"#fff","#17223B"); label(ctx,"b",bx-4,midY+34,"#17223B",13);
+    // connecting bracket showing gap a-b
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=1.6;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(ax,midY);ctx.lineTo(bx,midY);ctx.stroke();ctx.setLineDash([]);
+
+    const sf=standardForm();
+    const relStr = rel==="le" ? "a ≤ b" : rel==="ge" ? "a ≥ b" : "a = b";
+    const holds = rel==="le" ? a<=b : rel==="ge" ? a>=b : Math.abs(a-b)<1e-6;
+    const stdHolds = sf.kind==="eq" ? Math.abs(sf.val)<1e-6 : sf.val<=1e-9;
+    ro.innerHTML=`<span class="k">relation</span> = <b>${relStr}</b><br>`+
+      `<span class="k">a</span> = <b>${a.toFixed(2)}</b> &nbsp; <span class="k">b</span> = <b>${b.toFixed(2)}</b><br>`+
+      `<span class="k">standard form</span> = <b>${sf.name} = ${sf.val.toFixed(2)}</b><br>`+
+      `<span class="k">requires</span> <b>${sf.kind==="eq"?"= 0":"≤ 0"}</b>`;
+    if(holds===stdHolds){vd.className="verdict in";vd.textContent="✓ standard form agrees with the raw relation";}
+    else{vd.className="verdict out";vd.textContent="✗ mismatch — check the sign flip";}
+  }
+  let dragging=null;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const r=canvas.getBoundingClientRect();const midY=r.height/2;
+    const ax=toX(a),bx=toX(b);
+    if(Math.hypot(p[0]-ax,p[1]-midY)<22){dragging="a";canvas.setPointerCapture(ev.pointerId);}
+    else if(Math.hypot(p[0]-bx,p[1]-midY)<22){dragging="b";canvas.setPointerCapture(ev.pointerId);}
+  });
+  canvas.addEventListener("pointermove",ev=>{if(!dragging)return;const p=pos(ev);const v=clamp(fromX(p[0]),xMin,xMax);
+    if(dragging==="a")a=v; else b=v; draw();});
+  canvas.addEventListener("pointerup",()=>dragging=null);canvas.addEventListener("pointercancel",()=>dragging=null);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — box constraints, n=2, four one-sided functions ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=4,view=makeView(canvas,R);
+  let l1=-2,u1=2,l2=-1.5,u2=2.5,x={x:0,y:0.5};
+  const el={l1:document.getElementById("l1"),u1:document.getElementById("u1"),l2:document.getElementById("l2"),u2:document.getElementById("u2")};
+  const val={l1:document.getElementById("l1v"),u1:document.getElementById("u1v"),l2:document.getElementById("l2v"),u2:document.getElementById("u2v")};
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function cons(p){ // f1=l1-x1, f2=x1-u1, f3=l2-x2, f4=x2-u2
+    return [l1-p.x, p.x-u1, l2-p.y, p.y-u2];
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    // clamp box within grid margin
+    const bl1=Math.max(l1,-R+0.2),bu1=Math.min(u1,R-0.2),bl2=Math.max(l2,-R+0.2),bu2=Math.min(u2,R-0.2);
+    const p0=view.toS(bl1,bl2),p1=view.toS(bu1,bu2);
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fillRect(p0[0],p1[1],p1[0]-p0[0],p0[1]-p1[1]);
+    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.4;ctx.strokeRect(p0[0],p1[1],p1[0]-p0[0],p0[1]-p1[1]);
+
+    const c=cons(x),eps=0.08;
+    const edges=[
+      {p1:[bl1,bl2],p2:[bl1,bu2],idx:0,lbl:"f₁=l₁−x₁"},
+      {p1:[bu1,bl2],p2:[bu1,bu2],idx:1,lbl:"f₂=x₁−u₁"},
+      {p1:[bl1,bl2],p2:[bu1,bl2],idx:2,lbl:"f₃=l₂−x₂"},
+      {p1:[bl1,bu2],p2:[bu1,bu2],idx:3,lbl:"f₄=x₂−u₂"}
+    ];
+    edges.forEach(e=>{
+      const active=Math.abs(c[e.idx])<eps;
+      const s1=view.toS(e.p1[0],e.p1[1]),s2=view.toS(e.p2[0],e.p2[1]);
+      ctx.strokeStyle=active?"#C0392B":"#17223B";ctx.lineWidth=active?3.4:1.8;
+      ctx.beginPath();ctx.moveTo(s1[0],s1[1]);ctx.lineTo(s2[0],s2[1]);ctx.stroke();
+    });
+    const xClamped={x:clamp(x.x,-R+0.15,R-0.15),y:clamp(x.y,-R+0.15,R-0.15)};
+    const feasible = c[0]<=eps && c[1]<=eps && c[2]<=eps && c[3]<=eps;
+    const xS=view.toS(xClamped.x,xClamped.y);
+    dot(ctx,xS[0],xS[1],6,"#fff",feasible?"#17223B":"#C0392B");
+    label(ctx,"x",xS[0]+9,xS[1]-9,"#17223B",13);
+
+    const activeList=edges.filter(e=>Math.abs(c[e.idx])<eps).map(e=>"f"+(e.idx+1));
+    ro.innerHTML=`<span class="k">x</span> = (${x.x.toFixed(2)}, ${x.y.toFixed(2)})<br>`+
+      `<span class="k">f₁,f₂,f₃,f₄</span> = (${c[0].toFixed(2)}, ${c[1].toFixed(2)}, ${c[2].toFixed(2)}, ${c[3].toFixed(2)})<br>`+
+      `<span class="k">active</span> = ${activeList.length?activeList.join(", "):"none"}`;
+    if(!feasible){vd.className="verdict out";vd.textContent="✗ infeasible — some fᵢ(x) > 0";}
+    else if(activeList.length){vd.className="verdict in";vd.textContent="feasible — on the boundary ("+activeList.length+" active)";}
+    else{vd.className="verdict mid";vd.textContent="feasible, interior — all 4 inactive";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(x.x,x.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<24){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(x.x,x.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<24?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);x={x:clamp(wv[0],-R+0.15,R-0.15),y:clamp(wv[1],-R+0.15,R-0.15)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  el.l1.addEventListener("input",()=>{l1=parseFloat(el.l1.value);val.l1.textContent=l1.toFixed(1);draw();});
+  el.u1.addEventListener("input",()=>{u1=parseFloat(el.u1.value);val.u1.textContent=u1.toFixed(1);draw();});
+  el.l2.addEventListener("input",()=>{l2=parseFloat(el.l2.value);val.l2.textContent=l2.toFixed(1);draw();});
+  el.u2.addEventListener("input",()=>{u2=parseFloat(el.u2.value);val.u2.textContent=u2.toFixed(1);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — max f0 ≡ min -f0, epsilon-suboptimal flip ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  const xMin=-2,xMax=6;
+  let mode="max", eps=0.5, x0=1.0;
+  function f0(x){return 5-0.3*(x-2)*(x-2);} // concave hump, peak 5 at x=2
+  // p*_max = sup f0 = 5 at x=2 (attained); p*_min for -f0 = -5 at x=2
+  const pStarMax=5, pStarMin=-5, xStar=2;
+  function plotted(x){return mode==="max" ? f0(x) : -f0(x);}
+  const yMin=-6,yMax=6;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  const chips=document.querySelectorAll('[data-mode]'),eps3=document.getElementById("eps3"),ev3=document.getElementById("ev3");
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  chips.forEach(ch=>ch.addEventListener("click",()=>{chips.forEach(c=>c.classList.remove("on"));ch.classList.add("on");mode=ch.dataset.mode;draw();}));
+  eps3.addEventListener("input",()=>{eps=parseFloat(eps3.value);ev3.textContent=eps.toFixed(2);draw();});
+
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    // eps-suboptimal band, drawn in the CURRENT mode's own coordinates, always corresponding to f0(x) >= pStarMax - eps
+    const pStar = mode==="max" ? pStarMax : pStarMin;
+    const bandLoY = mode==="max" ? (pStar-eps) : yMin; // for max: f0>=pStar-eps -> band is [pStar-eps, pStar] in plotted y
+    const bandHiY = mode==="max" ? pStar : (pStar+eps);
+    const a=rv.toS(xMin,mode==="max"?bandLoY:pStarMin), b=rv.toS(xMax,mode==="max"?bandHiY:bandHiY);
+    // shade horizontal band between bandLoY/bandHiY (works for both modes since we recompute per mode)
+    const lo = mode==="max" ? (pStar-eps) : (pStar);
+    const hi = mode==="max" ? (pStar) : (pStar+eps);
+    const s0=rv.toS(xMin,lo), s1=rv.toS(xMax,hi);
+    ctx.fillStyle="rgba(47,133,90,0.10)";
+    ctx.fillRect(s0[0],s1[1],s1[0]-s0[0],s0[1]-s1[1]);
+
+    // curve
+    ctx.beginPath();let first=true;
+    for(let x=xMin;x<=xMax;x+=0.02){const y=clamp(plotted(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=2.2;ctx.stroke();
+
+    // p* marker
+    const pS=rv.toS(xStar,pStar);
+    dot(ctx,pS[0],pS[1],5.5,"#fff","#17223B");
+    label(ctx,"p⋆="+pStar.toFixed(0),pS[0]+8,pS[1]-12,"#17223B",12);
+
+    // dragged point
+    const xx=clamp(x0,xMin,xMax), yy=clamp(plotted(xx),yMin,yMax), xS=rv.toS(xx,yy);
+    dot(ctx,xS[0],xS[1],6,"#fff","#2F855A");
+    label(ctx,"x",xS[0]+9,xS[1]-10,"#17223B",13);
+
+    // suboptimality test, always phrased against the ORIGINAL f0 for correctness check across modes
+    const f0x=f0(xx);
+    const subMax = f0x >= pStarMax-eps;       // maximize criterion
+    const subMin = (-f0x) <= pStarMin+eps;    // minimize criterion — should always agree with subMax
+    const agree = subMax===subMin;
+    ro.innerHTML=`<span class="k">mode</span> = <b>${mode==="max"?"maximize f₀":"minimize −f₀"}</b><br>`+
+      `<span class="k">x</span> = <b>${xx.toFixed(2)}</b> &nbsp; <span class="k">f₀(x)</span> = <b>${f0x.toFixed(3)}</b><br>`+
+      `<span class="k">criterion</span> = <b>${mode==="max"?`f₀(x) ≥ p⋆−ε = ${(pStarMax-eps).toFixed(2)}`:`−f₀(x) ≤ p⋆+ε = ${(pStarMin+eps).toFixed(2)}`}</b><br>`+
+      `<span class="k">ε-suboptimal?</span> <b>${mode==="max"?subMax:subMin}</b>`;
+    const isSub = mode==="max" ? subMax : subMin;
+    if(!agree){vd.className="verdict out";vd.textContent="✗ mismatch between max/min criteria — shouldn't happen";}
+    else if(isSub){vd.className="verdict in";vd.textContent="✓ ε-suboptimal in both formulations";}
+    else{vd.className="verdict mid";vd.textContent="not yet ε-suboptimal — drag closer to x⋆";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=rv.toS(clamp(x0,xMin,xMax),clamp(plotted(x0),yMin,yMax));if(Math.hypot(p[0]-s[0],p[1]-s[1])<26){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act)return;const wv=rv.toW(p[0],p[1]);x0=clamp(wv[0],xMin,xMax);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
