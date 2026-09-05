@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§4.1.3 — Equivalent Problems</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:hover{border-color:var(--ink-soft)}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.excard{margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exhead{padding:11px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.excard .exbody{padding:6px 4px}
+.exrow{display:flex;gap:16px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--paper-2)}
+.exrow:last-child{border-bottom:none}
+.exrow .ef{flex:0 0 118px;font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--ink)}
+.exrow .ed{flex:1;font-size:16.5px;color:var(--ink-soft)}
+.exrow .ed b{color:var(--ink)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+  .exrow{flex-direction:column;gap:4px}
+  .exrow .ef{flex:none}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §4.1.3</div>
+    <h1>Equivalent<br><em>problems</em></h1>
+    <p class="sub">§4.1.1–§4.1.2 fixed the standard form. This section is the toolbox: ways to rewrite a problem into a different but equivalent one — a solution of one readily gives a solution of the other, even when the feasible set, variable space, or optimal value changes. Still the general problem — no convexity required (that's §4.2).</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> readily-recoverable solution, not identity</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> 7 transformations</span>
+      <span><span class="dot" style="background:var(--inside)"></span> equivalent ≠ identical</span>
+      <span>B&amp;V §4.1.3, pp. 130–136 · mastery target: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 220" role="img" aria-label="Two boxes labeled problem P and problem P tilde connected by a two way arrow, showing a solution of one readily gives a solution of the other.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="220" fill="url(#dots)"/>
+        <rect x="55" y="60" width="190" height="100" rx="14" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.8"/>
+        <text x="150" y="98" fill="#17223B" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="600" text-anchor="middle">P</text>
+        <text x="150" y="122" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">min f₀(x)</text>
+        <text x="150" y="140" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">x ∈ Rⁿ</text>
+
+        <rect x="395" y="60" width="190" height="100" rx="14" fill="rgba(215,64,43,0.08)" stroke="#D7402B" stroke-width="1.8"/>
+        <text x="490" y="98" fill="#17223B" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="600" text-anchor="middle">P̃</text>
+        <text x="490" y="122" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">min f̃₀(z)</text>
+        <text x="490" y="140" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">z ∈ Rᵏ</text>
+
+        <line x1="248" y1="98" x2="392" y2="98" stroke="#17223B" stroke-width="2"/>
+        <polygon points="392,98 380,91 380,105" fill="#17223B"/>
+        <text x="255" y="90" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="10.5">x solves P ⟹</text>
+
+        <line x1="392" y1="128" x2="248" y2="128" stroke="#17223B" stroke-width="2"/>
+        <polygon points="248,128 260,121 260,135" fill="#17223B"/>
+        <text x="270" y="150" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="10.5">⟸ z solves P̃</text>
+
+        <text x="320" y="196" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">readily recoverable — not necessarily the same x</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§4.1.1–§4.1.2 fixed the standard form and its conventions. This section is the toolbox of equivalence transformations — ways to rewrite a problem into a different but equivalent one. It's used constantly later, in modeling and in reformulating a problem into a solvable form. Still the general problem: equivalence here does not require convexity (that's §4.2).</p>
+  <div class="bv">
+    <strong>Equivalence</strong> (informal). Two problems are equivalent if from a solution of one, a solution of the other is readily found, and vice versa.
+    <span class="src">B&amp;V §4.1.3 · L6662–6680</span>
+  </div>
+  <p>Note what this does <em>not</em> claim: the two problems need not share the same feasible set, variable space, or even optimal value — only a readily-recoverable solution correspondence. Each transformation below states its own correspondence: some (scaling, function transformation) keep the same optimizers; others (slack variables, the epigraph form, equality elimination) relate solutions across <em>different</em> variable spaces.</p>
+  <div class="note build"><div class="ic">Σ</div><p><strong>Scaling example.</strong> \(f_0\to\alpha_0 f_0\), \(f_i\to\alpha_i f_i\) (\(\alpha_i>0\)), and \(h_i\to\beta_i h_i\) (\(\beta_i\ne0\)) leaves the feasible set and the optimal points unchanged — only the optimal value scales, by \(\alpha_0\). Equivalent, not the same problem.</p></div>
+</section>
+
+<!-- 1 change of variables -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">change of variables</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    Let \(\phi:\mathbf R^n\to\mathbf R^n\) be one-to-one, with image covering the domain \(\mathcal D\). Define \(\tilde f_i(z)=f_i(\phi(z))\), \(\tilde h_i(z)=h_i(\phi(z))\). Then \(\text{minimize }\tilde f_0(z)\) subject to \(\tilde f_i(z)\le0,\ \tilde h_i(z)=0\) is equivalent to the original problem, via \(x=\phi(z)\).
+    <span class="src">B&amp;V L6682–6694</span>
+  </div>
+  <p>The correspondence is direct: <span class="mono">x</span> solves the original problem if and only if <span class="mono">z = φ⁻¹(x)</span> solves the transformed one. Every function is just precomposed with the reparametrization; nothing about the constraints or objective changes in substance, only the coordinates they're written in.</p>
+</section>
+
+<!-- 2 transformation of objective / constraint functions -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">transformation of objective and constraint functions</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    Suppose \(\psi_0\) is monotone increasing, \(\psi_i(u)\le0 \iff u\le0\) for \(i=1,\dots,m\), and \(\psi_{m+i}(u)=0\iff u=0\) for \(i=1,\dots,p\). Composing, \(\tilde f_i=\psi_i(f_i(x))\), \(\tilde h_i=\psi_{m+i}(h_i(x))\) gives an equivalent problem — with <em>identical</em> feasible sets and optimal points.
+    <span class="src">B&amp;V L6698–6714</span>
+  </div>
+  <p>Unlike slack variables or the epigraph form below, this move keeps the same variable <span class="mono">x</span> and the same feasible set — the scaling example in §0 is the linear special case (\(\psi_0(u)=\alpha_0 u\), etc.).</p>
+
+  <div class="excard">
+    <div class="exhead">Example 4.3 — least-norm</div>
+    <div class="exbody">
+      <div class="exrow"><span class="ef">(4.5)</span><div class="ed">\(\text{minimize } \|Ax-b\|_2\)</div></div>
+      <div class="exrow"><span class="ef">(4.6)</span><div class="ed">\(\text{minimize } \|Ax-b\|_2^2\)</div></div>
+      <div class="exrow"><span class="ef">via</span><div class="ed">\(\psi_0(u)=u^2\), increasing on \(u\ge0\) — so (4.5) ⟺ (4.6), <b>same optimizers</b>.</div></div>
+      <div class="exrow"><span class="ef">but</span><div class="ed">(4.5) is <b>not differentiable</b> wherever \(Ax-b=0\); (4.6) is a quadratic, hence differentiable everywhere.</div></div>
+    </div>
+  </div>
+  <div class="note key"><div class="ic">!</div><p>The recurring lesson: an equivalence can trade one nice property (a familiar norm) for another (differentiability) — same solutions, different analytical convenience.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>ψ₀(u) = u² — same minimizer, different smoothness</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#2B6CB0"></i> |ax−b| (4.5)</span>
+          <span><i style="border-color:#D7402B"></i> (ax−b)² (4.6)</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Slide <b>a, b</b>. Drag <b>x</b> along the axis. Both curves share one minimizer x⋆ = b/a — but only the blue curve kinks there.</p>
+        <div class="ctrl"><label>a <span class="val" id="av1">1.20</span></label><input type="range" id="a1" min="0.4" max="2.5" step="0.05" value="1.2"></div>
+        <div class="ctrl"><label>b <span class="val" id="bv1">1.50</span></label><input type="range" id="b1" min="-3" max="3" step="0.1" value="1.5"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 slack variables -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">slack variables</span></div>
+    <hr class="rule"/>
+    <div class="bv">
+      \(f_i(x)\le0 \iff \exists\, s_i\ge0\) with \(f_i(x)+s_i=0\).
+      <span class="src">B&amp;V L6731–6753</span>
+    </div>
+    <p>Problem (4.7):</p>
+    <div class="bv">
+      minimize \(f_0(x)\)<br>
+      subject to \(s_i\ge0,\ i=1,\dots,m\)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(f_i(x)+s_i=0,\ i=1,\dots,m\)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(h_i(x)=0,\ i=1,\dots,p\)<br>
+      variables \(x\in\mathbf R^n,\ s\in\mathbf R^m\).
+      <span class="src">B&amp;V L6731–6753</span>
+    </div>
+    <p>Counts: <span class="mono">n + m</span> variables, <span class="mono">m</span> inequality constraints (the bounds <span class="mono">sᵢ ≥ 0</span>), and <span class="mono">m + p</span> equality constraints. Each original inequality becomes one equality plus one nonnegativity. Equivalent via <span class="mono">sᵢ = −fᵢ(x)</span>.</p>
+    <div class="note warn"><div class="ic">!</div><p>The equality count is <span class="mono">m + p</span>, not just <span class="mono">p</span> — the <span class="mono">m</span> slack-defining equations count too.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>fᵢ(x) + sᵢ = 0, sᵢ ≥ 0 — dragging the feasibility test</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> fᵢ(x) ≤ 0 side</span>
+            <span><i style="border-color:#17223B"></i> boundary fᵢ(x)=0</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag <b>x = (x₁,x₂)</b>. The constraint is fᵢ(x) = x₁+x₂−2 ≤ 0. The slack sᵢ = −fᵢ(x) is defined so fᵢ(x)+sᵢ=0 always holds — feasibility is just whether sᵢ ≥ 0.</p>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 eliminating equality constraints -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">eliminating equality constraints</span></div>
+  <hr class="rule"/>
+  <p>If every solution of <span class="mono">hᵢ(x) = 0</span> (<span class="mono">i=1,…,p</span>) can be parametrized as <span class="mono">x = φ(z)</span> for <span class="mono">z ∈ Rᵏ</span>, the equalities can be removed entirely:</p>
+  <div class="bv">
+    minimize \(f_0(\phi(z))\) subject to \(f_i(\phi(z))\le0,\ i=1,\dots,m\), variable \(z\), no equality constraints.
+    <span class="src">B&amp;V L6755–6769</span>
+  </div>
+  <p><span class="mono">z</span> optimal for this problem implies <span class="mono">x = φ(z)</span> is optimal for the original. The equality constraints haven't been solved away by accident — they've been folded into the parametrization of the feasible set.</p>
+</section>
+
+<!-- 5 eliminating linear equality constraints -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">eliminating linear equality constraints</span></div>
+  <hr class="rule"/>
+  <p>The linear case <span class="mono">Ax = b</span> makes §4 concrete. If <span class="mono">b ∉ R(A)</span>, the problem is infeasible. Otherwise, let <span class="mono">x₀</span> be any particular solution and let <span class="mono">F</span> satisfy <span class="mono">R(F) = N(A)</span> — the general solution is <span class="mono">x = Fz + x₀</span>, and taking <span class="mono">F</span> full rank gives <span class="mono">k = n − rank A</span>.</p>
+  <div class="bv">
+    minimize \(f_0(Fz+x_0)\) subject to \(f_i(Fz+x_0)\le0,\ i=1,\dots,m\) — no equality constraints, and \(\text{rank}\,A\) fewer variables.
+    <span class="src">B&amp;V L6771–6783</span>
+  </div>
+  <div class="note key"><div class="ic">!</div><p>Elimination drops exactly <span class="mono">rank A</span> variables — not <span class="mono">p</span> (the number of equality constraints), which can exceed <span class="mono">rank A</span> if some equalities are redundant.</p></div>
+</section>
+
+<!-- 6 introducing equality constraints -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">introducing equality constraints</span></div>
+  <hr class="rule"/>
+  <p>The reverse move: add new variables <span class="mono">yᵢ = Aᵢx + bᵢ</span> to split apart compositions with affine maps. The problem</p>
+  <div class="bv">
+    minimize \(f_0(A_0x+b_0)\) subject to \(f_i(A_ix+b_i)\le0,\ h_i(x)=0\)
+    <span class="src">B&amp;V L6785–6815</span>
+  </div>
+  <p>becomes</p>
+  <div class="bv">
+    minimize \(f_0(y_0)\) subject to \(f_i(y_i)\le0,\ y_i=A_ix+b_i,\ h_i(x)=0\)
+    <span class="src">B&amp;V L6785–6815</span>
+  </div>
+  <p>This adds <span class="mono">Σkᵢ</span> variables and <span class="mono">Σkᵢ</span> equality constraints (one block per introduced <span class="mono">yᵢ</span>). The payoff: the objective and the inequality constraint functions now act on separate variables, so they become independent of each other rather than sharing <span class="mono">x</span> through a composition.</p>
+</section>
+
+<!-- 7 optimizing over some variables -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§7</span><span class="eyebrow">optimizing over some variables</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    \(\displaystyle\inf_{x,y} f(x,y) = \inf_x \tilde f(x)\), where \(\tilde f(x)=\inf_y f(x,y)\).
+    <span class="src">B&amp;V L6817–6864</span>
+  </div>
+  <p>For a problem (4.9) whose constraints split independently between <span class="mono">x₁</span> and <span class="mono">x₂</span>, minimizing over <span class="mono">x₂</span> first gives</p>
+  <div class="bv">
+    \(\tilde f_0(x_1)=\inf\{\,f_0(x_1,z)\mid \tilde f_i(z)\le0\,\}\)
+    <span class="src">B&amp;V L6817–6864</span>
+  </div>
+  <p>— an equivalent problem (4.10) in <span class="mono">x₁</span> alone. This is the problem-level face of the §3.2.5 partial-minimization rule.</p>
+
+  <div class="proof">
+    <div class="proof-head"><span>Example 4.4 — strictly convex quadratic</span><span class="target">Schur complement</span></div>
+    <div class="step crux">
+      <div class="math">\[ \inf_{x_2}\Big[\,x_1^{\mathsf T}P_{11}x_1 + 2x_1^{\mathsf T}P_{12}x_2 + x_2^{\mathsf T}P_{22}x_2\,\Big] = x_1^{\mathsf T}\big(P_{11}-P_{12}P_{22}^{-1}P_{12}^{\mathsf T}\big)x_1 \]</div>
+      <div class="why"><b>why</b> minimizing a strictly convex quadratic in <span class="mono">x₂</span> alone and substituting back the minimizer produces exactly the Schur complement of <span class="mono">P₂₂</span> in <span class="mono">P</span> — see §A.5.5.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 epigraph problem form -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§8</span><span class="eyebrow">epigraph problem form</span></div>
+    <hr class="rule"/>
+    <p>Problem (4.11):</p>
+    <div class="bv">
+      minimize \(t\) subject to \(f_0(x)-t\le0,\ f_i(x)\le0,\ h_i(x)=0\), variables \(x,t\).
+      <span class="src">B&amp;V L6867–6882</span>
+    </div>
+    <p><span class="mono">(x,t)</span> is optimal for (4.11) if and only if <span class="mono">x</span> is optimal for the original problem (4.1) and <span class="mono">t = f₀(x)</span>. The objective is now <em>linear</em> in <span class="mono">(x,t)</span> — all the nonlinearity has migrated into the constraint <span class="mono">f₀(x) − t ≤ 0</span>.</p>
+    <p>Geometrically: minimize <span class="mono">t</span> over <span class="mono">epi f₀</span> subject to the constraints — the lowest point in the epigraph (Fig 4.1).</p>
+    <div class="note build"><div class="ic">↓</div><p>The epigraph trick is why linear-objective reformulations are so common in solvers: any problem can be rewritten with a linear cost, at the price of one new variable and one new constraint.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>minimize t over epi f₀ — the lowest feasible point</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:#D7402B"></i> f₀(x)</span>
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> epi f₀ = {(x,t)∣t≥f₀(x)}</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag the point <b>(x,t)</b> anywhere. It's feasible for (4.11) only inside the shaded epigraph. For each x, the smallest feasible t sits right on the curve.</p>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 implicit and explicit constraints -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§9</span><span class="eyebrow">implicit and explicit constraints</span></div>
+  <hr class="rule"/>
+  <p><strong>Make explicit → implicit</strong> (4.12): define <span class="mono">F = f₀</span> on <span class="mono">dom F</span> = the feasible set (and <span class="mono">∞</span> off it). Then</p>
+  <div class="bv">
+    minimize \(F(x)\) — unconstrained, and equivalent.
+    <span class="src">B&amp;V L6884–6955</span>
+  </div>
+  <p>This is a notational trick: the constraints are hidden inside <span class="mono">dom F</span>, and <span class="mono">F</span> is likely not differentiable, since its domain is likely not open.</p>
+  <p><strong>Make implicit → explicit</strong> (4.13 → 4.14): the function <span class="mono">f(x) = xᵀx</span> for <span class="mono">Ax = b</span>, <span class="mono">∞</span> otherwise, hides an implicit equality constraint <span class="mono">Ax = b</span> inside its domain. Exposing it gives</p>
+  <div class="bv">
+    minimize \(x^{\mathsf T}x\) subject to \(Ax=b\) — constrained, but differentiable.
+    <span class="src">B&amp;V L6884–6955</span>
+  </div>
+  <div class="note key"><div class="ic">!</div><p>Same trade-off as Example 4.3: hiding constraints buys an unconstrained-looking problem at the cost of differentiability; exposing them buys differentiability at the cost of explicit constraints.</p></div>
+</section>
+
+<!-- 10 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§10</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">E1</span>Equivalence, precisely</p><p>A solution of one problem readily yields a solution of the other — <em>not</em> identity, and not necessarily the same feasible set or variable space.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E2</span>Function transformation</p><p><span class="mono">ψ₀</span> must be increasing; the <span class="mono">ψᵢ</span> must be sign-preserving. Scaling is the linear special case; <span class="mono">‖·‖₂ ⟺ ‖·‖₂²</span> is <span class="mono">ψ₀ = (·)²</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E3</span>Slack variables</p><p><span class="mono">fᵢ ≤ 0 → fᵢ + sᵢ = 0, sᵢ ≥ 0</span>: <span class="mono">n+m</span> variables, <span class="mono">m</span> inequalities, <span class="mono">m+p</span> equalities.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E4</span>Eliminating equality</p><p>Linear case: <span class="mono">x = Fz + x₀</span>, drops <span class="mono">rank A</span> variables (not <span class="mono">p</span>); <span class="mono">b ∉ R(A)</span> means infeasible.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E5</span>Optimizing over some variables</p><p><span class="mono">inf_{x,y} = inf_x inf_y</span>; Example 4.4 gives the Schur complement <span class="mono">P₁₁ − P₁₂P₂₂⁻¹P₁₂ᵀ</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E6</span>Epigraph</p><p>Minimize <span class="mono">t</span> (linear objective); <span class="mono">(x,t)</span> optimal iff <span class="mono">x</span> optimal and <span class="mono">t = f₀(x)</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E7</span>Traps</p><p>Equivalent ≠ identical — some moves keep the same optimizers (scaling, function transformation), while lifted/reduced forms (slack, epigraph, elimination) only give a recoverable correspondence across different variable spaces. Slack has <span class="mono">m+p</span> equalities, not <span class="mono">p</span>. The epigraph objective is <span class="mono">t</span>, not <span class="mono">f₀</span>. Elimination drops <span class="mono">rank A</span> variables, not <span class="mono">p</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E8</span>Scope</p><p>General problem — no convexity here (that's §4.2); parameter/oracle descriptions are §4.1.4.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-09-01 · bv.4.1.3 · Equivalent problems (B&amp;V §4.1.3)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Equivalence</h6><p>A solution of one readily gives a solution of the other — not identity; whether feasible sets, optimizers, or value are literally the same depends on the transformation (scaling keeps optimizers and scales the value; slack/epigraph/elimination relate solutions across different variable spaces).</p></div>
+      <div class="scard"><h6>Transformations</h6><p>Change of variables (\(x=\phi(z)\)); function transformation (\(\psi_0\) increasing; \(\|\cdot\|_2\iff\|\cdot\|_2^2\)); slack (\(f_i+s_i=0,\ s_i\ge0\); \(n{+}m\) vars, \(m\) ineq, \(m{+}p\) eq); eliminate equality (linear \(x=Fz+x_0\), drops rank A vars); introduce equality (\(y_i=A_ix+b_i\)); optimize over some variables (Ex 4.4 Schur complement \(P_{11}-P_{12}P_{22}^{-1}P_{12}^{\mathsf T}\)).</p></div>
+      <div class="scard"><h6>Epigraph form</h6><p>Minimize \(t\) subject to \(f_0(x)-t\le0\) plus the constraints — objective becomes linear; \((x,t)\) optimal iff \(x\) optimal and \(t=f_0(x)\).</p></div>
+      <div class="scard"><h6>Implicit/explicit</h6><p>Hide constraints in \(\text{dom}\,F\) (unconstrained, \(F\) likely not differentiable) vs. expose them (constrained, differentiable) — a notational trade.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §4.1.3 (p. 130–136) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+function makeRect(canvas,xMin,xMax,yMin,yMax,padL,padB){
+  padL=padL||46; padB=padB||34;
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  return {dims,
+    toS(x,y){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [padL+(x-xMin)/(xMax-xMin)*iw, 20+ih-(y-yMin)/(yMax-yMin)*ih];},
+    toW(px,py){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [xMin+(px-padL)/iw*(xMax-xMin), yMin+(20+ih-py)/ih*(yMax-yMin)];}};
+}
+function drawAxes(ctx,rv,xMin,xMax,yMin,yMax){
+  const {w,h}=rv.dims();ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  for(let gx=Math.ceil(xMin);gx<=xMax;gx++){const a=rv.toS(gx,yMin),b=rv.toS(gx,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  for(let gy=Math.ceil(yMin);gy<=yMax;gy++){const a=rv.toS(xMin,gy),b=rv.toS(xMax,gy);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  if(yMin<0&&yMax>0){const a=rv.toS(xMin,0),b=rv.toS(xMax,0);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  if(xMin<=0&&xMax>=0){const a=rv.toS(0,yMin),b=rv.toS(0,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  else {const a=rv.toS(xMin,yMin),b=rv.toS(xMin,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+}
+
+/* ===== LAB 1 — psi0(u)=u^2: |ax-b| vs (ax-b)^2, shared minimizer, differing smoothness ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d");
+  const xMin=-2,xMax=5,yMin=-0.5,yMax=10;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  let a=1.2,b=1.5,x0=0.5;
+  const elA=document.getElementById("a1"),elB=document.getElementById("b1");
+  const avEl=document.getElementById("av1"),bvEl=document.getElementById("bv1");
+  const ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function fRaw(x){return Math.abs(a*x-b);}
+  function fSq(x){return (a*x-b)*(a*x-b);}
+  function xStar(){return b/a;}
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    // curve: |ax-b|
+    ctx.beginPath();let first=true;
+    for(let x=xMin;x<=xMax;x+=0.02){const y=clamp(fRaw(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2.2;ctx.stroke();
+    // curve: (ax-b)^2
+    ctx.beginPath();first=true;
+    for(let x=xMin;x<=xMax;x+=0.02){const y=clamp(fSq(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=2.2;ctx.stroke();
+
+    const xs=xStar();
+    const ps=rv.toS(clamp(xs,xMin,xMax),0);
+    dot(ctx,ps[0],ps[1],5,"#fff","#17223B");
+    label(ctx,"x⋆="+xs.toFixed(2),ps[0]+8,ps[1]-12,"#17223B",12);
+
+    const xx=clamp(x0,xMin,xMax);
+    const s1=rv.toS(xx,clamp(fRaw(xx),yMin,yMax)), s2=rv.toS(xx,clamp(fSq(xx),yMin,yMax));
+    dot(ctx,s1[0],s1[1],6,"#fff","#2B6CB0");
+    dot(ctx,s2[0],s2[1],6,"#fff","#D7402B");
+    ctx.strokeStyle="#D9D3C6";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(s1[0],0);const top=rv.toS(xx,yMax);ctx.moveTo(top[0],top[1]);ctx.lineTo(rv.toS(xx,yMin)[0],rv.toS(xx,yMin)[1]);ctx.stroke();ctx.setLineDash([]);
+
+    const near = Math.abs(xx-xs)<0.12;
+    ro.innerHTML=`<span class="k">x</span> = <b>${xx.toFixed(2)}</b> &nbsp; <span class="k">x⋆=b/a</span> = <b>${xs.toFixed(2)}</b><br>`+
+      `<span class="k">|ax−b|</span> = <b>${fRaw(xx).toFixed(3)}</b> &nbsp; <span class="k">(ax−b)²</span> = <b>${fSq(xx).toFixed(3)}</b><br>`+
+      `<span class="k">kink at x⋆</span> = <b>yes (blue)</b> &nbsp; <span class="k">smooth at x⋆</span> = <b>yes (red)</b>`;
+    if(near){vd.className="verdict in";vd.textContent="✓ at x⋆ — both minimized; blue has a kink here, red doesn't";}
+    else{vd.className="verdict mid";vd.textContent="both curves agree in shape, minimizer not yet reached";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{act=true;canvas.setPointerCapture(ev.pointerId);const p=pos(ev);const wv=rv.toW(p[0],p[1]);x0=clamp(wv[0],xMin,xMax);draw();ev.preventDefault();});
+  canvas.addEventListener("pointermove",ev=>{if(!act)return;const p=pos(ev);const wv=rv.toW(p[0],p[1]);x0=clamp(wv[0],xMin,xMax);draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  elA.addEventListener("input",()=>{a=parseFloat(elA.value);avEl.textContent=a.toFixed(2);draw();});
+  elB.addEventListener("input",()=>{b=parseFloat(elB.value);bvEl.textContent=b.toFixed(2);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — slack variable: fi(x)+si=0, si>=0 ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=4,view=makeView(canvas,R);
+  let x={x:0.5,y:0.5};
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function fi(p){return p.x+p.y-2;} // constraint fi(x)<=0
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    // halfspace x1+x2<=2, shaded, clipped to grid
+    const R2=R-0.05;
+    ctx.beginPath();
+    const pA=view.toS(-R2,R2-(-R2-R2)); // not used, build polygon directly
+    const pts=[[-R2,-R2],[R2,-R2],[R2,2-R2],[-R2,2-(-R2)]].map(p=>view.toS(p[0],p[1]));
+    ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();
+    // boundary line x1+x2=2
+    const b0=view.toS(-R2,2-(-R2)),b1=view.toS(R2,2-R2);
+    ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(b0[0],b0[1]);ctx.lineTo(b1[0],b1[1]);ctx.stroke();
+    label(ctx,"x₁+x₂=2",b1[0]-92,b1[1]-10,"#46506A",11);
+
+    const xc={x:clamp(x.x,-R+0.15,R-0.15),y:clamp(x.y,-R+0.15,R-0.15)};
+    const f=fi(xc), s=-f, feasible=s>=0;
+    const xs=view.toS(xc.x,xc.y);
+    dot(ctx,xs[0],xs[1],6,"#fff",feasible?"#17223B":"#C0392B");
+    label(ctx,"x",xs[0]+9,xs[1]-9,"#17223B",13);
+
+    ro.innerHTML=`<span class="k">x</span> = (${xc.x.toFixed(2)}, ${xc.y.toFixed(2)})<br>`+
+      `<span class="k">fᵢ(x)</span> = <b>${f.toFixed(2)}</b> &nbsp; <span class="k">sᵢ = −fᵢ(x)</span> = <b>${s.toFixed(2)}</b><br>`+
+      `<span class="k">check fᵢ(x)+sᵢ</span> = <b>${(f+s).toFixed(4)}</b> (always 0)`;
+    if(feasible){vd.className="verdict in";vd.textContent="✓ sᵢ ≥ 0 — feasible (fᵢ(x) ≤ 0)";}
+    else{vd.className="verdict out";vd.textContent="✗ sᵢ < 0 — infeasible (no valid nonnegative slack)";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);const s=view.toS(x.x,x.y);if(Math.hypot(p[0]-s[0],p[1]-s[1])<26){act=true;canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(!act){const s=view.toS(x.x,x.y);canvas.style.cursor=Math.hypot(p[0]-s[0],p[1]-s[1])<26?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);x={x:clamp(wv[0],-R+0.15,R-0.15),y:clamp(wv[1],-R+0.15,R-0.15)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — epigraph form: minimize t over epi f0 ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  const xMin=-2,xMax=4,yMin=-1,yMax=8;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  function f0(x){return 0.5*(x-1)*(x-1)+1;}
+  const xStar=1, tStar=1;
+  let pt={x:2.4,y:5.2};
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    // shade epi f0: t >= f0(x)
+    ctx.beginPath();
+    const steps=60; let first=true;
+    for(let i=0;i<=steps;i++){const x=xMin+(xMax-xMin)*i/steps;const y=clamp(f0(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    const topR=rv.toS(xMax,yMax),topL=rv.toS(xMin,yMax);
+    ctx.lineTo(topR[0],topR[1]);ctx.lineTo(topL[0],topL[1]);ctx.closePath();
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();
+
+    // curve f0
+    ctx.beginPath();first=true;
+    for(let x=xMin;x<=xMax;x+=0.02){const y=clamp(f0(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=2.4;ctx.stroke();
+
+    // p* marker (global optimum of the unconstrained epigraph problem)
+    const ps=rv.toS(xStar,tStar);
+    dot(ctx,ps[0],ps[1],5.5,"#fff","#17223B");
+    label(ctx,"p⋆ = (x⋆,f₀(x⋆))",ps[0]+8,ps[1]-12,"#17223B",11.5);
+
+    // dragged (x,t)
+    const xc=clamp(pt.x,xMin,xMax), tc=clamp(pt.y,yMin,yMax);
+    const s=rv.toS(xc,tc);
+    const fx=f0(xc), inEpi = tc>=fx-1e-6, onBoundary = Math.abs(tc-fx)<0.1;
+    dot(ctx,s[0],s[1],7,"#fff", inEpi ? (onBoundary?"#2F855A":"#2B6CB0") : "#C0392B");
+    label(ctx,"(x,t)",s[0]+10,s[1]-11,"#17223B",13);
+
+    ro.innerHTML=`<span class="k">x</span> = <b>${xc.toFixed(2)}</b> &nbsp; <span class="k">t</span> = <b>${tc.toFixed(2)}</b><br>`+
+      `<span class="k">f₀(x)</span> = <b>${fx.toFixed(2)}</b> &nbsp; <span class="k">f₀(x)−t</span> = <b>${(fx-tc).toFixed(2)}</b>`;
+    if(!inEpi){vd.className="verdict out";vd.textContent="✗ outside epi f₀ — f₀(x)−t > 0, infeasible for (4.11)";}
+    else if(onBoundary){vd.className="verdict in";vd.textContent="✓ on the boundary — t = f₀(x), the minimal feasible t for this x";}
+    else{vd.className="verdict mid";vd.textContent="feasible, but t is not minimal — a smaller t is still in epi f₀";}
+  }
+  let act=false;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  canvas.addEventListener("pointerdown",ev=>{act=true;canvas.setPointerCapture(ev.pointerId);const p=pos(ev);const wv=rv.toW(p[0],p[1]);pt={x:clamp(wv[0],xMin,xMax),y:clamp(wv[1],yMin,yMax)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointermove",ev=>{if(!act)return;const p=pos(ev);const wv=rv.toW(p[0],p[1]);pt={x:clamp(wv[0],xMin,xMax),y:clamp(wv[1],yMin,yMax)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
