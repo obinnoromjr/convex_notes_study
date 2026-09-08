@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§4.1.4 — Parameter and Oracle Problem Descriptions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:hover{border-color:var(--ink-soft)}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.excard{margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exhead{padding:11px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.excard .exbody{padding:6px 4px}
+.exrow{display:flex;gap:16px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--paper-2)}
+.exrow:last-child{border-bottom:none}
+.exrow .ef{flex:0 0 118px;font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--ink)}
+.exrow .ed{flex:1;font-size:16.5px;color:var(--ink-soft)}
+.exrow .ed b{color:var(--ink)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+  .exrow{flex-direction:column;gap:4px}
+  .exrow .ef{flex:none}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §4.1.4</div>
+    <h1>Parameter and<br><em>oracle</em> descriptions</h1>
+    <p class="sub">For a problem in standard form, how are the objective and constraint functions actually specified? Two answers: a closed formula and some data — or query-only access to a black box. §4.1.4 draws the line between them, and the one direction that provably connects them.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> closed form vs. black box</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> query, at a cost</span>
+      <span><span class="dot" style="background:var(--inside)"></span> one direction asserted</span>
+      <span>B&amp;V §4.1.4, p. 136 · mastery target: diagnose · completes §4.1</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 220" role="img" aria-label="Two boxes, parameter description and oracle model, connected by a solid arrow labeled induces an oracle, and a dashed reverse arrow marked not asserted.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="220" fill="url(#dots)"/>
+
+        <rect x="40" y="52" width="215" height="118" rx="14" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.8"/>
+        <text x="147" y="80" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" text-anchor="middle" letter-spacing="1.2">PARAMETER</text>
+        <text x="147" y="108" fill="#17223B" font-family="Fraunces, Georgia, serif" font-size="13.5" text-anchor="middle">f₀(x)=½xᵀPx+qᵀx+r</text>
+        <text x="147" y="130" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">data: (P, q, r)</text>
+        <text x="147" y="150" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">instance = parameter values</text>
+
+        <rect x="385" y="52" width="215" height="118" rx="14" fill="rgba(215,64,43,0.08)" stroke="#D7402B" stroke-width="1.8"/>
+        <text x="492" y="80" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" text-anchor="middle" letter-spacing="1.2">ORACLE</text>
+        <text x="492" y="108" fill="#17223B" font-family="Fraunces, Georgia, serif" font-size="13.5" text-anchor="middle">x → [ subroutine ] → f(x), ∇f(x)</text>
+        <text x="492" y="130" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">query, at a cost</text>
+        <text x="492" y="150" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">+ prior info (convexity, bounds)</text>
+
+        <line x1="258" y1="92" x2="382" y2="92" stroke="#17223B" stroke-width="2"/>
+        <polygon points="382,92 370,85 370,99" fill="#17223B"/>
+        <text x="320" y="80" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle">induces an oracle</text>
+
+        <line x1="382" y1="140" x2="258" y2="140" stroke="#8A91A3" stroke-width="1.6" stroke-dasharray="4 4"/>
+        <polygon points="258,140 270,134 270,146" fill="#8A91A3"/>
+        <text x="320" y="164" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle">not asserted (needs structure)</text>
+
+        <text x="320" y="198" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">one asserted direction — not an equivalence</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§4.1.1–§4.1.3 defined the standard-form problem, its conventions, and equivalence transformations. One question remains, and it completes §4.1: for a problem in standard form (4.1), how are the objective and constraint functions actually specified? Two answers — a <strong>parameter description</strong> and an <strong>oracle model</strong>.</p>
+</section>
+
+<!-- 1 parameter description -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">parameter problem description</span></div>
+  <hr class="rule"/>
+  <p>Often the functions have an analytical — closed — form: a formula in <span class="mono">x</span> and some parameters.</p>
+  <div class="bv">
+    For a quadratic objective \(f_0(x)=\tfrac12x^{\mathsf T}Px+q^{\mathsf T}x+r\), the specification is the coefficients \(P\in\mathbf S^n\), \(q\in\mathbf R^n\), \(r\in\mathbf R\) — the <strong>problem parameters</strong> (or <strong>problem data</strong>).
+    <span class="src">B&amp;V §4.1.4 · L6961–6970</span>
+  </div>
+  <p>This is a <strong>parameter problem description</strong>: the specific problem to solve — the <strong>problem instance</strong> — is fixed by giving the values of those parameters.</p>
+  <div class="note build"><div class="ic">Σ</div><p>The formula \(\tfrac12x^{\mathsf T}Px+q^{\mathsf T}x+r\) is the family; a triple \((P,q,r)\) is one instance in that family. Change the numbers and you get a different problem to solve — same form, new data.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>f₀(x) = ½px² + qx + r — one formula, many instances</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#D7402B"></i> f₀(x) at current (p,q,r)</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Slide <b>p, q, r</b>. The formula never changes — only the data does. Each setting is a different problem instance.</p>
+        <div class="ctrl"><label>p <span class="val" id="pv1">0.60</span></label><input type="range" id="p1" min="0.2" max="1.2" step="0.05" value="0.6"></div>
+        <div class="ctrl"><label>q <span class="val" id="qv1">0.50</span></label><input type="range" id="q1" min="-2" max="2" step="0.1" value="0.5"></div>
+        <div class="ctrl"><label>r <span class="val" id="rv1">1.00</span></label><input type="range" id="r1" min="-1" max="3" step="0.1" value="1.0"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 oracle model -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">oracle model</span></div>
+    <hr class="rule"/>
+    <p>Otherwise the functions are described by an <strong>oracle model</strong> — also called the <strong>black-box</strong> or <strong>subroutine</strong> model. Here we do not know <span class="mono">f</span> explicitly.</p>
+    <div class="bv">
+      Instead we can: evaluate \(f(x)\) — and usually some derivatives — at any \(x\in\operatorname{dom}f\), i.e. <strong>query the oracle</strong>, usually at some cost (e.g. time); and use some given <strong>prior information</strong> about the function (e.g. convexity, a bound on its values).
+      <span class="src">B&amp;V §4.1.4 · L6971–6984</span>
+    </div>
+    <p>Concrete example: for an unconstrained <span class="mono">minimize f</span>, a subroutine returns <span class="mono">f(x)</span> and <span class="mono">∇f(x)</span> at any queried <span class="mono">x</span>, but we have no access to its source.</p>
+    <div class="note key"><div class="ic">!</div><p>The defining feature: in the oracle model we never really know the function — only its value (and some derivatives) at the points we have queried, plus whatever prior information we were given.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>the oracle — click to query, nowhere else is known</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:#17223B"></i> queried point</span>
+            <span><i style="border-color:#2B6CB0"></i> tangent at query</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Click anywhere on the plot to <b>query the oracle</b> at that x. It returns f(x) and f′(x) — nothing else. The true curve stays hidden until you ask to see it.</p>
+          <div class="chips"><span class="chip" id="reveal2">reveal true curve</span><span class="chip" id="reset2">reset queries</span></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 not sharp -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">the distinction is not sharp</span></div>
+  <hr class="rule"/>
+  <p>Two descriptions, but only one asserted direction between them:</p>
+  <ul class="reads">
+    <li><span class="tag">induces</span><div>Given a parameter description, we can construct an oracle for it — a routine that evaluates the required functions and derivatives when queried. So <strong>any parameter description induces an oracle</strong>.</div></li>
+    <li><span class="tag">specialize</span><div>Most algorithms (Part III) work with an oracle model, but can be made more efficient when restricted to a specific parametrized family — exploiting the known data or structure.</div></li>
+    <li><span class="tag">no reverse</span><div>B&amp;V does <strong>not</strong> assert the reverse (oracle ⟹ parameter): query access alone need not reveal a parameter description unless extra structure is assumed.</div></li>
+  </ul>
+  <p class="mono" style="font-size:12px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.08em">B&amp;V §4.1.4 · L6985–6990</p>
+  <div class="note warn"><div class="ic">!</div><p>Read this as <strong>one asserted direction plus a specialization remark</strong> — not a two-way equivalence.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>same oracle answers, different functions — the reverse direction fails</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i style="border-color:#2B6CB0"></i> assumed quadratic g₁</span>
+          <span><i style="border-color:#D7402B"></i> another g₂, same 3 queries</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Three oracle queries sit at x = −2, 0, 2 (dots). Slide <b>c</b>: g₂ matches g₁'s value <em>and</em> slope at all three queried points, yet drifts away everywhere else.</p>
+        <div class="ctrl"><label>c <span class="val" id="cv3v">0.000</span></label><input type="range" id="c3" min="-0.03" max="0.03" step="0.001" value="0"></div>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">E1</span>Parameter description</p><p>A formula in <span class="mono">x</span> plus parameters / data — quadratic ⟹ <span class="mono">(P,q,r)</span>. The problem instance is the parameter values.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E2</span>Oracle model</p><p>Query-only access — evaluate <span class="mono">f(x)</span> and usually derivatives at chosen <span class="mono">x</span>, at a cost, plus prior information (convexity, bounds). You never see the function itself.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E3</span>Not sharp (one direction)</p><p>A parameter description can be wrapped in an oracle; oracle algorithms specialize to a parametrized family for efficiency. The reverse — oracle ⟹ parameter — is not asserted.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E4</span>Traps</p><p>The oracle is the one that evaluates via a subroutine, not the parameter description. The oracle returns <span class="mono">f(x)</span> / <span class="mono">∇f(x)</span>, not the minimizer or the closed form. Convexity here is prior information — not something asserted or required.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E5</span>Scope</p><p>This is about problem <em>description</em>, still the general problem — the convex problem itself is §4.2.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-09-01 · bv.4.1.4 · Parameter and oracle problem descriptions (B&amp;V §4.1.4)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Parameter description</h6><p>Functions given by a closed-form formula in \(x\) and parameters/data; e.g. quadratic \(f_0=\tfrac12x^{\mathsf T}Px+q^{\mathsf T}x+r\) ⟹ data \((P\in\mathbf S^n,\,q\in\mathbf R^n,\,r\in\mathbf R)\). The instance is the parameter values.</p></div>
+      <div class="scard"><h6>Oracle model</h6><p>Black-box query-only access — evaluate \(f(x)\) (and usually derivatives) at any \(x\in\operatorname{dom}f\), at a cost, plus prior information (convexity, bounds). We never know the function itself, only values at queried points.</p></div>
+      <div class="scard"><h6>Not sharp</h6><p>A parameter description can be made into an oracle (that direction only); oracle algorithms specialize to a parametrized family for efficiency. Query access alone need not reveal a parameter description.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §4.1.4 (p. 136) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeRect(canvas,xMin,xMax,yMin,yMax,padL,padB){
+  padL=padL||46; padB=padB||34;
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  return {dims,
+    toS(x,y){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [padL+(x-xMin)/(xMax-xMin)*iw, 20+ih-(y-yMin)/(yMax-yMin)*ih];},
+    toW(px,py){const {w,h}=dims();const iw=w-padL-14, ih=h-20-padB;
+      return [xMin+(px-padL)/iw*(xMax-xMin), yMin+(20+ih-py)/ih*(yMax-yMin)];}};
+}
+function drawAxes(ctx,rv,xMin,xMax,yMin,yMax){
+  const {w,h}=rv.dims();ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="#ECE7DB";ctx.lineWidth=1;
+  for(let gx=Math.ceil(xMin);gx<=xMax;gx++){const a=rv.toS(gx,yMin),b=rv.toS(gx,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  for(let gy=Math.ceil(yMin);gy<=yMax;gy++){const a=rv.toS(xMin,gy),b=rv.toS(xMax,gy);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  if(yMin<0&&yMax>0){const a=rv.toS(xMin,0),b=rv.toS(xMax,0);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  if(xMin<=0&&xMax>=0){const a=rv.toS(0,yMin),b=rv.toS(0,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  else {const a=rv.toS(xMin,yMin),b=rv.toS(xMin,yMax);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+}
+
+/* ===== LAB 1 — parameter description: f0(x)=1/2 p x^2 + q x + r, drag (p,q,r) ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d");
+  const xMin=-3,xMax=3,yMin=-2,yMax=12;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  let p=0.6,q=0.5,r=1.0;
+  const elP=document.getElementById("p1"),elQ=document.getElementById("q1"),elR=document.getElementById("r1");
+  const pvEl=document.getElementById("pv1"),qvEl=document.getElementById("qv1"),rvEl=document.getElementById("rv1");
+  const ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function f(x){return 0.5*p*x*x+q*x+r;}
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    ctx.beginPath();let first=true;
+    for(let x=xMin;x<=xMax;x+=0.03){const y=clamp(f(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=2.4;ctx.stroke();
+    const xs=-q/p, ys=f(xs);
+    if(xs>=xMin&&xs<=xMax){const s=rv.toS(xs,clamp(ys,yMin,yMax));dot(ctx,s[0],s[1],5,"#fff","#17223B");label(ctx,"min at x="+xs.toFixed(2),s[0]+8,s[1]-12,"#17223B",11);}
+    ro.innerHTML=`<span class="k">data</span> (P,q,r) = <b>(${p.toFixed(2)}, ${q.toFixed(2)}, ${r.toFixed(2)})</b><br>`+
+      `<span class="k">f₀(x)</span> = <b>${(p/2).toFixed(2)}·x² + ${q.toFixed(2)}·x + ${r.toFixed(2)}</b>`;
+    vd.className="verdict mid";vd.textContent="same formula — a new (P,q,r) is a new problem instance";
+  }
+  elP.addEventListener("input",()=>{p=parseFloat(elP.value);pvEl.textContent=p.toFixed(2);draw();});
+  elQ.addEventListener("input",()=>{q=parseFloat(elQ.value);qvEl.textContent=q.toFixed(2);draw();});
+  elR.addEventListener("input",()=>{r=parseFloat(elR.value);rvEl.textContent=r.toFixed(2);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — oracle model: click to query a hidden function, only queried points are known ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d");
+  const xMin=-3.2,xMax=3.2,yMin=-1,yMax=6;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  function hidden(x){return 2.4+0.55*Math.sin(1.35*x)+0.18*x*x;}
+  function dHidden(x){const h=1e-4;return (hidden(x+h)-hidden(x-h))/(2*h);}
+  let queries=[]; let revealed=false;
+  const reveal=document.getElementById("reveal2"),reset=document.getElementById("reset2");
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    if(revealed){
+      ctx.beginPath();let first=true;
+      for(let x=xMin;x<=xMax;x+=0.03){const y=clamp(hidden(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+      ctx.strokeStyle="#C9C2B2";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+    }
+    queries.forEach(qp=>{
+      const s=rv.toS(qp.x,clamp(qp.y,yMin,yMax));
+      const dx=0.5, s1=rv.toS(qp.x-dx,clamp(qp.y-qp.d*dx,yMin,yMax)), s2=rv.toS(qp.x+dx,clamp(qp.y+qp.d*dx,yMin,yMax));
+      ctx.strokeStyle="#2B6CB0";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(s1[0],s1[1]);ctx.lineTo(s2[0],s2[1]);ctx.stroke();
+      dot(ctx,s[0],s[1],5.5,"#fff","#17223B");
+    });
+    if(queries.length===0){
+      ro.innerHTML=`<span class="k">oracle calls made</span> = <b>0</b>`;
+    } else {
+      const last=queries[queries.length-1];
+      ro.innerHTML=`<span class="k">oracle calls made</span> = <b>${queries.length}</b><br>`+
+        `<span class="k">last query x</span> = <b>${last.x.toFixed(2)}</b> &nbsp; <span class="k">f(x)</span> = <b>${last.y.toFixed(2)}</b> &nbsp; <span class="k">f′(x)</span> = <b>${last.d.toFixed(2)}</b>`;
+    }
+    if(queries.length===0){vd.className="verdict mid";vd.textContent="no queries yet — the function is completely unknown";}
+    else{vd.className="verdict mid";vd.textContent=`known at ${queries.length} point(s) only — everywhere else is still unknown`;}
+  }
+  canvas.addEventListener("pointerdown",ev=>{
+    const r=canvas.getBoundingClientRect();const px=ev.clientX-r.left,py=ev.clientY-r.top;
+    const wv=rv.toW(px,py); const x=clamp(wv[0],xMin,xMax);
+    queries.push({x:x,y:hidden(x),d:dHidden(x)});
+    if(queries.length>10)queries.shift();
+    draw();
+  });
+  reveal.addEventListener("click",()=>{revealed=!revealed;reveal.classList.toggle("on",revealed);reveal.textContent=revealed?"hide true curve":"reveal true curve";draw();});
+  reset.addEventListener("click",()=>{queries=[];draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — oracle does not determine parameter: two functions agree at 3 queried points ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d");
+  const xMin=-3.2,xMax=3.2,yMin=-1,yMax=8;
+  const rv=makeRect(canvas,xMin,xMax,yMin,yMax);
+  const anchors=[-2,0,2];
+  function g1(x){return 0.5*x*x-0.3*x+1;}
+  function bump(x){const t=x*(x-2)*(x+2);return t*t;}
+  let c=0;
+  function g2(x){return g1(x)+c*bump(x);}
+  const elC=document.getElementById("c3"),cvv=document.getElementById("cv3v");
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function drawCurve(fn,color){
+    ctx.beginPath();let first=true;
+    for(let x=xMin;x<=xMax;x+=0.02){const y=clamp(fn(x),yMin,yMax);const s=rv.toS(x,y);if(first){ctx.moveTo(s[0],s[1]);first=false;}else ctx.lineTo(s[0],s[1]);}
+    ctx.strokeStyle=color;ctx.lineWidth=2.2;ctx.stroke();
+  }
+  function draw(){
+    fitCanvas(canvas,ctx);drawAxes(ctx,rv,xMin,xMax,yMin,yMax);
+    drawCurve(g1,"#2B6CB0");
+    drawCurve(g2,"#D7402B");
+    anchors.forEach(a=>{const s=rv.toS(a,clamp(g1(a),yMin,yMax));dot(ctx,s[0],s[1],5.5,"#fff","#17223B");});
+    let maxGap=0;
+    for(let i=0;i<=64;i++){const x=xMin+(xMax-xMin)*i/64;const gap=Math.abs(g1(x)-g2(x));if(gap>maxGap)maxGap=gap;}
+    ro.innerHTML=`<span class="k">c</span> = <b>${c.toFixed(3)}</b> &nbsp; <span class="k">max |g₁−g₂| on plot</span> = <b>${maxGap.toFixed(2)}</b><br>`+
+      `<span class="k">at x=−2,0,2</span>: g₁=g₂ and g₁′=g₂′ <b>exactly</b> (by construction)`;
+    if(Math.abs(c)<1e-6){vd.className="verdict mid";vd.textContent="c = 0 — the two functions coincide everywhere";}
+    else{vd.className="verdict out";vd.textContent="same 3 oracle answers, but g₁ ≠ g₂ elsewhere — oracle access alone didn't pin down the function";}
+  }
+  elC.addEventListener("input",()=>{c=parseFloat(elC.value);cvv.textContent=c.toFixed(3);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
