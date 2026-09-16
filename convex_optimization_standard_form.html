@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§4.2.1 — Convex Optimization Problems in Standard Form</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:hover{border-color:var(--ink-soft)}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.excard{margin:18px 0;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.excard .exhead{padding:11px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.excard .exbody{padding:6px 4px}
+.exrow{display:flex;gap:16px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--paper-2)}
+.exrow:last-child{border-bottom:none}
+.exrow .ef{flex:0 0 118px;font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--ink)}
+.exrow .ed{flex:1;font-size:16.5px;color:var(--ink-soft)}
+.exrow .ed b{color:var(--ink)}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+  .exrow{flex-direction:column;gap:4px}
+  .exrow .ef{flex:none}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §4.2.1</div>
+    <h1>Convex optimization<br><em>in standard form</em></h1>
+    <p class="sub">§4.1 defined the general optimization problem, no convexity assumed. §4.2 specializes to convex problems. Everything good about convex optimization (local ⟹ global in §4.2.2; tractable algorithms) flows from this definition — so getting it exactly right, including a subtlety about how the feasible set is described, is the whole job of this section.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--normal)"></span> equalities must be affine — not merely convex</span>
+      <span><span class="dot" style="background:var(--halfspace)"></span> feasible set = D ∩ sublevel sets ∩ hyperplanes</span>
+      <span><span class="dot" style="background:var(--inside)"></span> convex-over-convex ≠ standard form</span>
+      <span>B&amp;V §4.2.1, pp. 136–138 · mastery target: diagnose · opens §4.2</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 220" role="img" aria-label="A dashed rectangle labeled D contains a shaded disk labeled the sublevel set f of x less than or equal to zero, crossed by a diagonal line labeled the hyperplane a transpose x equals b. The chord where the line crosses the disk is highlighted in vermilion as the convex feasible set.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="220" fill="url(#dots)"/>
+        <rect x="40" y="25" width="560" height="160" rx="16" fill="none" stroke="#8A91A3" stroke-width="1.6" stroke-dasharray="3 5"/>
+        <text x="56" y="46" fill="#8A91A3" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">D = ⋂ dom fᵢ</text>
+
+        <circle cx="320" cy="110" r="70" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.8"/>
+        <text x="320" y="45" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">{x ∣ f(x) ≤ 0}</text>
+
+        <line x1="150" y1="178" x2="490" y2="42" stroke="#17223B" stroke-width="1.8"/>
+        <text x="470" y="55" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="end">{x ∣ aᵀx = b}</text>
+
+        <line x1="255.3" y1="136.6" x2="384.8" y2="83.3" stroke="#D7402B" stroke-width="6" stroke-linecap="round"/>
+        <text x="320" y="203" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle" font-weight="600">feasible set — the intersection, convex</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§4.1 defined the general optimization problem, no convexity assumed. §4.2 specializes to convex problems. Everything good about convex optimization — local optima are global (§4.2.2), tractable algorithms exist — flows from getting this definition exactly right, including a subtlety about how the feasible set is <em>described</em>, not just what it looks like. That subtlety is the whole job of this section.</p>
+</section>
+
+<!-- 1 definition -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§1</span><span class="eyebrow">definition — B&amp;V Eq. (4.15)</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    minimize \(f_0(x)\)<br>
+    subject to \(f_i(x)\le0,\ i=1,\dots,m\)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(a_i^{\mathsf T}x=b_i,\ i=1,\dots,p\)<br>
+    with \(f_0,\dots,f_m\) convex.
+    <span class="src">B&amp;V Eq. (4.15) · L6998–7011</span>
+  </div>
+  <p>Three additional requirements over the general standard form (4.1):</p>
+  <ul class="reads">
+    <li><span class="tag">objective</span><div>\(f_0\) must be convex.</div></li>
+    <li><span class="tag">inequalities</span><div>each \(f_i\) must be convex.</div></li>
+    <li><span class="tag">equalities</span><div>each \(h_i(x)=a_i^{\mathsf T}x-b_i\) must be <strong>affine</strong> — a linear equality, not merely convex.</div></li>
+  </ul>
+  <div class="note key"><div class="ic">!</div><p>The third catches people: a convex equality function is not enough — it must be affine. Convexity of \(h\) doesn't qualify it.</p></div>
+
+  <div class="excard">
+    <div class="exhead">a nonaffine h may or may not have a convex zero set</div>
+    <div class="exbody">
+      <div class="exrow"><span class="ef">\((x_1+x_2)^2=0\)</span><div class="ed">cuts out the line \(x_1+x_2=0\) — <b>convex</b>, and reformulable as an affine equality (§5).</div></div>
+      <div class="exrow"><span class="ef">\(x_1^2+x_2^2=1\)</span><div class="ed">cuts out the unit circle — <b>not convex</b>.</div></div>
+    </div>
+  </div>
+  <div class="note build"><div class="ic">→</div><p>Either way — convex zero set or not — a description with a nonaffine \(h\) fails the standard-form definition. §5 works through exactly this case.</p></div>
+</section>
+
+<!-- 2 feasible set convex -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§2</span><span class="eyebrow">the feasible set is convex</span></div>
+  <hr class="rule"/>
+  <p>It is the intersection of three convex pieces:</p>
+  <ul class="reads">
+    <li><span class="tag">domain</span><div>\(\mathcal D=\bigcap_{i=0}^m \operatorname{dom} f_i\) — convex.</div></li>
+    <li><span class="tag">sublevel sets</span><div>the \(m\) convex sublevel sets \(\{x\mid f_i(x)\le0\}\) (§3.1.3).</div></li>
+    <li><span class="tag">hyperplanes</span><div>the \(p\) hyperplanes \(\{x\mid a_i^{\mathsf T}x=b_i\}\) — affine.</div></li>
+  </ul>
+  <div class="note build"><div class="ic">∩</div><p>An intersection of convex sets is convex (§2.3.1), so the feasible set is convex. A convex problem minimizes a convex objective over a convex set.</p></div>
+  <div class="note warn"><div class="ic">!</div><p>WLOG \(a_i\ne0\): \(a_i=b_i=0\) means the constraint is vacuous — delete it. \(a_i=0,\ b_i\ne0\) means it's inconsistent — the problem is infeasible.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 1</span><h4>dragging x through D ∩ {f≤0} ∩ {aᵀx=b}</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv1"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> {f(x) ≤ 0} (disk)</span>
+          <span><i style="border-color:#17223B"></i> {aᵀx = b} (line)</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>x</b> anywhere. Slide the disk's radius <b>r</b> and the hyperplane's offset <b>b</b>. Feasible means inside the sublevel set <em>and</em> on the hyperplane — the intersection of two convex sets.</p>
+        <div class="ctrl"><label>r <span class="val" id="rv1">2.40</span></label><input type="range" id="r1" min="1.2" max="3.6" step="0.1" value="2.4"></div>
+        <div class="ctrl"><label>b <span class="val" id="bv1">0.60</span></label><input type="range" id="b1" min="-3.5" max="3.5" step="0.1" value="0.6"></div>
+        <div class="readout" id="ro1"></div>
+        <div class="verdict" id="vd1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 quasiconvex + optimal set facts -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§3</span><span class="eyebrow">quasiconvex variant and optimal-set facts</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    If \(f_0\) is quasiconvex — still convex \(f_i\), still affine equalities — the problem is a <strong>(standard-form) quasiconvex problem</strong>.
+    <span class="src">B&amp;V L7025–7030</span>
+  </div>
+  <p>Since sublevel sets of convex and quasiconvex functions are convex, three facts follow:</p>
+  <ul class="reads">
+    <li><span class="tag">ε-suboptimal</span><div>the \(\epsilon\)-suboptimal sets are convex.</div></li>
+    <li><span class="tag">optimal set</span><div>in particular, the optimal set is convex.</div></li>
+    <li><span class="tag">uniqueness</span><div>if \(f_0\) is <strong>strictly</strong> convex, the optimal set has <strong>at most one point</strong>.</div></li>
+  </ul>
+  <div class="note key"><div class="ic">!</div><p>"At most one point" is uniqueness, not existence — strict convexity rules out a second minimizer, but a minimizer may not exist at all.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 2</span><h4>sublevel sets shrinking as ε → 0</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv2"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> {x ∣ f(x) ≤ ε}</span>
+          <span><i style="border-color:#D7402B"></i> optimal set (ε→0)</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Toggle <b>f</b>. Slide <b>ε</b> down toward 0. A strictly convex f shrinks onto a single point; one with a flat direction never does.</p>
+        <div class="chips">
+          <button class="chip on" id="chipA" type="button">strictly convex</button>
+          <button class="chip" id="chipB" type="button">not strictly convex</button>
+        </div>
+        <div class="ctrl"><label>ε <span class="val" id="ev2">2.00</span></label><input type="range" id="eps2" min="0.05" max="4" step="0.05" value="2"></div>
+        <div class="readout" id="ro2"></div>
+        <div class="verdict" id="vd2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 concave maximization -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§4</span><span class="eyebrow">concave maximization problems</span></div>
+  <hr class="rule"/>
+  <div class="bv">
+    maximize \(f_0(x)\) subject to \(f_i(x)\le0,\ a_i^{\mathsf T}x=b_i\) is also called a <strong>convex optimization problem</strong> when \(f_0\) is concave and the \(f_i\) are convex.
+    <span class="src">B&amp;V L7032–7044</span>
+  </div>
+  <p>Solved by minimizing the convex \(-f_0\) — every result about convex minimization transposes directly. (Quasiconvex when \(f_0\) is quasiconcave.)</p>
+</section>
+
+<!-- 5 the subtlety -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§5</span><span class="eyebrow">the subtlety — standard form vs "convex over convex"</span></div>
+  <hr class="rule"/>
+  <p>Consider (4.17), \(x\in\mathbf R^2\):</p>
+  <div class="bv">
+    minimize \(x_1^2+x_2^2\)<br>
+    subject to \(f_1(x)=\dfrac{x_1}{1+x_2^2}\le0\)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(h_1(x)=(x_1+x_2)^2=0\)
+    <span class="src">B&amp;V (4.17) · L7046–7083</span>
+  </div>
+  <p>This is in the general standard form (4.1), but <strong>not</strong> a convex optimization problem in standard form: \(h_1\) is not affine and \(f_1\) is not convex. Yet its feasible set <em>is</em> convex — since \(1+x_2^2>0\) always, \(f_1(x)\le0\iff x_1\le0\); and \((x_1+x_2)^2=0\iff x_1+x_2=0\). So the feasible set is \(\{x\mid x_1\le0,\ x_1+x_2=0\}\) — convex.</p>
+  <div class="note warn"><div class="ic">!</div><p>We are minimizing a convex function over a convex set here — but by B&amp;V's definition this is <strong>still not</strong> a convex problem, because of how it's <em>described</em>.</p></div>
+  <p>Reformulated as (4.18):</p>
+  <div class="bv">
+    minimize \(x_1^2+x_2^2\)<br>
+    subject to \(\tilde f_1(x)=x_1\le0\)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(\tilde h_1(x)=x_1+x_2=0\)
+    <span class="src">B&amp;V (4.18) · L7046–7083</span>
+  </div>
+  <p>Now \(f_0,\tilde f_1\) are convex and \(\tilde h_1\) is affine — (4.18) <em>is</em> a convex problem in standard form. (4.17) and (4.18) are equivalent, but only (4.18) qualifies.</p>
+  <div class="note key"><div class="ic">!</div><p><strong>B&amp;V's stricter definition:</strong> a convex problem is not merely "minimize a convex function over a convex set" — some authors call that an <em>abstract convex problem</em> (a term B&amp;V does not use). It also requires the feasible set be described specifically by convex inequalities and affine equalities. Rarely bites in practice: finding such a description is usually straightforward.</p></div>
+
+  <div class="lab">
+    <div class="lab-head"><span class="lh-num">LAB 3</span><h4>(4.17) vs (4.18) — same feasible ray, only one is standard form</h4></div>
+    <div class="lab-body">
+      <div class="canvas-col">
+        <canvas id="cv3"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> x1 ≤ 0 (half-plane)</span>
+          <span><i style="border-color:#17223B"></i> x1+x2 = 0 (the line)</span>
+          <span><i style="border-color:#D7402B"></i> feasible ray, both forms</span>
+        </div>
+      </div>
+      <div class="panel-col">
+        <h5>controls</h5>
+        <p class="hint">Drag <b>x</b>. (4.17) tests f1(x)=x1/(1+x2²)≤0 and h1(x)=(x1+x2)²=0. (4.18) tests the same point against x1≤0 and x1+x2=0 — watch the two verdicts always agree.</p>
+        <div class="readout" id="ro3"></div>
+        <div class="verdict" id="vd3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">E1</span>Definition (4.15)</p><p>\(f_0,f_i\) convex, equalities \(a_i^{\mathsf T}x=b_i\) <strong>affine</strong> — the affine-equality condition is the load-bearing extra requirement.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E2</span>Feasible set convex</p><p>Intersection of \(\mathcal D\), convex sublevel sets, hyperplanes. Minimize convex over convex. WLOG \(a_i\ne0\).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E3</span>Optimal-set facts</p><p>\(\epsilon\)-suboptimal &amp; optimal sets convex (also for quasiconvex \(f_0\)); strictly convex \(f_0\) ⟹ at most one optimizer.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E4</span>Concave maximization</p><p>Concave \(f_0\), convex \(f_i\) = convex problem, solved via \(\min -f_0\).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E5</span>The subtlety</p><p>"Convex over convex" is not sufficient — the description must use convex inequalities + affine equalities. (4.17) is not convex-in-standard-form; (4.18) is.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E6</span>Traps</p><p>Equalities must be affine (not convex); a convex feasible set alone doesn't make a convex problem; strict-convex uniqueness is "at most one" (a minimizer may not exist).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E7</span>Scope</p><p>Definition only. Local ⟹ global is §4.2.2, optimality criterion §4.2.3, problem classes (LP/QP/…) §4.3+.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-09-01 · bv.4.2.1 · Convex optimization problems in standard form (B&amp;V §4.2.1)</div>
+    <h2>Main points for quick review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Definition (4.15)</h6><p>min \(f_0\) s.t. \(f_i\le0\), \(a_i^{\mathsf T}x=b_i\), with \(f_0,\dots,f_m\) convex and equalities affine. Three requirements: objective convex, inequality functions convex, equality functions affine.</p></div>
+      <div class="scard"><h6>Feasible set convex</h6><p>Intersection of \(\mathcal D\), convex sublevel sets \(\{f_i\le0\}\), hyperplanes \(\{a_i^{\mathsf T}x=b_i\}\) — minimize convex over convex (WLOG \(a_i\ne0\)).</p></div>
+      <div class="scard"><h6>Optimal set</h6><p>\(\epsilon\)-suboptimal &amp; optimal sets convex (also quasiconvex \(f_0\)); strictly convex ⟹ at most one optimizer. Concave max (concave \(f_0\), convex \(f_i\)) is a convex problem via \(\min -f_0\).</p></div>
+      <div class="scard"><h6>The subtlety</h6><p>Convex-over-convex is not sufficient — needs the convex-inequality + affine-equality description. (4.17) not convex-in-standard-form (nonaffine \(h_1\), nonconvex \(f_1\)); equivalent (4.18) is. B&amp;V rejects the "abstract" definition.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §4.2.1 (p. 136–138) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-range;i<=range;i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+
+/* ===== LAB 1 — D ∩ {f(x)≤0} ∩ {aTx=b}: disk meets hyperplane ===== */
+(function(){
+  const canvas=document.getElementById("cv1"),ctx=canvas.getContext("2d"),R=4,view=makeView(canvas,R);
+  let r=2.4,b=0.6;
+  let x={x1:1.6,x2:0.4};
+  const elR=document.getElementById("r1"),elB=document.getElementById("b1");
+  const rvEl=document.getElementById("rv1"),bvEl=document.getElementById("bv1");
+  const ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function fVal(p){return p.x1*p.x1+p.x2*p.x2-r*r;}
+  function lineVal(p){return p.x1+p.x2-b;}
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    ctx.beginPath();
+    const steps=64;
+    for(let i=0;i<=steps;i++){const th=i/steps*Math.PI*2;const p=view.toS(r*Math.cos(th),r*Math.sin(th));if(i===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);}
+    ctx.closePath();ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.6;ctx.stroke();
+    const L=R+0.4;
+    const p0=view.toS(-L,b-(-L)),p1=view.toS(L,b-L);
+    ctx.strokeStyle="#17223B";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.stroke();
+
+    const xc={x1:clamp(x.x1,-R+0.1,R-0.1),x2:clamp(x.x2,-R+0.1,R-0.1)};
+    const f=fVal(xc),lv=lineVal(xc),inSet=f<=0,onLine=Math.abs(lv)<0.15;
+    const s=view.toS(xc.x1,xc.x2);
+    const col=inSet&&onLine?"#2F855A":inSet?"#B7791F":"#C0392B";
+    dot(ctx,s[0],s[1],7,"#fff",col);
+    label(ctx,"x",s[0]+10,s[1]-11,"#17223B",13);
+
+    ro.innerHTML=`x = (${xc.x1.toFixed(2)}, ${xc.x2.toFixed(2)})<br>`+
+      `<span class="k">f(x)=x1²+x2²−r²</span> = <b>${f.toFixed(2)}</b> &nbsp; <span class="k">aᵀx−b</span> = <b>${lv.toFixed(2)}</b>`;
+    if(inSet&&onLine){vd.className="verdict in";vd.textContent="✓ in D ∩ {f≤0} ∩ {aᵀx=b} — feasible";}
+    else if(inSet){vd.className="verdict mid";vd.textContent="in the disk, but off the hyperplane";}
+    else{vd.className="verdict out";vd.textContent="✗ outside the sublevel set {f(x)≤0}";}
+  }
+  let act=false;
+  function pos(ev){const rc=canvas.getBoundingClientRect();return [ev.clientX-rc.left,ev.clientY-rc.top];}
+  canvas.addEventListener("pointerdown",ev=>{act=true;canvas.setPointerCapture(ev.pointerId);const p=pos(ev);const wv=view.toW(p[0],p[1]);x={x1:clamp(wv[0],-R+0.1,R-0.1),x2:clamp(wv[1],-R+0.1,R-0.1)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointermove",ev=>{if(!act)return;const p=pos(ev);const wv=view.toW(p[0],p[1]);x={x1:clamp(wv[0],-R+0.1,R-0.1),x2:clamp(wv[1],-R+0.1,R-0.1)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  elR.addEventListener("input",()=>{r=parseFloat(elR.value);rvEl.textContent=r.toFixed(2);draw();});
+  elB.addEventListener("input",()=>{b=parseFloat(elB.value);bvEl.textContent=b.toFixed(2);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 2 — sublevel sets {f<=eps} shrinking; strict convexity -> unique point ===== */
+(function(){
+  const canvas=document.getElementById("cv2"),ctx=canvas.getContext("2d"),R=4,view=makeView(canvas,R);
+  const chipA=document.getElementById("chipA"),chipB=document.getElementById("chipB");
+  const elEps=document.getElementById("eps2"),evEl=document.getElementById("ev2");
+  const ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  let strict=true,eps=2;
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    if(strict){
+      const rad=Math.sqrt(eps);
+      ctx.beginPath();
+      const steps=64;
+      for(let i=0;i<=steps;i++){const th=i/steps*Math.PI*2;const p=view.toS(rad*Math.cos(th),rad*Math.sin(th));if(i===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);}
+      ctx.closePath();ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.6;ctx.stroke();
+      const o=view.toS(0,0);
+      dot(ctx,o[0],o[1],6,"#fff","#D7402B");
+      label(ctx,"x⋆=(0,0)",o[0]+9,o[1]-11,"#17223B",12);
+      ro.innerHTML=`f = x1²+x2² &nbsp; ε = <b>${eps.toFixed(2)}</b><br>`+
+        `sublevel set: disk, radius √ε = <b>${rad.toFixed(2)}</b><br>`+
+        `optimal set: <b>{(0,0)}</b> — one point`;
+      if(eps<=0.15){vd.className="verdict in";vd.textContent="✓ ε→0: shrinks onto the single point x⋆=(0,0)";}
+      else{vd.className="verdict mid";vd.textContent="convex disk, still shrinking toward x⋆";}
+    } else {
+      const half=Math.sqrt(eps);
+      const p0=view.toS(-half,-R-0.3),p1=view.toS(half,-R-0.3),p2=view.toS(half,R+0.3),p3=view.toS(-half,R+0.3);
+      ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.lineTo(p3[0],p3[1]);ctx.closePath();
+      ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.6;ctx.stroke();
+      const la=view.toS(0,-R),lb=view.toS(0,R);
+      ctx.strokeStyle="#D7402B";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(la[0],la[1]);ctx.lineTo(lb[0],lb[1]);ctx.stroke();
+      label(ctx,"x⋆ ∈ {x1=0}",la[0]+9,la[1]+16,"#17223B",12);
+      ro.innerHTML=`f = x1² &nbsp; ε = <b>${eps.toFixed(2)}</b><br>`+
+        `sublevel set: strip, |x1| ≤ <b>${half.toFixed(2)}</b><br>`+
+        `optimal set: <b>{x1=0}</b> — a whole line`;
+      vd.className="verdict mid";vd.textContent="optimal set = the entire line x1=0 — never a single point, however small ε gets";
+    }
+  }
+  chipA.addEventListener("click",()=>{strict=true;chipA.classList.add("on");chipB.classList.remove("on");draw();});
+  chipB.addEventListener("click",()=>{strict=false;chipB.classList.add("on");chipA.classList.remove("on");draw();});
+  elEps.addEventListener("input",()=>{eps=parseFloat(elEps.value);evEl.textContent=eps.toFixed(2);draw();});
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+
+/* ===== LAB 3 — (4.17) vs (4.18): f1=x1/(1+x2^2), h1=(x1+x2)^2 vs x1<=0, x1+x2=0 ===== */
+(function(){
+  const canvas=document.getElementById("cv3"),ctx=canvas.getContext("2d"),R=4,view=makeView(canvas,R);
+  let x={x1:-1.6,x2:0.5};
+  const ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,R);
+    const p0=view.toS(-R,-R),p1=view.toS(0,-R),p2=view.toS(0,R),p3=view.toS(-R,R);
+    ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.lineTo(p3[0],p3[1]);ctx.closePath();
+    ctx.fillStyle="rgba(43,108,176,0.13)";ctx.fill();
+    const la=view.toS(-R,R),lb=view.toS(R,-R);
+    ctx.strokeStyle="#17223B";ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(la[0],la[1]);ctx.lineTo(lb[0],lb[1]);ctx.stroke();
+    const ra=view.toS(0,0),rb=view.toS(-R,R);
+    ctx.strokeStyle="#D7402B";ctx.lineWidth=5;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(ra[0],ra[1]);ctx.lineTo(rb[0],rb[1]);ctx.stroke();
+
+    const xc={x1:clamp(x.x1,-R+0.1,R-0.1),x2:clamp(x.x2,-R+0.1,R-0.1)};
+    const f1=xc.x1/(1+xc.x2*xc.x2),h1=(xc.x1+xc.x2)*(xc.x1+xc.x2);
+    const on417=f1<=1e-9&&Math.abs(xc.x1+xc.x2)<0.15;
+    const on418=xc.x1<=1e-9&&Math.abs(xc.x1+xc.x2)<0.15;
+    const s=view.toS(xc.x1,xc.x2);
+    const col=on417?"#2F855A":(xc.x1<=0?"#B7791F":"#C0392B");
+    dot(ctx,s[0],s[1],7,"#fff",col);
+    label(ctx,"x",s[0]+10,s[1]-11,"#17223B",13);
+
+    ro.innerHTML=`x = (${xc.x1.toFixed(2)}, ${xc.x2.toFixed(2)})<br>`+
+      `<span class="k">(4.17)</span> f1(x)=<b>${f1.toFixed(3)}</b> &nbsp; h1(x)=<b>${h1.toFixed(3)}</b><br>`+
+      `<span class="k">(4.18)</span> x1=<b>${xc.x1.toFixed(2)}</b> &nbsp; x1+x2=<b>${(xc.x1+xc.x2).toFixed(3)}</b>`;
+    if(on417&&on418){vd.className="verdict in";vd.textContent="✓ feasible — (4.17) and (4.18) agree";}
+    else if(xc.x1<=0){vd.className="verdict mid";vd.textContent="x1≤0 holds, but not yet on the line x1+x2=0";}
+    else{vd.className="verdict out";vd.textContent="✗ infeasible — f1(x)>0 and x1>0, both forms agree";}
+  }
+  let act=false;
+  function pos(ev){const rc=canvas.getBoundingClientRect();return [ev.clientX-rc.left,ev.clientY-rc.top];}
+  canvas.addEventListener("pointerdown",ev=>{act=true;canvas.setPointerCapture(ev.pointerId);const p=pos(ev);const wv=view.toW(p[0],p[1]);x={x1:clamp(wv[0],-R+0.1,R-0.1),x2:clamp(wv[1],-R+0.1,R-0.1)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointermove",ev=>{if(!act)return;const p=pos(ev);const wv=view.toW(p[0],p[1]);x={x1:clamp(wv[0],-R+0.1,R-0.1),x2:clamp(wv[1],-R+0.1,R-0.1)};draw();ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=false);canvas.addEventListener("pointercancel",()=>act=false);
+  new ResizeObserver(draw).observe(canvas);draw();
+})();
+</script>
+</body>
+</html>
