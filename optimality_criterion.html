@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>§4.2.3 — An Optimality Criterion for Differentiable f₀</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --paper:#FBFAF7; --paper-2:#F4F1EA; --grid:#E7E1D4;
+  --ink:#17223B; --ink-soft:#46506A; --ink-faint:#8A91A3; --rule:#D9D3C6;
+  --normal:#D7402B; --normal-soft:#F6DAD3;
+  --halfspace:#2B6CB0; --halfspace-fill:rgba(43,108,176,0.13);
+  --inside:#2F855A; --inside-fill:rgba(47,133,90,0.12); --outside:#C0392B;
+  --maxw:740px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.bleed{max-width:1040px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.12;letter-spacing:-0.01em;color:var(--ink)}
+h2{font-size:30px;margin:0 0 6px} h3{font-size:21px;margin:34px 0 6px;font-weight:600}
+p{margin:14px 0} a{color:var(--halfspace)} strong{font-weight:600}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.mono{font-family:"JetBrains Mono",monospace}
+
+header.hero{position:relative;padding:74px 0 30px;border-bottom:1px solid var(--rule);background:var(--paper)}
+header.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+  repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 78%);pointer-events:none}
+.hero-inner{position:relative}
+.hero .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:0.12em;color:var(--normal);text-transform:uppercase;font-weight:600}
+.hero h1{font-family:"Fraunces";font-size:clamp(38px,6.2vw,60px);font-weight:600;line-height:1.02;letter-spacing:-0.02em;margin:14px 0 0}
+.hero h1 em{font-style:italic;color:var(--normal)}
+.hero .sub{font-size:21px;color:var(--ink-soft);max-width:600px;margin:18px 0 0}
+.hero .meta{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-faint)}
+.hero .meta span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%}
+.herofig{margin:34px auto 0;max-width:640px}
+.herofig svg{width:100%;height:auto;display:block}
+
+section{padding:30px 0}
+.secnum{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.secnum .n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--normal);font-weight:600;letter-spacing:0.04em}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:8px 0 0}
+.bv{margin:18px 0;padding:14px 20px;border-left:3px solid var(--normal);background:#fff;border-radius:0 8px 8px 0;font-family:"Fraunces";font-style:italic;font-size:19px;color:var(--ink);box-shadow:0 1px 0 var(--rule)}
+.bv .src{display:block;margin-top:6px;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase}
+.reads{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.reads li{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:10px}
+.reads .tag{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;margin-top:2px}
+
+.lab{margin:26px 0;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 30px -22px rgba(23,34,59,0.5)}
+.lab-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(var(--paper-2),#fff)}
+.lab-head .lh-num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;color:#fff;background:var(--normal);padding:3px 8px;border-radius:6px}
+.lab-head h4{margin:0;font-family:"Fraunces";font-size:17px;font-weight:600}
+.lab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0}
+.canvas-col{position:relative;border-right:1px solid var(--rule)}
+canvas{display:block;width:100%;height:440px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.panel-col{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.panel-col h5{margin:0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.hint{font-size:15px;color:var(--ink-soft);line-height:1.5} .hint b{color:var(--ink)}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between}
+.ctrl label .val{color:var(--ink);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--grid);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--normal);cursor:pointer;border:2px solid #fff}
+.readout{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.7;background:var(--paper-2);border:1px solid var(--rule);border-radius:10px;padding:11px 13px;color:var(--ink-soft)}
+.readout .k{color:var(--ink-faint)} .readout b{color:var(--ink)}
+.verdict{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px;text-align:center}
+.verdict.in{background:var(--inside-fill);color:var(--inside)}
+.verdict.out{background:rgba(192,57,43,.1);color:var(--outside)}
+.verdict.mid{background:#FBF3E2;color:#B7791F}
+.legend{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:5px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:7px;background:rgba(251,250,247,.82);padding:2px 7px;border-radius:6px}
+.legend i{width:14px;height:0;border-top:3px solid;border-radius:3px;display:inline-block}
+.legend i.sw{height:11px;border:none;border-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:20px;border:1px solid var(--rule);background:#fff;color:var(--ink-soft);cursor:pointer;transition:background .12s,color .12s,border-color .12s}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.proof{margin:22px 0;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.proof-head{padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--paper-2);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.proof-head .target{color:var(--normal)}
+.step{display:flex;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--paper-2)}
+.step:last-child{border-bottom:none}
+.step .math{flex:1;min-width:0;overflow-x:auto}
+.step .why{flex:0 0 40%;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.45;border-left:2px solid var(--grid);padding-left:14px}
+.step .why b{color:var(--normal)}
+.step.crux{background:#fff7f5} .step.crux .why{border-left-color:var(--normal)}
+
+.note{margin:18px 0;padding:14px 18px 14px 16px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:flex;gap:13px}
+.note .ic{flex:0 0 auto;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;color:#fff}
+.note.key .ic{background:var(--normal)} .note.key{background:#fff7f5;border-color:var(--normal-soft)}
+.note.warn .ic{background:#B7791F} .note.warn{background:#FBF3E2;border-color:#EAD9AE}
+.note.build .ic{background:var(--ink)}
+.note p{margin:0;font-size:17px}
+
+.moves{display:grid;gap:12px;margin:18px 0}
+.move{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.move .mh{font-family:"Fraunces";font-weight:600;font-size:17px;margin:0 0 4px;display:flex;gap:9px;align-items:baseline}
+.move .mh .mnum{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--normal)}
+.move p{margin:0;font-size:16px;color:var(--ink-soft)}
+
+.excard{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:16px 20px;margin:16px 0}
+.excard .et{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--normal);margin-bottom:6px}
+.excard p{margin:8px 0;font-size:17px}
+
+.summary{background:var(--ink);color:#EDEBE4;border-radius:18px;padding:30px 30px 26px;margin:30px 0}
+.summary .eyebrow{color:#9aa3bd} .summary h2{color:#fff;margin-bottom:18px}
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.scard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:15px 16px}
+.scard h6{margin:0 0 6px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--normal);font-weight:600}
+.scard p{margin:0;font-size:15.5px;line-height:1.5;color:#D7D4CB}
+.scard .katex{color:#fff}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-faint);font-family:"JetBrains Mono",monospace;font-size:12px}
+@media (max-width:820px){
+  .lab-body{grid-template-columns:1fr}
+  .canvas-col{border-right:none;border-bottom:1px solid var(--rule)}
+  canvas{height:400px}
+  .step{flex-direction:column;align-items:flex-start;gap:8px}
+  .step .why{flex:1;border-left:none;border-top:2px solid var(--grid);padding:8px 0 0}
+}
+@media (max-width:520px){ body{font-size:18px} .hero h1{font-size:34px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="bleed hero-inner">
+    <div class="kicker">Boyd &amp; Vandenberghe · Convex Optimization · §4.2.3</div>
+    <h1>An optimality<br><em>criterion</em></h1>
+    <p class="sub">§4.2.2 showed local ⟹ global, but gave no test for optimality. When f₀ is differentiable, this section gives one: a first-order condition on ∇f₀(x) that is both necessary and sufficient — and it specializes to every optimality condition you already half-know.</p>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--halfspace)"></span> feasible set X</span>
+      <span><span class="dot" style="background:var(--inside)"></span> ∇f₀(x)ᵀ(y−x) ≥ 0</span>
+      <span><span class="dot" style="background:var(--normal)"></span> −∇f₀(x) supports X</span>
+      <span>B&amp;V §4.2.3, pp. 139&ndash;142 · mastery target: diagnose</span>
+    </div>
+
+    <div class="herofig">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A convex set X with boundary point x, its supporting hyperplane, the outward direction minus gradient f0 of x, and two feasible directions toward y1 and y2 that satisfy the optimality criterion.">
+        <defs><pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#E7E1D4"/></pattern></defs>
+        <rect width="640" height="230" fill="url(#dots)"/>
+        <path d="M 95,120 C 95,72 165,44 225,47 C 300,51 344,86 344,120 C 344,159 296,193 218,191 C 145,189 95,164 95,120 Z" fill="rgba(43,108,176,0.13)" stroke="#2B6CB0" stroke-width="1.6"/>
+        <text x="150" y="127" fill="#2B6CB0" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">X</text>
+        <line x1="344" y1="58" x2="344" y2="188" stroke="#17223B" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <circle cx="344" cy="120" r="5.5" fill="#17223B"/>
+        <text x="352" y="106" fill="#17223B" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">x</text>
+        <line x1="344" y1="120" x2="420" y2="120" stroke="#D7402B" stroke-width="2.4"/>
+        <polygon points="420,120 409,115 409,125" fill="#D7402B"/>
+        <text x="426" y="116" fill="#D7402B" font-family="JetBrains Mono, monospace" font-size="12">&#8722;&#8711;f&#8320;(x)</text>
+        <circle cx="205" cy="78" r="4.5" fill="#2F855A"/>
+        <text x="186" y="66" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12">y&#8321;</text>
+        <line x1="344" y1="120" x2="205" y2="78" stroke="#8A91A3" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <circle cx="165" cy="152" r="4.5" fill="#2F855A"/>
+        <text x="146" y="168" fill="#2F855A" font-family="JetBrains Mono, monospace" font-size="12">y&#8322;</text>
+        <line x1="344" y1="120" x2="165" y2="152" stroke="#8A91A3" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="470" y="150" fill="#46506A" font-family="JetBrains Mono, monospace" font-size="11">&#8711;f&#8320;(x)&#7488;(y&#8722;x) &#8805; 0</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 0 -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§0</span><span class="eyebrow">where we are</span></div>
+  <hr class="rule"/>
+  <p>§4.2.2 showed local ⟹ global for convex problems, but gave no test for optimality. When <span class="mono">f₀</span> is differentiable, this section gives one: a first-order condition on <span class="mono">∇f₀(x)</span> that is both necessary and sufficient. It specializes to familiar conditions (<span class="mono">∇f₀=0</span> unconstrained, Lagrange multipliers for equality constraints, complementarity for sign constraints), previewing the Chapter 5 treatment of Lagrange multipliers and complementarity.</p>
+</section>
+
+<!-- 1 the criterion -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§1</span><span class="eyebrow">the criterion (B&amp;V (4.20)&ndash;(4.21), L7128&ndash;7143)</span></div>
+    <hr class="rule"/>
+    <p>Since <span class="mono">f₀</span> is differentiable and convex, the first-order condition (§3.1.3) holds:</p>
+    <div class="bv">\[ f_0(y) \ge f_0(x) + \nabla f_0(x)^T(y-x) \qquad (4.20) \]<span class="src">B&amp;V (4.20)</span></div>
+    <p>With feasible set <span class="mono">X = \{\, x \mid f_i(x)\le 0,\ h_i(x)=0 \,\}</span>:</p>
+    <div class="bv">\[ x \text{ is optimal} \iff x\in X \text{ and } \nabla f_0(x)^T(y-x)\ge 0 \ \ \forall\, y\in X \qquad (4.21) \]<span class="src">B&amp;V (4.21)</span></div>
+    <div class="note warn"><div class="ic">!</div><p>It's <strong>≥ 0</strong>, not <span class="mono">= 0</span> — and it has to hold for <strong>every</strong> feasible <span class="mono">y</span>, not just one.</p></div>
+    <p><strong>Geometry.</strong> If <span class="mono">∇f₀(x) ≠ 0</span>, <span class="mono">−∇f₀(x)</span> defines a supporting hyperplane to <span class="mono">X</span> at <span class="mono">x</span>: no feasible direction is a first-order descent direction (Figure 4.2). The hero above draws exactly this — <span class="mono">X</span> sits entirely on the side where <span class="mono">∇f₀(x)ᵀ(y−x) ≥ 0</span>, so <span class="mono">−∇f₀(x)</span> points strictly away from the set.</p>
+  </div>
+</section>
+
+<!-- 2 proof -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§2</span><span class="eyebrow">proof (B&amp;V L7145&ndash;7162)</span></div>
+    <hr class="rule"/>
+    <div class="proof">
+      <div class="proof-head"><span>(⟸)</span><span class="target">criterion ⟹ optimal</span></div>
+      <div class="step">
+        <div class="math">\[ x\in X \text{ satisfies (4.21)} \implies f_0(y) \ge f_0(x)+\nabla f_0(x)^T(y-x) \ge f_0(x) \]</div>
+        <div class="why">for any feasible <b>y</b>, (4.20) gives the first inequality; (4.21) gives the second. So <b>x</b> beats every feasible <b>y</b> — optimal.</div>
+      </div>
+    </div>
+    <div class="proof">
+      <div class="proof-head"><span>(⟹)</span><span class="target">optimal ⟹ criterion, by contradiction</span></div>
+      <div class="step">
+        <div class="math">\[ \text{suppose } x \text{ optimal but some } y\in X \text{ has } \nabla f_0(x)^T(y-x)<0 \]</div>
+        <div class="why">assume (4.21) fails for this <b>y</b> — aiming for a contradiction.</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ z(t) = ty+(1-t)x,\qquad z(t) \text{ feasible for } t\in[0,1] \]</div>
+        <div class="why"><b>convex feasible set</b>: a segment between two feasible points stays feasible.</div>
+      </div>
+      <div class="step crux">
+        <div class="math">\[ \left.\frac{d}{dt}f_0(z(t))\right|_{t=0} = \nabla f_0(x)^T(y-x) < 0 \]</div>
+        <div class="why">chain rule at <b>t=0</b>. The derivative is exactly the quantity assumed negative.</div>
+      </div>
+      <div class="step">
+        <div class="math">\[ \implies f_0(z(t)) < f_0(x) \text{ for small } t>0 \]</div>
+        <div class="why">negative derivative at 0 means the function is strictly decreasing just past <b>t=0</b> — contradicts <b>x</b> optimal.</div>
+      </div>
+    </div>
+    <div class="note key"><div class="ic">!</div><p>Uses <strong>convex f₀</strong> (for 4.20) and <strong>convex feasible set</strong> (for <span class="mono">z(t)</span> feasible) — both load-bearing, exactly as in the local/global proof of §4.2.2.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 1</span><h4>Criterion (4.21): shade X by the sign of ∇f₀(x)ᵀ(y−x)</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv1"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> feasible set X</span>
+            <span><i class="sw" style="background:rgba(47,133,90,0.28);border:1px solid var(--inside)"></i> dot ≥ 0 (holds)</span>
+            <span><i class="sw" style="background:rgba(192,57,43,0.24);border:1px solid var(--outside)"></i> dot &lt; 0 (fails)</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag <b>x</b> inside X; drag the hollow probe <b>y</b> anywhere in X. <span class="mono">f₀(z)=‖z−c‖²</span> is minimized over X exactly where the whole set shades green — that <em>is</em> criterion (4.21). The vermilion arrow is <span class="mono">∇f₀(x)</span>; the hint text calls out <span class="mono">−∇f₀(x)</span> as the supporting normal.</p>
+          <div class="chips">
+            <button class="chip" id="chipSnap1">snap x → x⋆</button>
+            <button class="chip" id="chipReset1">reset</button>
+          </div>
+          <div class="readout" id="ro1"></div>
+          <div class="verdict" id="vd1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 unconstrained -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§3</span><span class="eyebrow">unconstrained problems (B&amp;V L7166&ndash;7187)</span></div>
+    <hr class="rule"/>
+    <p><span class="mono">m = p = 0</span>: (4.21) reduces to</p>
+    <div class="bv">\[ \nabla f_0(x) = 0 \qquad (4.22) \]<span class="src">B&amp;V (4.22)</span></div>
+    <p>Why: take <span class="mono">y = x - t\nabla f_0(x)</span> (feasible, since <span class="mono">dom f₀</span> is open); then</p>
+    \[ \nabla f_0(x)^T(y-x) = -t\|\nabla f_0(x)\|_2^2 \ge 0 \]
+    <p>forces <span class="mono">∇f₀(x) = 0</span> — the only way a negative-or-zero quantity like <span class="mono">−t‖∇f₀(x)‖₂²</span> can be <span class="mono">≥ 0</span> for <span class="mono">t&gt;0</span> is if the norm itself is zero. No solution ⟹ no optimum (unbounded below, or finite but unattained); multiple solutions ⟹ each is a minimizer.</p>
+
+    <div class="excard">
+      <div class="et">Example 4.5 · quadratic minimization</div>
+      <p><span class="mono">f₀ = ½xᵀPx + qᵀx + r</span>, <span class="mono">P ⪰ 0</span>. Optimality is <span class="mono">Px + q = 0</span>:</p>
+      <ul class="reads">
+        <li><span class="tag">q ∉ R(P)</span><div>unbounded below — no <span class="mono">x</span> solves <span class="mono">Px=−q</span>, and moving along the direction that makes <span class="mono">Px+q</span> shrink drives <span class="mono">f₀ → −∞</span>.</div></li>
+        <li><span class="tag">P ≻ 0</span><div>unique minimizer <span class="mono">x⋆ = −P⁻¹q</span>.</div></li>
+        <li><span class="tag">P singular, q ∈ R(P)</span><div>an affine set of minimizers <span class="mono">Xopt = −P†q + N(P)</span> (<span class="mono">P†</span> the pseudo-inverse).</div></li>
+      </ul>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 3</span><h4>Example 4.5 — unbounded, unique, or an affine set?</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv3"></canvas>
+          <div class="legend">
+            <span><i style="border-color:#17223B"></i> level sets of f₀</span>
+            <span><i class="sw" style="background:var(--inside-fill);border:1px solid var(--inside)"></i> optimal point / set</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint"><span class="mono">f₀(x)=½xᵀPx+qᵀx</span>, <span class="mono">P⪰0</span> with eigenvalues <b>λ₁, λ₂</b> along axes tilted by <b>θ</b>. Push <b>λ₂</b> to 0 to make P singular, then watch <b>q</b> decide the outcome: zero component on the null direction gives a whole line of minimizers; nonzero sends f₀ to −∞.</p>
+          <div class="ctrl"><label>λ₁ <span class="val" id="l1v">1.40</span></label><input type="range" id="l1" min="0.3" max="2.2" step="0.05" value="1.4"></div>
+          <div class="ctrl"><label>λ₂ <span class="val" id="l2v">0.90</span></label><input type="range" id="l2" min="0" max="2.2" step="0.05" value="0.9"></div>
+          <div class="ctrl"><label>θ <span class="val" id="thv">25°</span></label><input type="range" id="th" min="0" max="180" step="1" value="25"></div>
+          <div class="ctrl"><label>q₁ <span class="val" id="q1v">1.00</span></label><input type="range" id="q1s" min="-2" max="2" step="0.1" value="1.0"></div>
+          <div class="ctrl"><label>q₂ <span class="val" id="q2v">-0.60</span></label><input type="range" id="q2s" min="-2" max="2" step="0.1" value="-0.6"></div>
+          <div class="readout" id="ro3"></div>
+          <div class="verdict" id="vd3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="excard">
+      <div class="et">Example 4.6 · analytic centering</div>
+      <p><span class="mono">f₀ = −Σ log(bᵢ − aᵢᵀx)</span>, <span class="mono">dom = {Ax ≺ b}</span>. Optimality: <span class="mono">∇f₀(x) = Σ aᵢ/(bᵢ − aᵢᵀx) = 0</span>. Unique minimizer iff <span class="mono">{Ax ≺ b}</span> is nonempty and bounded (no solution ⟺ unbounded below; many solutions ⟹ an affine set).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 equality constraints -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§4</span><span class="eyebrow">equality constraints only — the Lagrange condition (B&amp;V L7242&ndash;7270)</span></div>
+    <hr class="rule"/>
+    <p><span class="mono">min f₀</span> s.t. <span class="mono">Ax = b</span>. Every feasible <span class="mono">y</span> is <span class="mono">y = x+v</span> for some <span class="mono">v ∈ N(A)</span>, so optimality (4.21) says</p>
+    \[ \nabla f_0(x)^Tv \ge 0 \qquad \forall\, v\in N(A) \]
+    <div class="note warn"><div class="ic">!</div><p><span class="mono">N(A)</span> is a <strong>subspace</strong> — closed under negation, so both <span class="mono">v</span> and <span class="mono">−v</span> are feasible directions. A <span class="mono">≥ 0</span> that has to hold for both forces <span class="mono">= 0</span>.</p></div>
+    \[ \nabla f_0(x)^Tv = 0 \quad \forall\, v\in N(A), \qquad\text{i.e. } \nabla f_0(x)\perp N(A) \]
+    <p>Since <span class="mono">N(A)^\perp = R(A^T)</span>, there is <span class="mono">ν</span> with</p>
+    <div class="bv">\[ \nabla f_0(x) + A^T\nu = 0 \quad (\text{with } Ax=b) \]<span class="src">the classical Lagrange multiplier condition (Chapter 5)</span></div>
+  </div>
+</section>
+
+<!-- 5 orthant -->
+<section class="bleed">
+  <div class="wrap" style="padding:0">
+    <div class="secnum"><span class="n">§5</span><span class="eyebrow">minimization over the nonnegative orthant — complementarity (B&amp;V L7272&ndash;7300)</span></div>
+    <hr class="rule"/>
+    <p><span class="mono">min f₀</span> s.t. <span class="mono">x ⪰ 0</span>. <span class="mono">∇f₀(x)ᵀy</span> is unbounded below on <span class="mono">{y ⪰ 0}</span> unless <span class="mono">∇f₀(x) ⪰ 0</span>; then the condition reduces to <span class="mono">∇f₀(x)ᵀx = 0</span>, and since it's a sum of nonnegative products equal to zero, each term vanishes:</p>
+    <div class="bv">\[ x\succeq 0,\qquad \nabla f_0(x)\succeq 0,\qquad x_i\,(\nabla f_0(x))_i = 0 \]<span class="src">complementarity (Chapter 5)</span></div>
+    <p>Sparsity patterns of <span class="mono">x</span> and <span class="mono">∇f₀(x)</span> are complementary — wherever one is nonzero, the other must be zero.</p>
+    <div class="note warn"><div class="ic">!</div><p>Complementarity is <strong>termwise</strong> zero (<span class="mono">xᵢ(∇f₀)ᵢ=0</span> for every <span class="mono">i</span>), not merely the aggregate <span class="mono">∇f₀(x)ᵀx=0</span> — though the two are equivalent precisely because every term is nonnegative.</p></div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lh-num">LAB 2</span><h4>Proof of (⟹): slide z(t) and watch f₀ break below f₀(x)</h4></div>
+      <div class="lab-body">
+        <div class="canvas-col">
+          <canvas id="cv2"></canvas>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--halfspace-fill);border:1px solid var(--halfspace)"></i> feasible set X</span>
+            <span><i style="border-color:var(--normal)"></i> segment x→y</span>
+          </div>
+        </div>
+        <div class="panel-col">
+          <h5>controls</h5>
+          <p class="hint">Drag <b>x</b> and <b>y</b> in X. Slide <b>t</b> to move <span class="mono">z(t)=(1−t)x+ty</span> along the segment. When <span class="mono">∇f₀(x)·(y−x)</span> is negative, <span class="mono">φ(t)=f₀(z(t))</span> dips below <span class="mono">φ(0)</span> right away — that's the contradiction proving (⟹).</p>
+          <div class="ctrl"><label>t <span class="val" id="tv2">0.00</span></label><input type="range" id="t2" min="0" max="1" step="0.01" value="0"></div>
+          <div class="readout" id="ro2"></div>
+          <div class="verdict" id="vd2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note build"><div class="ic">i</div><p>Two constructed worked examples for this section are held in reserve — say the word and they'll be added.</p></div>
+  </div>
+</section>
+
+<!-- 6 expert lens -->
+<section class="wrap">
+  <div class="secnum"><span class="n">§6</span><span class="eyebrow">expert lens — what to keep straight (diagnose)</span></div>
+  <hr class="rule"/>
+  <div class="moves">
+    <div class="move"><p class="mh"><span class="mnum">E1</span>Criterion</p><p>(4.21): <span class="mono">x</span> optimal ⟺ <span class="mono">x∈X</span> and <span class="mono">∇f₀(x)ᵀ(y−x)≥0</span> for all <span class="mono">y∈X</span>. It's <span class="mono">≥0</span> (not <span class="mono">=0</span>), over <em>all</em> feasible <span class="mono">y</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E2</span>Geometry</p><p><span class="mono">−∇f₀(x)</span> supports <span class="mono">X</span> at <span class="mono">x</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E3</span>Proof</p><p><span class="mono">⟸</span> from (4.20); <span class="mono">⟹</span> from the segment <span class="mono">z(t)</span> and <span class="mono">d/dt f₀|₀ = ∇f₀(x)ᵀ(y−x) &lt; 0</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E4</span>Specializations</p><p>Unconstrained <span class="mono">∇f₀=0</span>; equality-only <span class="mono">∇f₀+Aᵀν=0</span> (Lagrange); orthant <span class="mono">xᵢ(∇f₀)ᵢ=0</span> (complementarity).</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E5</span>Traps</p><p><span class="mono">≥0</span> over all <span class="mono">y</span>, not <span class="mono">∇f₀=0</span> (only in the unconstrained case); on a subspace, <span class="mono">≥0</span> forces <span class="mono">=0</span> (both <span class="mono">v</span> and <span class="mono">−v</span> are feasible directions); complementarity is termwise zero, not just <span class="mono">∇f₀ᵀx=0</span>.</p></div>
+    <div class="move"><p class="mh"><span class="mnum">E6</span>Scope</p><p><span class="mono">f₀</span> differentiable throughout; Lagrange and complementarity here preview the Chapter 5 optimality conditions.</p></div>
+  </div>
+</section>
+
+<!-- summary -->
+<section class="bleed">
+  <div class="summary">
+    <div class="eyebrow">Summary · 2026-09-15 · bv.4.2.3 · An optimality criterion for differentiable f0 (B&amp;V §4.2.3)</div>
+    <h2>Main Points for Quick Review</h2>
+    <div class="scards">
+      <div class="scard"><h6>Criterion (4.21)</h6><p>\(x\) optimal \(\iff\) \(x\in X\) and \(\nabla f_0(x)^T(y-x)\ge 0\) for all feasible \(y\); geometrically \(-\nabla f_0(x)\) supports \(X\) at \(x\).</p></div>
+      <div class="scard"><h6>Proof</h6><p>\(\Leftarrow\) from \(f_0(y)\ge f_0(x)+\nabla f_0(x)^T(y-x)\); \(\Rightarrow\) from \(z(t)=ty+(1-t)x\) feasible with \(\left.\frac{d}{dt}f_0\right|_0=\nabla f_0(x)^T(y-x)<0\).</p></div>
+      <div class="scard"><h6>Unconstrained</h6><p>\(\nabla f_0=0\). Ex 4.5 \(Px+q=0\) (unbounded / unique \(-P^{-1}q\) / affine \(-P^{\dagger}q+N(P)\)).</p></div>
+      <div class="scard"><h6>Equality &amp; orthant</h6><p>Equality only: \(\nabla f_0+A^T\nu=0\) (Lagrange). Orthant: \(x\succeq 0,\ \nabla f_0\succeq 0,\ x_i(\nabla f_0)_i=0\) (complementarity). Both foreshadow Chapter 5.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  Boyd &amp; Vandenberghe, Convex Optimization §4.2.3 (p. 139&ndash;142) · interactive study sheet · drag any handle, slide any control.
+</footer>
+
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  function render(){ if(window.renderMathInElement){ renderMathInElement(document.body,{
+    delimiters:[{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],
+    throwOnError:false }); } else { setTimeout(render,60); } }
+  render();
+});
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function dpr(){return window.devicePixelRatio||1;}
+function fitCanvas(canvas,ctx){const r=canvas.getBoundingClientRect();const d=dpr();
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);}
+function dot(ctx,x,y,r,fill,stroke){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.lineWidth=2.5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,c,s){ctx.font=(s||13)+"px 'JetBrains Mono', monospace";ctx.fillStyle=c;ctx.textBaseline="middle";ctx.fillText(t,x,y);}
+function arrow(ctx,x0,y0,x1,y1,color,wd){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=wd;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  const ang=Math.atan2(y1-y0,x1-x0),hl=8+wd*1.3;ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(ang-0.4),y1-hl*Math.sin(ang-0.4));ctx.lineTo(x1-hl*Math.cos(ang+0.4),y1-hl*Math.sin(ang+0.4));ctx.closePath();ctx.fill();}
+function makeView(canvas,range){
+  function dims(){const r=canvas.getBoundingClientRect();return {w:r.width,h:r.height};}
+  function scale(w,h){return Math.min(w,h)/(2*range);}
+  return {dims,scale,
+    toS(x,y){const {w,h}=dims();const s=scale(w,h);return [w/2+x*s,h/2-y*s];},
+    toW(px,py){const {w,h}=dims();const s=scale(w,h);return [(px-w/2)/s,(h/2-py)/s];},
+    s(){const {w,h}=dims();return scale(w,h);}};
+}
+function drawGrid(ctx,view,range){
+  const {w,h}=view.dims();ctx.lineWidth=1;ctx.strokeStyle="#ECE7DB";
+  for(let i=-Math.ceil(range);i<=Math.ceil(range);i++){
+    let a=view.toS(i,-range),b=view.toS(i,range);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    let c=view.toS(-range,i),d=view.toS(range,i);ctx.beginPath();ctx.moveTo(c[0],c[1]);ctx.lineTo(d[0],d[1]);ctx.stroke();
+  }
+  ctx.strokeStyle="#C9C2B2";ctx.lineWidth=1.4;
+  let x0=view.toS(-range,0),x1=view.toS(range,0);ctx.beginPath();ctx.moveTo(x0[0],x0[1]);ctx.lineTo(x1[0],x1[1]);ctx.stroke();
+  let y0=view.toS(0,-range),y1=view.toS(0,range);ctx.beginPath();ctx.moveTo(y0[0],y0[1]);ctx.lineTo(y1[0],y1[1]);ctx.stroke();
+}
+
+/* shared feasible region for Labs 1 & 2: disk(radius RAD) cut by halfspace x<=XMAX */
+const REG_XMAX=2.0, REG_RAD=3.3, REG_C={x:4.6,y:2.8};
+function regIn(p){ return p.x<=REG_XMAX+1e-9 && (p.x*p.x+p.y*p.y)<=REG_RAD*REG_RAD+1e-9; }
+function regProj(p){
+  if(regIn(p)) return {x:p.x,y:p.y};
+  const cands=[];
+  {const fx=REG_XMAX,fy=p.y; if(fx*fx+fy*fy<=REG_RAD*REG_RAD+1e-9) cands.push({x:fx,y:fy});}
+  {const d=Math.hypot(p.x,p.y); if(d>1e-9){const fx=p.x/d*REG_RAD,fy=p.y/d*REG_RAD; if(fx<=REG_XMAX+1e-9) cands.push({x:fx,y:fy});}}
+  if(REG_RAD>=REG_XMAX){const yy=Math.sqrt(Math.max(0,REG_RAD*REG_RAD-REG_XMAX*REG_XMAX)); cands.push({x:REG_XMAX,y:yy}); cands.push({x:REG_XMAX,y:-yy});}
+  let best=cands[0]||{x:0,y:0},bd=Infinity;
+  cands.forEach(cc=>{const dd=Math.hypot(cc.x-p.x,cc.y-p.y); if(dd<bd){bd=dd;best=cc;}});
+  return best;
+}
+function regGrad(x){ return {x:2*(x.x-REG_C.x), y:2*(x.y-REG_C.y)}; }
+function regF0(z){ const dx=z.x-REG_C.x, dy=z.y-REG_C.y; return dx*dx+dy*dy; }
+function drawRegionOutline(ctx,view,range){
+  ctx.strokeStyle="#2B6CB0";ctx.lineWidth=1.4;
+  ctx.beginPath();
+  let started=false;
+  for(let a=0;a<=Math.PI*2+0.001;a+=0.02){
+    const px=REG_RAD*Math.cos(a), py=REG_RAD*Math.sin(a);
+    if(px<=REG_XMAX+1e-6){ const s=view.toS(px,py); if(!started){ctx.moveTo(s[0],s[1]);started=true;} else ctx.lineTo(s[0],s[1]); }
+    else started=false;
+  }
+  ctx.stroke();
+  const yy=Math.sqrt(Math.max(0,REG_RAD*REG_RAD-REG_XMAX*REG_XMAX));
+  const e1=view.toS(REG_XMAX,-yy),e2=view.toS(REG_XMAX,yy);
+  ctx.beginPath();ctx.moveTo(e1[0],e1[1]);ctx.lineTo(e2[0],e2[1]);ctx.stroke();
+}
+
+/* ===== LAB 1 — criterion (4.21), region shaded by sign of the dot product ===== */
+(function(){
+  const canvas=document.getElementById("cv1"); if(!canvas) return;
+  const ctx=canvas.getContext("2d"),RNG=5.6,view=makeView(canvas,RNG);
+  let X=regProj({x:-0.4,y:2.1}), Y=regProj({x:1.0,y:-1.2});
+  const ro=document.getElementById("ro1"),vd=document.getElementById("vd1");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,RNG);
+    const g=regGrad(X);
+    const step=0.09;
+    let worst=Infinity;
+    function fillRun(gx,y0,y1,holds){
+      const p1=view.toS(gx-step/2,y0),p2=view.toS(gx+step/2,y1);
+      ctx.fillStyle = holds? "rgba(47,133,90,0.16)" : "rgba(192,57,43,0.18)";
+      ctx.fillRect(Math.min(p1[0],p2[0]),Math.min(p1[1],p2[1]),Math.abs(p2[0]-p1[0])+1,Math.abs(p2[1]-p1[1])+1);
+    }
+    for(let gx=-RNG;gx<=RNG;gx+=step){
+      let runStart=null, runHolds=null;
+      for(let gy=-RNG;gy<=RNG+step;gy+=step){
+        const p={x:gx,y:gy};
+        const isIn = gy<=RNG && regIn(p);
+        let holds=true;
+        if(isIn){ const dv=g.x*(p.x-X.x)+g.y*(p.y-X.y); holds = dv>=-1e-6; if(dv<worst) worst=dv; }
+        if(isIn && (runStart===null || holds!==runHolds)){
+          if(runStart!==null){ fillRun(gx,runStart,gy,runHolds); }
+          runStart=gy; runHolds=holds;
+        }
+        if((!isIn||gy>RNG) && runStart!==null){ fillRun(gx,runStart,gy,runHolds); runStart=null; }
+      }
+    }
+    drawRegionOutline(ctx,view,RNG);
+    const cS=view.toS(REG_C.x,REG_C.y);
+    dot(ctx,cS[0],cS[1],5,"#8A91A3");label(ctx,"c",cS[0]+8,cS[1]-6,"#46506A",12);
+    const xS=view.toS(X.x,X.y);
+    const gn=Math.hypot(g.x,g.y)||1;
+    const gS=view.toS(X.x+g.x/gn*1.1, X.y+g.y/gn*1.1);
+    arrow(ctx,xS[0],xS[1],gS[0],gS[1],"#D7402B",2.4);
+    label(ctx,"∇f₀(x)",gS[0]+6,gS[1]-4,"#D7402B",12);
+    dot(ctx,xS[0],xS[1],6.5,"#17223B");label(ctx,"x",xS[0]-4,xS[1]-16,"#17223B",13);
+    const yS=view.toS(Y.x,Y.y);
+    dot(ctx,yS[0],yS[1],5.5,"#fff","#17223B");label(ctx,"y",yS[0]+9,yS[1]-6,"#17223B",12);
+    ctx.save();ctx.setLineDash([4,3]);ctx.strokeStyle="#46506A";ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.moveTo(xS[0],xS[1]);ctx.lineTo(yS[0],yS[1]);ctx.stroke();ctx.restore();
+
+    const dotXY = g.x*(Y.x-X.x)+g.y*(Y.y-X.y);
+    ro.innerHTML = `<span class="k">∇f₀(x)</span> = (${g.x.toFixed(2)}, ${g.y.toFixed(2)})<br>`+
+      `<span class="k">∇f₀(x)&sdot;(y&#8722;x)</span> = <b>${dotXY.toFixed(2)}</b><br>`+
+      `<span class="k">worst case over X</span> = <b>${(worst===Infinity?0:worst).toFixed(2)}</b>`;
+    if(worst>=-0.03){ vd.className="verdict in"; vd.textContent="✓ (4.21) holds for every y ∈ X — x is optimal"; }
+    else { vd.className="verdict out"; vd.textContent="✗ some y ∈ X gives a negative dot product — x is not optimal"; }
+  }
+  let act=-1;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function hit(px,py){
+    const xs=view.toS(X.x,X.y), ys=view.toS(Y.x,Y.y);
+    const dxp=Math.hypot(px-xs[0],py-xs[1]), dyp=Math.hypot(px-ys[0],py-ys[1]);
+    if(dxp<24 && dxp<=dyp) return 0; if(dyp<24) return 1; return -1;
+  }
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);act=hit(p[0],p[1]);if(act>=0){canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(act<0){canvas.style.cursor=hit(p[0],p[1])>=0?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);const raw={x:clamp(wv[0],-RNG,RNG),y:clamp(wv[1],-RNG,RNG)};
+    const proj=regProj(raw); if(act===0)X=proj; else Y=proj; draw(); ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=-1);canvas.addEventListener("pointercancel",()=>act=-1);
+  document.getElementById("chipSnap1").addEventListener("click",()=>{X=regProj(REG_C);draw();});
+  document.getElementById("chipReset1").addEventListener("click",()=>{X=regProj({x:-0.4,y:2.1});Y=regProj({x:1.0,y:-1.2});draw();});
+  new ResizeObserver(draw).observe(canvas); draw();
+})();
+
+/* ===== LAB 2 — proof of (⟹): segment z(t) ===== */
+(function(){
+  const canvas=document.getElementById("cv2"); if(!canvas) return;
+  const ctx=canvas.getContext("2d"),RNG=5.6,view=makeView(canvas,RNG);
+  let X=regProj({x:-2.0,y:0.0}), Y=regProj(REG_C), t=0;
+  const t2=document.getElementById("t2"),tv2=document.getElementById("tv2"),ro=document.getElementById("ro2"),vd=document.getElementById("vd2");
+  function draw(){
+    fitCanvas(canvas,ctx);const {w,h}=view.dims();ctx.clearRect(0,0,w,h);drawGrid(ctx,view,RNG);
+    const step=0.1;
+    ctx.fillStyle="rgba(43,108,176,0.10)";
+    for(let gx=-RNG;gx<=RNG;gx+=step){
+      let runStart=null;
+      for(let gy=-RNG;gy<=RNG+step;gy+=step){
+        const isIn = gy<=RNG && regIn({x:gx,y:gy});
+        if(isIn && runStart===null) runStart=gy;
+        if((!isIn||gy>RNG) && runStart!==null){
+          const p1=view.toS(gx-step/2,runStart), p2=view.toS(gx+step/2, gy);
+          ctx.fillRect(Math.min(p1[0],p2[0]), Math.min(p1[1],p2[1]), Math.abs(p2[0]-p1[0])+1, Math.abs(p2[1]-p1[1])+1);
+          runStart=null;
+        }
+      }
+    }
+    drawRegionOutline(ctx,view,RNG);
+    const cS=view.toS(REG_C.x,REG_C.y);
+    dot(ctx,cS[0],cS[1],5,"#8A91A3");label(ctx,"c",cS[0]+8,cS[1]-6,"#46506A",12);
+
+    const Z={x:(1-t)*X.x+t*Y.x, y:(1-t)*X.y+t*Y.y};
+    const xS=view.toS(X.x,X.y),yS=view.toS(Y.x,Y.y),zS=view.toS(Z.x,Z.y);
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle="#D7402B";ctx.lineWidth=1.8;
+    ctx.beginPath();ctx.moveTo(xS[0],xS[1]);ctx.lineTo(yS[0],yS[1]);ctx.stroke();ctx.restore();
+    dot(ctx,xS[0],xS[1],6.5,"#17223B");label(ctx,"x",xS[0]-4,xS[1]-16,"#17223B",13);
+    dot(ctx,yS[0],yS[1],5.5,"#fff","#17223B");label(ctx,"y",yS[0]+9,yS[1]-6,"#17223B",12);
+    dot(ctx,zS[0],zS[1],5.5,"#D7402B");label(ctx,"z(t)",zS[0]+8,zS[1]-8,"#D7402B",12);
+
+    const g=regGrad(X);
+    const slope = g.x*(Y.x-X.x)+g.y*(Y.y-X.y);
+    const phi0=regF0(X), phit=regF0(Z);
+    ro.innerHTML = `<span class="k">φ(t) = f₀(z(t))</span><br>`+
+      `<span class="k">φ(0)</span> = ${phi0.toFixed(2)} &nbsp; <span class="k">φ(t)</span> = <b>${phit.toFixed(2)}</b><br>`+
+      `<span class="k">∇f₀(x)&sdot;(y&#8722;x)</span> = <b>${slope.toFixed(2)}</b>`;
+    if(slope<-1e-6 && t>0 && phit<phi0-1e-6){ vd.className="verdict in"; vd.textContent="✓ contradiction: f₀(z(t)) < f₀(x) — x can't be optimal"; }
+    else if(slope<-1e-6){ vd.className="verdict mid"; vd.textContent="slide t up — φ(t) should dip below φ(0)"; }
+    else { vd.className="verdict out"; vd.textContent="no contradiction here — ∇f₀(x)·(y−x) ≥ 0 for this y, consistent with x optimal"; }
+    tv2.textContent=t.toFixed(2);
+  }
+  let act=-1;
+  function pos(ev){const r=canvas.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top];}
+  function hit(px,py){
+    const xs=view.toS(X.x,X.y), ys=view.toS(Y.x,Y.y);
+    const dxp=Math.hypot(px-xs[0],py-xs[1]), dyp=Math.hypot(px-ys[0],py-ys[1]);
+    if(dxp<24 && dxp<=dyp) return 0; if(dyp<24) return 1; return -1;
+  }
+  canvas.addEventListener("pointerdown",ev=>{const p=pos(ev);act=hit(p[0],p[1]);if(act>=0){canvas.setPointerCapture(ev.pointerId);ev.preventDefault();}});
+  canvas.addEventListener("pointermove",ev=>{const p=pos(ev);if(act<0){canvas.style.cursor=hit(p[0],p[1])>=0?"grab":"default";return;}
+    const wv=view.toW(p[0],p[1]);const raw={x:clamp(wv[0],-RNG,RNG),y:clamp(wv[1],-RNG,RNG)};
+    const proj=regProj(raw); if(act===0)X=proj; else Y=proj; draw(); ev.preventDefault();});
+  canvas.addEventListener("pointerup",()=>act=-1);canvas.addEventListener("pointercancel",()=>act=-1);
+  t2.addEventListener("input",()=>{t=parseFloat(t2.value);draw();});
+  new ResizeObserver(draw).observe(canvas); draw();
+})();
+
+/* ===== LAB 3 — Example 4.5, unconstrained quadratic ===== */
+(function(){
+  const canvas=document.getElementById("cv3"); if(!canvas) return;
+  const ctx=canvas.getContext("2d"),RNG=6.5,view=makeView(canvas,RNG);
+  const l1=document.getElementById("l1"),l2=document.getElementById("l2"),th=document.getElementById("th"),
+        q1s=document.getElementById("q1s"),q2s=document.getElementById("q2s"),
+        l1v=document.getElementById("l1v"),l2v=document.getElementById("l2v"),thv=document.getElementById("thv"),
+        q1v=document.getElementById("q1v"),q2v=document.getElementById("q2v"),
+        ro=document.getElementById("ro3"),vd=document.getElementById("vd3");
+  function draw(){
+    const lam1=parseFloat(l1.value), lam2=parseFloat(l2.value), theta=parseFloat(th.value)*Math.PI/180;
+    const q={x:parseFloat(q1s.value), y:parseFloat(q2s.value)};
+    const u1={x:Math.cos(theta),y:Math.sin(theta)}, u2={x:-Math.sin(theta),y:Math.cos(theta)};
+    fitCanvas(canvas,ctx); const {w,h}=view.dims(); ctx.clearRect(0,0,w,h); drawGrid(ctx,view,RNG);
+
+    if(lam2>1e-9){
+      const P11=lam1*u1.x*u1.x+lam2*u2.x*u2.x, P22=lam1*u1.y*u1.y+lam2*u2.y*u2.y, P12=lam1*u1.x*u1.y+lam2*u2.x*u2.y;
+      const det=P11*P22-P12*P12;
+      const xstar={x:-(P22*q.x-P12*q.y)/det, y:-(-P12*q.x+P11*q.y)/det};
+      [0.5,1.5,3,5].forEach(k=>{
+        const r1=Math.sqrt(2*k/lam1), r2=Math.sqrt(2*k/lam2);
+        ctx.beginPath();
+        for(let a=0;a<=Math.PI*2+0.001;a+=0.05){
+          const px=xstar.x+r1*Math.cos(a)*u1.x+r2*Math.sin(a)*u2.x;
+          const py=xstar.y+r1*Math.cos(a)*u1.y+r2*Math.sin(a)*u2.y;
+          const s=view.toS(px,py);
+          a===0?ctx.moveTo(s[0],s[1]):ctx.lineTo(s[0],s[1]);
+        }
+        ctx.strokeStyle="#C9C2B2"; ctx.lineWidth=1; ctx.stroke();
+      });
+      const xs=view.toS(xstar.x,xstar.y);
+      dot(ctx,xs[0],xs[1],6,"#2F855A"); label(ctx,"x⋆",xs[0]+8,xs[1]-6,"#2F855A",13);
+      const check1=(P11*xstar.x+P12*xstar.y+q.x), check2=(P12*xstar.x+P22*xstar.y+q.y);
+      ro.innerHTML=`<span class="k">P</span> &#8837; 0 (λ₁,λ₂&gt;0)<br><span class="k">x⋆ = &#8722;P&#8315;&#185;q</span> = (${xstar.x.toFixed(2)}, ${xstar.y.toFixed(2)})<br><span class="k">check Px⋆+q</span> = (${check1.toFixed(3)}, ${check2.toFixed(3)})`;
+      vd.className="verdict in"; vd.textContent="unique minimizer x⋆ = −P⁻¹q";
+    } else {
+      const qu2 = q.x*u2.x+q.y*u2.y;
+      const qu1 = q.x*u1.x+q.y*u1.y;
+      const base = { x: -(qu1/lam1)*u1.x, y: -(qu1/lam1)*u1.y };
+      if(Math.abs(qu2) < 0.05){
+        const p1=view.toS(base.x-5.5*u2.x, base.y-5.5*u2.y), p2=view.toS(base.x+5.5*u2.x, base.y+5.5*u2.y);
+        ctx.strokeStyle="#2F855A"; ctx.lineWidth=3;
+        ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+        const bS=view.toS(base.x,base.y);
+        dot(ctx,bS[0],bS[1],5,"#2F855A"); label(ctx,"Xopt",bS[0]+8,bS[1]-10,"#2F855A",13);
+        ro.innerHTML=`<span class="k">P</span> &#8838; 0, singular (λ₂≈0)<br><span class="k">q&sdot;u₂</span> = ${qu2.toFixed(3)} ≈ 0 → q ∈ R(P)<br><span class="k">Xopt</span> = &#8722;P†q + N(P), through (${base.x.toFixed(2)}, ${base.y.toFixed(2)})`;
+        vd.className="verdict in"; vd.textContent="affine optimal set Xopt = −P†q + N(P)";
+      } else {
+        const dir = qu2>0 ? {x:-u2.x,y:-u2.y} : {x:u2.x,y:u2.y};
+        const p0=view.toS(base.x,base.y), p1=view.toS(base.x+dir.x*5.6, base.y+dir.y*5.6);
+        arrow(ctx,p0[0],p0[1],p1[0],p1[1],"#C0392B",2.6);
+        label(ctx,"f₀ → −∞", p1[0]-30, p1[1]-10, "#C0392B",12);
+        ro.innerHTML=`<span class="k">P</span> &#8838; 0, singular (λ₂≈0)<br><span class="k">q&sdot;u₂</span> = ${qu2.toFixed(3)} ≠ 0 → q ∉ R(P)<br>f₀ decreases without bound along ±u₂`;
+        vd.className="verdict out"; vd.textContent="unbounded below — no minimizer exists";
+      }
+    }
+    l1v.textContent=lam1.toFixed(2); l2v.textContent=lam2.toFixed(2); thv.textContent=Math.round(theta*180/Math.PI)+"°";
+    q1v.textContent=q.x.toFixed(2); q2v.textContent=q.y.toFixed(2);
+  }
+  [l1,l2,th,q1s,q2s].forEach(el=>el.addEventListener("input",draw));
+  new ResizeObserver(draw).observe(canvas); draw();
+})();
+</script>
+</body>
+</html>
