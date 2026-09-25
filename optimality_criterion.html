@@ -191,7 +191,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     <hr class="rule"/>
     <p>Since <span class="mono">f₀</span> is differentiable and convex, the first-order condition (§3.1.3) holds:</p>
     <div class="bv">\[ f_0(y) \ge f_0(x) + \nabla f_0(x)^T(y-x) \qquad (4.20) \]<span class="src">B&amp;V (4.20)</span></div>
-    <p>With feasible set <span class="mono">X = \{\, x \mid f_i(x)\le 0,\ h_i(x)=0 \,\}</span>:</p>
+    <p>With feasible set \(X = \{\, x \mid f_i(x)\le 0,\ h_i(x)=0 \,\}\):</p>
     <div class="bv">\[ x \text{ is optimal} \iff x\in X \text{ and } \nabla f_0(x)^T(y-x)\ge 0 \ \ \forall\, y\in X \qquad (4.21) \]<span class="src">B&amp;V (4.21)</span></div>
     <div class="note warn"><div class="ic">!</div><p>It's <strong>≥ 0</strong>, not <span class="mono">= 0</span> — and it has to hold for <strong>every</strong> feasible <span class="mono">y</span>, not just one.</p></div>
     <p><strong>Geometry.</strong> If <span class="mono">∇f₀(x) ≠ 0</span>, <span class="mono">−∇f₀(x)</span> defines a supporting hyperplane to <span class="mono">X</span> at <span class="mono">x</span>: no feasible direction is a first-order descent direction (Figure 4.2). The hero above draws exactly this — <span class="mono">X</span> sits entirely on the side where <span class="mono">∇f₀(x)ᵀ(y−x) ≥ 0</span>, so <span class="mono">−∇f₀(x)</span> points strictly away from the set.</p>
@@ -264,7 +264,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     <hr class="rule"/>
     <p><span class="mono">m = p = 0</span>: (4.21) reduces to</p>
     <div class="bv">\[ \nabla f_0(x) = 0 \qquad (4.22) \]<span class="src">B&amp;V (4.22)</span></div>
-    <p>Why: take <span class="mono">y = x - t\nabla f_0(x)</span> (feasible, since <span class="mono">dom f₀</span> is open); then</p>
+    <p>Why: take \(y = x - t\nabla f_0(x)\) (feasible, since <span class="mono">dom f₀</span> is open); then</p>
     \[ \nabla f_0(x)^T(y-x) = -t\|\nabla f_0(x)\|_2^2 \ge 0 \]
     <p>forces <span class="mono">∇f₀(x) = 0</span> — the only way a negative-or-zero quantity like <span class="mono">−t‖∇f₀(x)‖₂²</span> can be <span class="mono">≥ 0</span> for <span class="mono">t&gt;0</span> is if the norm itself is zero. No solution ⟹ no optimum (unbounded below, or finite but unattained); multiple solutions ⟹ each is a minimizer.</p>
 
@@ -318,7 +318,7 @@ footer{padding:34px 0 60px;border-top:1px solid var(--rule);color:var(--ink-fain
     \[ \nabla f_0(x)^Tv \ge 0 \qquad \forall\, v\in N(A) \]
     <div class="note warn"><div class="ic">!</div><p><span class="mono">N(A)</span> is a <strong>subspace</strong> — closed under negation, so both <span class="mono">v</span> and <span class="mono">−v</span> are feasible directions. A <span class="mono">≥ 0</span> that has to hold for both forces <span class="mono">= 0</span>.</p></div>
     \[ \nabla f_0(x)^Tv = 0 \quad \forall\, v\in N(A), \qquad\text{i.e. } \nabla f_0(x)\perp N(A) \]
-    <p>Since <span class="mono">N(A)^\perp = R(A^T)</span>, there is <span class="mono">ν</span> with</p>
+    <p>Since \(N(A)^\perp = R(A^T)\), there is <span class="mono">ν</span> with</p>
     <div class="bv">\[ \nabla f_0(x) + A^T\nu = 0 \quad (\text{with } Ax=b) \]<span class="src">the classical Lagrange multiplier condition (Chapter 5)</span></div>
   </div>
 </section>
